@@ -1,15 +1,15 @@
 <x-app-layout>
-    <div class="py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+    <div class="py-8 px-4 sm:px-6 lg:px-8 w-full mx-auto">
         <!-- Header -->
         <div class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div>
-                <h1 class="text-3xl font-bold bg-linear-to-r from-sky-400 to-indigo-400 bg-clip-text text-transparent">
+                <h1 class="text-3xl font-bold">
                     {{ __('Gestión de Padres y Tutores') }}
                 </h1>
                 <p class="mt-2 text-slate-400">Padres de familia y tutores legales registrados en la institución.</p>
             </div>
             <a href="{{ route('parents.create') }}"
-                class="group flex items-center gap-2 px-5 py-2.5 bg-sky-600 hover:bg-sky-500 text-white rounded-xl font-bold transition-all shadow-lg shadow-sky-500/20 active:scale-95">
+                class="group flex items-center gap-2 px-5 py-2.5 bg-sky-600 hover:bg-sky-500 text-white rounded-xl font-bold transition-all active:scale-95">
                 <i class="ti ti-users-plus text-lg"></i>
                 <span>Nuevo Tutor</span>
             </a>

@@ -3,7 +3,7 @@
         <!-- Header -->
         <div class="mb-8 flex items-center justify-between">
             <div>
-                <h1 class="text-3xl font-bold bg-linear-to-r from-sky-400 to-indigo-400 bg-clip-text text-transparent">
+                <h1 class="text-3xl font-bold ">
                     {{ __('Nuevo Padre / Tutor') }}
                 </h1>
                 <p class="mt-2 text-slate-400">Registre un nuevo tutor legal para la vinculación con estudiantes.</p>
@@ -124,7 +124,7 @@
                 </div>
 
                 <button type="submit"
-                    class="w-full py-4 bg-linear-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white rounded-2xl font-bold text-lg shadow-xl shadow-sky-500/20 transition-all active:scale-[0.98]">
+                    class="w-full py-4 bg-sky-600 hover:bg-sky-500 text-white rounded-2xl font-bold text-lg active:scale-[0.98] transition-all">
                     Registrar Tutor
                 </button>
             </form>

@@ -1,6 +1,6 @@
 <x-app-layout>
     <div class="min-h-screen bg-[#0f172a] text-white font-sans selection:bg-cyan-500/30">
-        <div class="py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div class="py-8 px-4 sm:px-6 lg:px-8 w-full mx-auto">
 
             <!-- Header Section -->
             <div class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">

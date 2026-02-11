@@ -1,3 +1,7 @@
+<?php
+
+namespace App\Http\Controllers;
+
 use App\Models\Student;
 use App\Models\Classes;
 use App\Models\Section;
@@ -154,3 +158,4 @@ class StudentController extends Controller
         $student = Student::with(['classes', 'section', 'parent'])->findOrFail($id);
         return view('student.show', compact('student'));
     }
+}

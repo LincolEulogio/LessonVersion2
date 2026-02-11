@@ -1,16 +1,16 @@
 <x-app-layout>
-    <div class="py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+    <div class="py-8 px-4 sm:px-6 lg:px-8 w-full mx-auto">
         <!-- Header -->
         <div class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div>
                 <h1
-                    class="text-3xl font-bold bg-linear-to-r from-purple-400 to-fuchsia-400 bg-clip-text text-transparent">
+                    class="text-3xl font-bold">
                     {{ __('Administradores del Sistema') }}
                 </h1>
                 <p class="mt-2 text-slate-400">Control de acceso y gestión de personal administrativo de alto nivel.</p>
             </div>
             <a href="{{ route('systemadmin.create') }}"
-                class="group flex items-center gap-2 px-5 py-2.5 bg-purple-600 hover:bg-purple-500 text-white rounded-xl font-bold transition-all shadow-lg shadow-purple-500/20 active:scale-95">
+                class="group flex items-center gap-2 px-5 py-2.5 bg-purple-600 hover:bg-purple-500 text-white rounded-xl font-bold transition-all active:scale-95">
                 <i class="ti ti-shield-lock-filled text-lg"></i>
                 <span>Nuevo Administrador</span>
             </a>

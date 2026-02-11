@@ -1,5 +1,5 @@
 <x-app-layout>
-    <div class="py-12 px-4 sm:px-6 lg:px-8 max-w-[95%] mx-auto">
+    <div class="py-12 px-4 sm:px-6 lg:px-8 w-full mx-auto">
         <!-- Header & Actions -->
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
             <h1 class="text-3xl font-black text-white tracking-tight flex items-center gap-3">
