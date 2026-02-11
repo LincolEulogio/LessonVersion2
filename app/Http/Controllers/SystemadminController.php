@@ -40,6 +40,11 @@ class SystemadminController extends Controller
         $data['password'] = Hash::make($request->password);
         $data['usertypeID'] = 1;
         $data['active'] = 1;
+        $data['create_date'] = now();
+        $data['modify_date'] = now();
+        $data['create_userID'] = Auth::id();
+        $data['create_username'] = Auth::user()->name;
+        $data['create_usertype'] = 'Admin';
 
         if ($request->hasFile('photo')) {
             $path = $request->file('photo')->store('images', 'public');

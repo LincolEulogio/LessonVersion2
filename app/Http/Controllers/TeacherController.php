@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Teacher;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
@@ -50,6 +51,11 @@ class TeacherController extends Controller
         $data['password'] = Hash::make($request->password);
         $data['usertypeID'] = 2;
         $data['active'] = 1;
+        $data['create_date'] = now();
+        $data['modify_date'] = now();
+        $data['create_userID'] = Auth::id();
+        $data['create_username'] = Auth::user()->name;
+        $data['create_usertype'] = 'Admin';
 
         if ($request->hasFile('photo')) {
             $path = $request->file('photo')->store('images', 'public');
