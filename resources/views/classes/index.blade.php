@@ -3,8 +3,9 @@
         <!-- Header -->
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
             <div>
-                <h1 class="text-3xl font-bold text-white tracking-tight">Gestión de Clases</h1>
-                <p class="text-slate-400 mt-1">Administra los niveles académicos y sus responsables.</p>
+                <h1 class="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Gestión de Clases</h1>
+                <p class="text-slate-500 dark:text-slate-400 mt-1">Administra los niveles académicos y sus responsables.
+                </p>
             </div>
             <a href="{{ route('classes.create') }}"
                 class="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-xl transition-all group">
@@ -15,14 +16,16 @@
 
         <!-- Stats Overview -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div class="p-6 rounded-3xl bg-slate-800/30 border border-slate-700/50 backdrop-blur-sm">
+            <div
+                class="p-6 rounded-3xl bg-white dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 shadow-sm dark:shadow-none backdrop-blur-sm">
                 <div class="flex items-center gap-4">
                     <div class="p-3 bg-emerald-500/10 text-emerald-400 rounded-2xl">
                         <i class="ti ti-school text-2xl"></i>
                     </div>
                     <div>
-                        <p class="text-slate-400 text-xs font-bold uppercase tracking-wider">Total Clases</p>
-                        <h3 class="text-2xl font-bold text-white">{{ $classes->count() }}</h3>
+                        <p class="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">Total
+                            Clases</p>
+                        <h3 class="text-2xl font-bold text-slate-900 dark:text-white">{{ $classes->count() }}</h3>
                     </div>
                 </div>
             </div>
@@ -30,42 +33,51 @@
         </div>
 
         <!-- Table Container -->
-        <div class="rounded-3xl bg-slate-800/30 border border-slate-700/50 backdrop-blur-xl overflow-hidden shadow-2xl">
+        <div
+            class="rounded-3xl bg-white dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 shadow-sm dark:shadow-none backdrop-blur-xl overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                     <thead>
-                        <tr class="border-b border-slate-700/50 bg-slate-800/50">
-                            <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">#</th>
-                            <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Clase</th>
-                            <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Numérico
+                        <tr class="border-b border-slate-100 dark:border-slate-700/50 bg-slate-50 dark:bg-slate-800/50">
+                            <th
+                                class="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
+                                #</th>
+                            <th
+                                class="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
+                                Clase</th>
+                            <th
+                                class="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
+                                Numérico
                             </th>
-                            <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Maestro
+                            <th
+                                class="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
+                                Maestro
                                 Responsable</th>
                             <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-right">
                                 Acciones</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-700/30">
+                    <tbody class="divide-y divide-slate-100 dark:divide-slate-700/30">
                         @forelse($classes as $class)
-                            <tr class="group hover:bg-emerald-500/5 transition-all duration-300">
+                            <tr class="group hover:bg-slate-50 dark:hover:bg-emerald-500/5 transition-all duration-300">
                                 <td class="px-6 py-4">
                                     <span class="text-slate-500 font-mono text-sm">{{ $loop->iteration }}</span>
                                 </td>
                                 <td class="px-6 py-4">
                                     <div
-                                        class="font-bold text-slate-200 group-hover:text-emerald-400 transition-colors">
+                                        class="font-bold text-slate-800 dark:text-slate-200 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
                                         {{ $class->classes }}
                                     </div>
                                 </td>
                                 <td class="px-6 py-4">
                                     <span
-                                        class="px-2.5 py-1 bg-slate-700/50 text-slate-300 rounded-lg text-xs font-bold">
+                                        class="px-2.5 py-1 bg-slate-100 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300 rounded-lg text-xs font-bold">
                                         {{ $class->classes_numeric }}
                                     </span>
                                 </td>
                                 <td class="px-6 py-4">
-                                    <div class="flex items-center gap-2 text-slate-300">
-                                        <i class="ti ti-user-star text-emerald-400/50"></i>
+                                    <div class="flex items-center gap-2 text-slate-600 dark:text-slate-300">
+                                        <i class="ti ti-user-star text-emerald-500/50"></i>
                                         {{ $class->teacher_name ?? 'Sin asignar' }}
                                     </div>
                                 </td>

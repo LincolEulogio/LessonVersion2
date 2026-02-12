@@ -4,32 +4,35 @@
         <div class="mb-8">
             <nav class="flex items-center gap-2 text-sm text-slate-500 mb-4">
                 <a href="{{ route('section.index') }}"
-                    class="hover:text-cyan-400 text-slate-400 transition-colors uppercase tracking-widest font-bold text-[10px]">Secciones</a>
+                    class="hover:text-cyan-600 dark:hover:text-cyan-400 text-slate-400 transition-colors uppercase tracking-widest font-bold text-[10px]">Secciones</a>
                 <i class="ti ti-chevron-right text-xs"></i>
-                <span class="text-cyan-400 uppercase tracking-widest font-bold text-[10px]">Nueva Sección</span>
+                <span class="text-cyan-600 dark:text-cyan-400 uppercase tracking-widest font-bold text-[10px]">Nueva
+                    Sección</span>
             </nav>
-            <h1 class="text-3xl font-bold text-white tracking-tight">Registar Nueva Sección</h1>
-            <p class="text-slate-400 mt-1">Crea una nueva división para un nivel académico específico.</p>
+            <h1 class="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Registar Nueva Sección</h1>
+            <p class="text-slate-500 dark:text-slate-400 mt-1">Crea una nueva división para un nivel académico
+                específico.</p>
         </div>
 
         <!-- Form Card -->
-        <div class="rounded-3xl bg-slate-800/30 border border-slate-700/50 backdrop-blur-xl overflow-hidden shadow-2xl">
+        <div
+            class="rounded-3xl bg-white dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 shadow-sm dark:shadow-none backdrop-blur-xl overflow-hidden">
             <form action="{{ route('section.store') }}" method="POST" class="p-8 space-y-8">
                 @csrf
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <!-- Section Name -->
                     <div class="space-y-2">
-                        <label for="section"
-                            class="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Nombre de la
-                            Sección</label>
+                        <label for="classesID"
+                            class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Clase
+                            Vinculada</label>
                         <div class="relative group">
                             <div
-                                class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500 group-focus-within:text-cyan-400 transition-colors">
+                                class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 dark:text-slate-500 group-focus-within:text-cyan-500 dark:group-focus-within:text-cyan-400 transition-colors">
                                 <i class="ti ti-layers-linked"></i>
                             </div>
                             <input type="text" name="section" id="section" value="{{ old('section') }}" required
-                                class="w-full pl-11 pr-4 py-3 bg-slate-900/50 border border-slate-700/50 rounded-2xl text-slate-200 placeholder-slate-600 focus:border-cyan-500/50 focus:ring-4 focus:ring-cyan-500/10 transition-all outline-none"
+                                class="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-2xl text-slate-700 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-600 focus:border-cyan-500/50 focus:ring-4 focus:ring-cyan-500/10 transition-all outline-none"
                                 placeholder="Ej: Sección A">
                         </div>
                         @error('section')
@@ -43,11 +46,11 @@
                             class="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Categoría</label>
                         <div class="relative group">
                             <div
-                                class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500 group-focus-within:text-cyan-400 transition-colors">
+                                class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 dark:text-slate-500 group-focus-within:text-cyan-500 dark:group-focus-within:text-cyan-400 transition-colors">
                                 <i class="ti ti-tag"></i>
                             </div>
                             <input type="text" name="category" id="category" value="{{ old('category') }}" required
-                                class="w-full pl-11 pr-4 py-3 bg-slate-900/50 border border-slate-700/50 rounded-2xl text-slate-200 placeholder-slate-600 focus:border-cyan-500/50 focus:ring-4 focus:ring-cyan-500/10 transition-all outline-none"
+                                class="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-2xl text-slate-700 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-600 focus:border-cyan-500/50 focus:ring-4 focus:ring-cyan-500/10 transition-all outline-none"
                                 placeholder="Ej: Matutino, Vespertino">
                         </div>
                         @error('category')
@@ -62,11 +65,11 @@
                             Vinculada</label>
                         <div class="relative group">
                             <div
-                                class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500 group-focus-within:text-cyan-400 transition-colors">
+                                class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 dark:text-slate-500 group-focus-within:text-cyan-500 dark:group-focus-within:text-cyan-400 transition-colors">
                                 <i class="ti ti-school"></i>
                             </div>
                             <select name="classesID" id="classesID" required
-                                class="w-full pl-11 pr-10 py-3 bg-slate-900/50 border border-slate-700/50 rounded-2xl text-slate-200 focus:border-cyan-500/50 focus:ring-4 focus:ring-cyan-500/10 transition-all outline-none appearance-none">
+                                class="w-full pl-11 pr-10 py-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-2xl text-slate-700 dark:text-slate-200 focus:border-cyan-500/50 focus:ring-4 focus:ring-cyan-500/10 transition-all outline-none appearance-none cursor-pointer">
                                 <option value="" disabled selected>Selecciona una clase</option>
                                 @foreach ($classes as $class)
                                     <option value="{{ $class->classesID }}"
@@ -92,12 +95,12 @@
                             Máxima</label>
                         <div class="relative group">
                             <div
-                                class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500 group-focus-within:text-cyan-400 transition-colors">
+                                class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 dark:text-slate-500 group-focus-within:text-cyan-500 dark:group-focus-within:text-cyan-400 transition-colors">
                                 <i class="ti ti-users"></i>
                             </div>
                             <input type="number" name="capacity" id="capacity" value="{{ old('capacity') }}" required
                                 min="1"
-                                class="w-full pl-11 pr-4 py-3 bg-slate-900/50 border border-slate-700/50 rounded-2xl text-slate-200 placeholder-slate-600 focus:border-cyan-500/50 focus:ring-4 focus:ring-cyan-500/10 transition-all outline-none"
+                                class="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-2xl text-slate-700 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-600 focus:border-cyan-500/50 focus:ring-4 focus:ring-cyan-500/10 transition-all outline-none"
                                 placeholder="Ej: 30">
                         </div>
                         @error('capacity')
@@ -112,11 +115,11 @@
                             Mentor</label>
                         <div class="relative group">
                             <div
-                                class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500 group-focus-within:text-cyan-400 transition-colors">
+                                class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 dark:text-slate-500 group-focus-within:text-cyan-500 dark:group-focus-within:text-cyan-400 transition-colors">
                                 <i class="ti ti-user-star"></i>
                             </div>
                             <select name="teacherID" id="teacherID" required
-                                class="w-full pl-11 pr-10 py-3 bg-slate-900/50 border border-slate-700/50 rounded-2xl text-slate-200 focus:border-cyan-500/50 focus:ring-4 focus:ring-cyan-500/10 transition-all outline-none appearance-none">
+                                class="w-full pl-11 pr-10 py-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-2xl text-slate-700 dark:text-slate-200 focus:border-cyan-500/50 focus:ring-4 focus:ring-cyan-500/10 transition-all outline-none appearance-none cursor-pointer">
                                 <option value="" disabled selected>Selecciona un mentor</option>
                                 @foreach ($teachers as $teacher)
                                     <option value="{{ $teacher->teacherID }}"
@@ -142,11 +145,11 @@
                             (Opcional)</label>
                         <div class="relative group">
                             <div
-                                class="absolute top-4 left-4 pointer-events-none text-slate-500 group-focus-within:text-cyan-400 transition-colors">
+                                class="absolute top-4 left-4 pointer-events-none text-slate-400 dark:text-slate-500 group-focus-within:text-cyan-500 dark:group-focus-within:text-cyan-400 transition-colors">
                                 <i class="ti ti-notes"></i>
                             </div>
                             <textarea name="note" id="note" rows="3"
-                                class="w-full pl-11 pr-4 py-3 bg-slate-900/50 border border-slate-700/50 rounded-2xl text-slate-200 placeholder-slate-600 focus:border-cyan-500/50 focus:ring-4 focus:ring-cyan-500/10 transition-all outline-none"
+                                class="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-2xl text-slate-700 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-600 focus:border-cyan-500/50 focus:ring-4 focus:ring-cyan-500/10 transition-all outline-none"
                                 placeholder="Cualquier información adicional...">{{ old('note') }}</textarea>
                         </div>
                         @error('note')
@@ -156,9 +159,10 @@
                 </div>
 
                 <!-- Footer Actions -->
-                <div class="pt-8 border-t border-slate-700/50 flex items-center justify-end gap-4">
+                <div
+                    class="pt-8 border-t border-slate-100 dark:border-slate-700/50 flex items-center justify-end gap-4">
                     <a href="{{ route('section.index') }}"
-                        class="px-6 py-3 bg-slate-700/50 hover:bg-slate-700 text-slate-300 rounded-2xl transition-all font-bold text-sm">
+                        class="px-6 py-3 bg-white dark:bg-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-300 rounded-2xl border border-slate-200 dark:border-transparent transition-all font-bold text-sm">
                         Cancelar
                     </a>
                     <button type="submit"

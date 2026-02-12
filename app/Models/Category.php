@@ -12,4 +12,9 @@ class Category extends Model
     protected $fillable = [
         'hostelID', 'class_type', 'hbalance', 'note'
     ];
+
+    public function hostel()
+    {
+        return $this->belongsTo(Hostel::class, 'hostelID', 'hostelID');
+    }
 }

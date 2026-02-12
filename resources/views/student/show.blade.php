@@ -4,10 +4,10 @@
         <div class="mb-8 flex items-center justify-between">
             <div class="flex items-center gap-6">
                 <img src="{{ $student->photo ? asset('uploads/images/' . $student->photo) : asset('uploads/images/default.png') }}"
-                    class="w-24 h-24 rounded-3xl object-cover border-4 border-slate-800 shadow-2xl"
+                    class="w-24 h-24 rounded-3xl object-cover border-4 border-white dark:border-slate-800 shadow-xl"
                     alt="{{ $student->name }}">
                 <div>
-                    <h1 class="text-3xl font-bold text-white">{{ $student->name }}</h1>
+                    <h1 class="text-3xl font-bold text-slate-900 dark:text-white">{{ $student->name }}</h1>
                     <div class="mt-2 flex items-center gap-3">
                         <span
                             class="px-3 py-1 bg-indigo-600/20 text-indigo-400 border border-indigo-500/20 rounded-lg text-xs font-bold uppercase tracking-wider">
@@ -24,7 +24,7 @@
                     <i class="ti ti-edit text-xl"></i>
                 </a>
                 <a href="{{ route('student.index') }}"
-                    class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl transition-all border border-slate-700/50">
+                    class="px-4 py-2 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl transition-all border border-slate-200 dark:border-slate-700/50 shadow-sm dark:shadow-none">
                     Volver
                 </a>
             </div>
@@ -34,13 +34,14 @@
             <!-- Left: Stats/Quick Info -->
             <div class="space-y-6">
                 <!-- Status Card -->
-                <div class="p-6 rounded-3xl bg-slate-800/30 border border-slate-700/50 backdrop-blur-sm">
+                <div
+                    class="p-6 rounded-3xl bg-white dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 shadow-sm dark:shadow-none backdrop-blur-sm">
                     <h3 class="text-sm font-bold text-slate-500 uppercase tracking-widest mb-4">Estado de Cuenta</h3>
                     <div class="flex items-center justify-between">
                         <span class="text-slate-200 font-medium">Asistencia Promedio</span>
                         <span class="text-green-400 font-bold">94%</span>
                     </div>
-                    <div class="mt-4 w-full bg-slate-700/30 rounded-full h-2">
+                    <div class="mt-4 w-full bg-slate-100 dark:bg-slate-700/30 rounded-full h-2">
                         <div class="bg-green-500 h-2 rounded-full" style="width: 94%"></div>
                     </div>
                 </div>
@@ -54,7 +55,8 @@
                         </div>
                         <div class="flex flex-col">
                             <span class="text-xs text-slate-500">Email</span>
-                            <span class="text-sm text-slate-200 break-all">{{ $student->email ?? 'N/A' }}</span>
+                            <span
+                                class="text-sm text-slate-700 dark:text-slate-200 break-all">{{ $student->email ?? 'N/A' }}</span>
                         </div>
                     </div>
                     <div class="flex items-center gap-3">
@@ -63,7 +65,8 @@
                         </div>
                         <div class="flex flex-col">
                             <span class="text-xs text-slate-500">Teléfono</span>
-                            <span class="text-sm text-slate-200">{{ $student->phone ?? 'N/A' }}</span>
+                            <span
+                                class="text-sm text-slate-700 dark:text-slate-200">{{ $student->phone ?? 'N/A' }}</span>
                         </div>
                     </div>
                 </div>
@@ -72,10 +75,11 @@
             <!-- Right: Detailed Tabs/Info -->
             <div class="md:col-span-2 space-y-8">
                 <!-- General Info -->
-                <div class="p-8 rounded-3xl bg-slate-800/30 border border-slate-700/50 backdrop-blur-sm">
+                <div
+                    class="p-8 rounded-3xl bg-white dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 shadow-sm dark:shadow-none backdrop-blur-sm">
                     <h2
-                        class="text-xl font-bold text-white mb-6 border-b border-slate-700/50 pb-4 flex items-center gap-2">
-                        <i class="ti ti-info-circle text-indigo-400"></i>
+                        class="text-xl font-bold text-slate-900 dark:text-white mb-6 border-b border-slate-100 dark:border-slate-700/50 pb-4 flex items-center gap-2">
+                        <i class="ti ti-info-circle text-indigo-500 dark:text-indigo-400"></i>
                         Detalles del Estudiante
                     </h2>
                     <div class="grid grid-cols-2 gap-y-6 gap-x-12">
@@ -93,7 +97,7 @@
                             <span class="block text-xs font-bold text-slate-500 uppercase tracking-widest">Fecha de
                                 Nacimiento</span>
                             <span
-                                class="text-slate-200 mt-1 block font-medium">{{ $student->dob ? \Carbon\Carbon::parse($student->dob)->format('d \d\e F, Y') : 'N/A' }}</span>
+                                class="text-slate-700 dark:text-slate-200 mt-1 block font-medium">{{ $student->dob ? \Carbon\Carbon::parse($student->dob)->format('d \d\e F, Y') : 'N/A' }}</span>
                         </div>
                         <div>
                             <span class="block text-xs font-bold text-slate-500 uppercase tracking-widest">Género</span>
@@ -103,16 +107,17 @@
                             <span
                                 class="block text-xs font-bold text-slate-500 uppercase tracking-widest">Dirección</span>
                             <span
-                                class="text-slate-200 mt-1 block font-medium">{{ $student->address ?? 'No registrada' }}</span>
+                                class="text-slate-700 dark:text-slate-200 mt-1 block font-medium">{{ $student->address ?? 'No registrada' }}</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- Parents/Guardian Info -->
-                <div class="p-8 rounded-3xl bg-slate-800/30 border border-slate-700/50 backdrop-blur-sm">
+                <div
+                    class="p-8 rounded-3xl bg-white dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 shadow-sm dark:shadow-none backdrop-blur-sm">
                     <h2
-                        class="text-xl font-bold text-white mb-6 border-b border-slate-700/50 pb-4 flex items-center gap-2">
-                        <i class="ti ti-users text-indigo-400"></i>
+                        class="text-xl font-bold text-slate-900 dark:text-white mb-6 border-b border-slate-100 dark:border-slate-700/50 pb-4 flex items-center gap-2">
+                        <i class="ti ti-users text-indigo-500 dark:text-indigo-400"></i>
                         Información del Padre / Tutor
                     </h2>
                     @if ($student->parent)
@@ -121,8 +126,9 @@
                                 class="w-16 h-16 rounded-2xl object-cover border-2 border-slate-700"
                                 alt="{{ $student->parent->name }}">
                             <div>
-                                <h4 class="text-lg font-bold text-slate-100">{{ $student->parent->name }}</h4>
-                                <p class="text-sm text-slate-400">Padre / Tutor Legal</p>
+                                <h4 class="text-lg font-bold text-slate-900 dark:text-slate-100">
+                                    {{ $student->parent->name }}</h4>
+                                <p class="text-sm text-slate-500 dark:text-slate-400">Padre / Tutor Legal</p>
                             </div>
                         </div>
                         <div class="grid grid-cols-2 gap-y-6 gap-x-12">

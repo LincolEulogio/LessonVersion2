@@ -2,9 +2,9 @@
     <div class="py-12 px-4 sm:px-6 lg:px-8 w-full mx-auto">
         <!-- Header & Actions -->
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-            <h1 class="text-3xl font-black text-white tracking-tight flex items-center gap-3">
+            <h1 class="text-3xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-3">
                 <span
-                    class="w-10 h-10 rounded-xl bg-pink-500/10 flex items-center justify-center text-pink-400 border border-pink-500/20">
+                    class="w-10 h-10 rounded-xl bg-white dark:bg-pink-500/10 flex items-center justify-center text-pink-600 dark:text-pink-400 border border-slate-200 dark:border-pink-500/20 shadow-sm dark:shadow-none">
                     <i class="ti ti-messages text-xl"></i>
                 </span>
                 Mensajes
@@ -19,10 +19,11 @@
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
             <!-- Sidebar Navigation -->
             <div class="lg:col-span-1 space-y-4">
-                <div class="bg-slate-800/30 border border-slate-700/50 backdrop-blur-xl rounded-2xl p-4 shadow-xl">
+                <div
+                    class="bg-white dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 shadow-sm dark:shadow-none backdrop-blur-xl rounded-2xl p-4">
                     <nav class="space-y-2">
                         <a href="{{ route('conversation.index') }}"
-                            class="flex items-center gap-3 px-4 py-3 rounded-xl transition-colors {{ $active === 'inbox' ? 'bg-pink-500/20 text-pink-400 border border-pink-500/20' : 'text-slate-400 hover:bg-slate-700/50 hover:text-white' }}">
+                            class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ $active === 'inbox' ? 'bg-pink-600/10 dark:bg-pink-500/20 text-pink-600 dark:text-pink-400 border border-pink-500/10 dark:border-pink-500/20 shadow-sm dark:shadow-none' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-pink-600 dark:hover:text-white border border-transparent' }}">
                             <i class="ti ti-inbox text-lg"></i>
                             <span class="font-bold">Bandeja de Entrada</span>
                             @if (isset($unread_count) && $unread_count > 0)
@@ -31,17 +32,17 @@
                             @endif
                         </a>
                         <a href="{{ route('conversation.sent') }}"
-                            class="flex items-center gap-3 px-4 py-3 rounded-xl transition-colors {{ $active === 'sent' ? 'bg-pink-500/20 text-pink-400 border border-pink-500/20' : 'text-slate-400 hover:bg-slate-700/50 hover:text-white' }}">
+                            class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ $active === 'sent' ? 'bg-pink-600/10 dark:bg-pink-500/20 text-pink-600 dark:text-pink-400 border border-pink-500/10 dark:border-pink-500/20 shadow-sm dark:shadow-none' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-pink-600 dark:hover:text-white border border-transparent' }}">
                             <i class="ti ti-send text-lg"></i>
                             <span class="font-bold">Enviados</span>
                         </a>
                         <a href="{{ route('conversation.draft') }}"
-                            class="flex items-center gap-3 px-4 py-3 rounded-xl transition-colors {{ $active === 'draft' ? 'bg-pink-500/20 text-pink-400 border border-pink-500/20' : 'text-slate-400 hover:bg-slate-700/50 hover:text-white' }}">
+                            class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ $active === 'draft' ? 'bg-pink-600/10 dark:bg-pink-500/20 text-pink-600 dark:text-pink-400 border border-pink-500/10 dark:border-pink-500/20 shadow-sm dark:shadow-none' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-pink-600 dark:hover:text-white border border-transparent' }}">
                             <i class="ti ti-file-text text-lg"></i>
                             <span class="font-bold">Borradores</span>
                         </a>
                         <a href="{{ route('conversation.trash') }}"
-                            class="flex items-center gap-3 px-4 py-3 rounded-xl transition-colors {{ $active === 'trash' ? 'bg-pink-500/20 text-pink-400 border border-pink-500/20' : 'text-slate-400 hover:bg-slate-700/50 hover:text-white' }}">
+                            class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ $active === 'trash' ? 'bg-pink-600/10 dark:bg-pink-500/20 text-pink-600 dark:text-pink-400 border border-pink-500/10 dark:border-pink-500/20 shadow-sm dark:shadow-none' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-pink-600 dark:hover:text-white border border-transparent' }}">
                             <i class="ti ti-trash text-lg"></i>
                             <span class="font-bold">Papelera</span>
                         </a>
@@ -52,23 +53,23 @@
             <!-- Message List -->
             <div class="lg:col-span-3">
                 <div
-                    class="bg-slate-800/30 border border-slate-700/50 backdrop-blur-xl rounded-2xl shadow-xl overflow-hidden min-h-[600px]">
+                    class="bg-white dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 shadow-sm dark:shadow-none backdrop-blur-xl rounded-2xl overflow-hidden min-h-[600px]">
                     @if (count($conversations) > 0)
-                        <div class="divide-y divide-slate-700/50">
+                        <div class="divide-y divide-slate-100 dark:divide-slate-700/50">
                             @foreach ($conversations as $conversation)
                                 <a href="{{ route('conversation.view', $conversation->id ?? $conversation->conversation_id) }}"
-                                    class="block p-5 hover:bg-slate-700/30 transition-colors group relative">
+                                    class="block p-5 hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-all group relative">
                                     <div class="flex items-start justify-between gap-4">
                                         <div class="flex items-start gap-4">
                                             <div
-                                                class="w-12 h-12 rounded-full bg-slate-700 flex items-center justify-center text-slate-400 flex-shrink-0 group-hover:bg-pink-500/20 group-hover:text-pink-400 transition-colors">
+                                                class="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-400 dark:text-slate-500 flex-shrink-0 group-hover:bg-pink-600/10 dark:group-hover:bg-pink-500/20 group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors shadow-inner">
                                                 <span
                                                     class="font-black text-lg">{{ substr($conversation->sender_name ?? 'U', 0, 1) }}</span>
                                             </div>
                                             <div>
                                                 <div class="flex items-center gap-2 mb-1">
                                                     <h3
-                                                        class="font-bold text-white text-lg group-hover:text-pink-400 transition-colors">
+                                                        class="font-bold text-slate-800 dark:text-white text-lg group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors">
                                                         {{ $conversation->sender_name ?? 'Desconocido' }}
                                                     </h3>
                                                     @if (isset($conversation->attach) && $conversation->attach)
@@ -76,15 +77,16 @@
                                                             class="ti ti-paperclip text-slate-500 transform rotate-45"></i>
                                                     @endif
                                                 </div>
-                                                <h4 class="font-semibold text-slate-300 mb-1">
+                                                <h4 class="font-semibold text-slate-600 dark:text-slate-300 mb-1">
                                                     {{ $conversation->subject }}</h4>
-                                                <p class="text-slate-500 text-sm line-clamp-1">
+                                                <p class="text-slate-400 dark:text-slate-500 text-sm line-clamp-1">
                                                     {{ strip_tags($conversation->msg) }}
                                                 </p>
                                             </div>
                                         </div>
                                         <div class="flex flex-col items-end gap-2">
-                                            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                            <span
+                                                class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
                                                 {{ \Carbon\Carbon::parse($conversation->msg_date ?? $conversation->create_date)->diffForHumans() }}
                                             </span>
                                             @if (isset($conversation->fav_status) && $conversation->fav_status)
@@ -98,11 +100,12 @@
                     @else
                         <div class="flex flex-col items-center justify-center h-[600px] text-center p-8">
                             <div
-                                class="w-24 h-24 rounded-full bg-slate-800 flex items-center justify-center text-slate-600 mb-6">
+                                class="w-24 h-24 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-300 dark:text-slate-600 mb-6 shadow-inner">
                                 <i class="ti ti-mail-off text-4xl"></i>
                             </div>
-                            <h3 class="text-xl font-bold text-white mb-2">No hay mensajes</h3>
-                            <p class="text-slate-500 max-w-sm">No se encontraron conversaciones en esta carpeta.</p>
+                            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">No hay mensajes</h3>
+                            <p class="text-slate-400 dark:text-slate-500 max-w-sm">No se encontraron conversaciones en
+                                esta carpeta.</p>
                         </div>
                     @endif
                 </div>

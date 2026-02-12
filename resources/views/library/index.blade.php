@@ -1,174 +1,234 @@
 <x-app-layout>
-    <div class="min-h-screen bg-[#0f172a] text-white font-sans selection:bg-blue-500/30">
-        <div class="py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-
-            <!-- Header Section -->
-            <div class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <div class="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <!-- Header Section -->
+        <div class="mb-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <div class="flex items-center gap-4">
+                <div
+                    class="w-14 h-14 rounded-2xl bg-white dark:bg-blue-500/10 flex items-center justify-center text-blue-600 dark:text-blue-400 border border-slate-200 dark:border-blue-500/20 shadow-sm dark:shadow-none">
+                    <i class="ti ti-library text-3xl"></i>
+                </div>
                 <div>
-                    <h1
-                        class="text-3xl font-bold bg-linear-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
-                        📚 Panel de Biblioteca
+                    <h1 class="text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+                        Panel de Biblioteca
                     </h1>
-                    <p class="mt-2 text-slate-400">Resumen y accesos directos del sistema de biblioteca.</p>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm font-medium mt-1">Gestión centralizada de
+                        recursos bibliográficos</p>
                 </div>
-                <div class="flex items-center gap-3">
+            </div>
+            <div class="flex items-center gap-3">
+                <div
+                    class="px-4 py-2 rounded-2xl bg-white dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 shadow-sm dark:shadow-none backdrop-blur-xl flex items-center gap-3 transition-all hover:border-blue-500/30 group">
+                    <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
                     <span
-                        class="px-4 py-2 rounded-xl bg-slate-800/50 border border-slate-700/50 backdrop-blur-sm text-sm font-medium flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
-                        Sistema Activo
-                    </span>
+                        class="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Sistema
+                        Activo</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            <!-- Total Books -->
+            <div
+                class="group p-6 rounded-3xl bg-white dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 shadow-sm dark:shadow-none backdrop-blur-xl relative overflow-hidden transition-all hover:border-blue-500/50">
+                <div
+                    class="absolute -right-8 -bottom-8 w-24 h-24 bg-blue-500/5 dark:bg-blue-500/10 rounded-full blur-2xl group-hover:bg-blue-500/20 transition-all">
+                </div>
+
+                <div
+                    class="flex justify-between items-start relative pb-4 border-b border-slate-50 dark:border-slate-700/30 mb-4">
+                    <div
+                        class="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-500/20 shadow-sm">
+                        <i class="ti ti-books text-2xl"></i>
+                    </div>
+                    <div class="text-right">
+                        <p
+                            class="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1">
+                            Inventario</p>
+                        <h3 class="text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+                            {{ number_format($stats['total_books']) }}</h3>
+                    </div>
+                </div>
+                <a href="{{ route('book.index') }}" class="flex items-center justify-between group/link">
+                    <span
+                        class="text-xs font-bold text-slate-500 dark:text-slate-400 group-hover/link:text-blue-600 dark:group-hover/link:text-blue-400 transition-colors uppercase tracking-wider">Ver
+                        Libros</span>
+                    <i
+                        class="ti ti-chevron-right text-slate-300 dark:text-slate-700 group-hover/link:text-blue-600 dark:group-hover/link:text-blue-400 transition-all transform group-hover/link:translate-x-1"></i>
+                </a>
+            </div>
+
+            <!-- Total Members -->
+            <div
+                class="group p-6 rounded-3xl bg-white dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 shadow-sm dark:shadow-none backdrop-blur-xl relative overflow-hidden transition-all hover:border-purple-500/50">
+                <div
+                    class="absolute -right-8 -bottom-8 w-24 h-24 bg-purple-500/5 dark:bg-purple-500/10 rounded-full blur-2xl group-hover:bg-purple-500/20 transition-all">
+                </div>
+
+                <div
+                    class="flex justify-between items-start relative pb-4 border-b border-slate-50 dark:border-slate-700/30 mb-4">
+                    <div
+                        class="w-12 h-12 rounded-2xl bg-purple-50 dark:bg-purple-500/10 flex items-center justify-center text-purple-600 dark:text-purple-400 border border-purple-100 dark:border-purple-500/20 shadow-sm">
+                        <i class="ti ti-users text-2xl"></i>
+                    </div>
+                    <div class="text-right">
+                        <p
+                            class="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1">
+                            Membresías</p>
+                        <h3 class="text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+                            {{ number_format($stats['total_members']) }}</h3>
+                    </div>
+                </div>
+                <a href="{{ route('lmember.index') }}" class="flex items-center justify-between group/link">
+                    <span
+                        class="text-xs font-bold text-slate-500 dark:text-slate-400 group-hover/link:text-purple-600 dark:group-hover/link:text-purple-400 transition-colors uppercase tracking-wider">Gestionar</span>
+                    <i
+                        class="ti ti-chevron-right text-slate-300 dark:text-slate-700 group-hover/link:text-purple-600 dark:group-hover/link:text-purple-400 transition-all transform group-hover/link:translate-x-1"></i>
+                </a>
+            </div>
+
+            <!-- Issued Books -->
+            <div
+                class="group p-6 rounded-3xl bg-white dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 shadow-sm dark:shadow-none backdrop-blur-xl relative overflow-hidden transition-all hover:border-orange-500/50">
+                <div
+                    class="absolute -right-8 -bottom-8 w-24 h-24 bg-orange-500/5 dark:bg-orange-500/10 rounded-full blur-2xl group-hover:bg-orange-500/20 transition-all">
+                </div>
+
+                <div
+                    class="flex justify-between items-start relative pb-4 border-b border-slate-50 dark:border-slate-700/30 mb-4">
+                    <div
+                        class="w-12 h-12 rounded-2xl bg-orange-50 dark:bg-orange-500/10 flex items-center justify-center text-orange-600 dark:text-orange-400 border border-orange-100 dark:border-orange-500/20 shadow-sm">
+                        <i class="ti ti-book-upload text-2xl"></i>
+                    </div>
+                    <div class="text-right">
+                        <p
+                            class="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1">
+                            En Préstamo</p>
+                        <h3 class="text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+                            {{ number_format($stats['total_issued']) }}</h3>
+                    </div>
+                </div>
+                <a href="{{ route('issue.index') }}" class="flex items-center justify-between group/link">
+                    <span
+                        class="text-xs font-bold text-slate-500 dark:text-slate-400 group-hover/link:text-orange-600 dark:group-hover/link:text-orange-400 transition-colors uppercase tracking-wider">Ver
+                        Salidas</span>
+                    <i
+                        class="ti ti-chevron-right text-slate-300 dark:text-slate-700 group-hover/link:text-orange-600 dark:group-hover/link:text-orange-400 transition-all transform group-hover/link:translate-x-1"></i>
+                </a>
+            </div>
+
+            <!-- Completed Returns -->
+            <div
+                class="group p-6 rounded-3xl bg-white dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 shadow-sm dark:shadow-none backdrop-blur-xl relative overflow-hidden transition-all hover:border-emerald-500/50">
+                <div
+                    class="absolute -right-8 -bottom-8 w-24 h-24 bg-emerald-500/5 dark:bg-emerald-500/10 rounded-full blur-2xl group-hover:bg-emerald-500/20 transition-all">
+                </div>
+
+                <div
+                    class="flex justify-between items-start relative pb-4 border-b border-slate-50 dark:border-slate-700/30 mb-4">
+                    <div
+                        class="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-500/20 shadow-sm">
+                        <i class="ti ti-book-check text-2xl"></i>
+                    </div>
+                    <div class="text-right">
+                        <p
+                            class="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1">
+                            Entregados</p>
+                        <h3 class="text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+                            {{ number_format($stats['total_returns']) }}</h3>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span
+                        class="text-[10px] font-black text-slate-300 dark:text-slate-700 uppercase tracking-widest">Histórico
+                        Completo</span>
+                    <i class="ti ti-archive text-slate-200 dark:text-slate-800"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions & Info -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Short-cuts -->
+            <div
+                class="lg:col-span-2 rounded-3xl bg-white dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 backdrop-blur-xl p-8 shadow-sm dark:shadow-none">
+                <h2
+                    class="font-black text-slate-900 dark:text-white mb-8 flex items-center gap-3 uppercase tracking-tight text-sm">
+                    <i class="ti ti-bolt text-yellow-500"></i> Acciones Rápidas
+                </h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <a href="{{ route('issue.create') }}"
+                        class="group p-6 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-700 hover:border-blue-500/50 hover:bg-white dark:hover:bg-slate-800 transition-all shadow-sm hover:shadow-none">
+                        <div class="flex items-center gap-4">
+                            <div
+                                class="w-12 h-12 rounded-xl bg-white dark:bg-slate-800 flex items-center justify-center text-blue-600 dark:text-blue-400 shadow-sm group-hover:bg-blue-600 group-hover:text-white transition-all">
+                                <i class="ti ti-bookmark-plus text-2xl"></i>
+                            </div>
+                            <div class="text-left">
+                                <p class="font-black text-slate-900 dark:text-white uppercase tracking-tight text-sm">
+                                    Nuevo Préstamo</p>
+                                <p
+                                    class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mt-1">
+                                    Registrar salida de libro</p>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="{{ route('book.create') }}"
+                        class="group p-6 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-700 hover:border-indigo-500/50 hover:bg-white dark:hover:bg-slate-800 transition-all shadow-sm hover:shadow-none">
+                        <div class="flex items-center gap-4">
+                            <div
+                                class="w-12 h-12 rounded-xl bg-white dark:bg-slate-800 flex items-center justify-center text-indigo-600 dark:text-indigo-400 shadow-sm group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                                <i class="ti ti-plus text-2xl"></i>
+                            </div>
+                            <div class="text-left">
+                                <p class="font-black text-slate-900 dark:text-white uppercase tracking-tight text-sm">
+                                    Añadir Libro</p>
+                                <p
+                                    class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mt-1">
+                                    Ingresar nuevo ejemplar</p>
+                            </div>
+                        </div>
+                    </a>
                 </div>
             </div>
 
-            <!-- Stats Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-                <!-- Total Books -->
+            <!-- Info Illustration Card -->
+            <div
+                class="rounded-3xl bg-linear-to-br from-blue-600 to-indigo-700 p-8 shadow-xl shadow-blue-900/20 flex flex-col justify-between relative overflow-hidden group">
                 <div
-                    class="p-6 rounded-2xl bg-linear-to-br from-blue-500/10 to-transparent border border-blue-500/20 backdrop-blur-xl group hover:border-blue-500/40 transition-all duration-300">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-slate-400 text-sm font-medium">Libros en Total</p>
-                            <h3 class="text-3xl font-bold mt-1 text-blue-400">{{ number_format($stats['total_books']) }}
-                            </h3>
-                        </div>
-                        <div
-                            class="p-3 bg-blue-500/20 rounded-xl text-blue-400 group-hover:scale-110 transition-transform">
-                            <i class="ti ti-books text-2xl"></i>
-                        </div>
-                    </div>
-                    <div class="mt-4">
-                        <a href="{{ route('book.index') }}"
-                            class="text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1 font-medium transition-colors">
-                            Ver inventario <i class="ti ti-arrow-right"></i>
-                        </a>
-                    </div>
+                    class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-32 -mt-32 group-hover:bg-white/20 transition-all">
                 </div>
 
-                <!-- Total Members -->
-                <div
-                    class="p-6 rounded-2xl bg-linear-to-br from-purple-500/10 to-transparent border border-purple-500/20 backdrop-blur-xl group hover:border-purple-500/40 transition-all duration-300">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-slate-400 text-sm font-medium">Miembros Activos</p>
-                            <h3 class="text-3xl font-bold mt-1 text-purple-400">
-                                {{ number_format($stats['total_members']) }}</h3>
-                        </div>
-                        <div
-                            class="p-3 bg-purple-500/20 rounded-xl text-purple-400 group-hover:scale-110 transition-transform">
-                            <i class="ti ti-users text-2xl"></i>
-                        </div>
-                    </div>
-                    <div class="mt-4">
-                        <a href="{{ route('lmember.index') }}"
-                            class="text-xs text-purple-400 hover:text-purple-300 flex items-center gap-1 font-medium transition-colors">
-                            Gestionar miembros <i class="ti ti-arrow-right"></i>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Issued Books -->
-                <div
-                    class="p-6 rounded-2xl bg-linear-to-br from-orange-500/10 to-transparent border border-orange-500/20 backdrop-blur-xl group hover:border-orange-500/40 transition-all duration-300">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-slate-400 text-sm font-medium">Libros Prestados</p>
-                            <h3 class="text-3xl font-bold mt-1 text-orange-400">
-                                {{ number_format($stats['total_issued']) }}</h3>
-                        </div>
-                        <div
-                            class="p-3 bg-orange-500/20 rounded-xl text-orange-400 group-hover:scale-110 transition-transform">
-                            <i class="ti ti-book-upload text-2xl"></i>
-                        </div>
-                    </div>
-                    <div class="mt-4">
-                        <a href="{{ route('issue.index') }}"
-                            class="text-xs text-orange-400 hover:text-orange-300 flex items-center gap-1 font-medium transition-colors">
-                            Ver préstamos <i class="ti ti-arrow-right"></i>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Completed Returns -->
-                <div
-                    class="p-6 rounded-2xl bg-linear-to-br from-emerald-500/10 to-transparent border border-emerald-500/20 backdrop-blur-xl group hover:border-emerald-500/40 transition-all duration-300">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-slate-400 text-sm font-medium">Devoluciones</p>
-                            <h3 class="text-3xl font-bold mt-1 text-emerald-400">
-                                {{ number_format($stats['total_returns']) }}</h3>
-                        </div>
-                        <div
-                            class="p-3 bg-emerald-500/20 rounded-xl text-emerald-400 group-hover:scale-110 transition-transform">
-                            <i class="ti ti-book-check text-2xl"></i>
-                        </div>
-                    </div>
-                    <div class="mt-4 text-xs text-slate-500 font-medium">
-                        Histórico completo
-                    </div>
-                </div>
-            </div>
-
-            <!-- Quick Actions & Recent Info -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <!-- Short-cuts -->
-                <div
-                    class="lg:col-span-2 rounded-2xl bg-slate-800/30 border border-slate-700/50 backdrop-blur-sm p-8 shadow-xl">
-                    <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
-                        <i class="ti ti-bolt text-yellow-400"></i> Acciones Rápidas
+                <div class="relative">
+                    <h2 class="font-black text-white mb-4 uppercase tracking-tight text-sm flex items-center gap-2">
+                        <i class="ti ti-info-circle"></i> Info Académica
                     </h2>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <a href="{{ route('issue.create') }}"
-                            class="p-5 rounded-xl bg-slate-900/50 border border-slate-700 hover:border-blue-500/50 hover:bg-slate-800 transition-all group">
-                            <div class="flex items-center gap-4">
-                                <div
-                                    class="p-3 rounded-lg bg-blue-500/10 text-blue-400 group-hover:bg-blue-500 group-hover:text-white transition-all">
-                                    <i class="ti ti-bookmark-plus text-xl"></i>
-                                </div>
-                                <div class="text-left">
-                                    <p class="font-bold text-slate-200">Nuevo Préstamo</p>
-                                    <p class="text-xs text-slate-500 mt-0.5">Registrar salida de libro</p>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="{{ route('book.create') }}"
-                            class="p-5 rounded-xl bg-slate-900/50 border border-slate-700 hover:border-indigo-500/50 hover:bg-slate-800 transition-all group">
-                            <div class="flex items-center gap-4">
-                                <div
-                                    class="p-3 rounded-lg bg-indigo-500/10 text-indigo-400 group-hover:bg-indigo-500 group-hover:text-white transition-all">
-                                    <i class="ti ti-plus text-xl"></i>
-                                </div>
-                                <div class="text-left">
-                                    <p class="font-bold text-slate-200">Añadir Libro</p>
-                                    <p class="text-xs text-slate-500 mt-0.5">Ingresar nuevo ejemplar</p>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
+                    <p class="text-blue-100/80 leading-relaxed text-sm font-medium">
+                        Control exhaustivo del inventario bibliográfico y flujo de préstamos automatizado para optimizar
+                        los recursos escolares.
+                    </p>
                 </div>
 
-                <!-- Info Card -->
-                <div
-                    class="rounded-2xl bg-linear-to-br from-indigo-600/20 to-blue-600/10 border border-indigo-500/20 backdrop-blur-sm p-8 shadow-xl flex flex-col justify-between">
-                    <div>
-                        <h2 class="text-xl font-bold mb-4">Módulo de Biblioteca</h2>
-                        <p class="text-slate-400 leading-relaxed text-sm">
-                            Este módulo permite llevar un control estricto del inventario bibliográfico y el flujo de
-                            préstamos a estudiantes y personal docente.
-                        </p>
+                <div class="mt-12 relative">
+                    <div class="flex items-center -space-x-4 mb-6">
+                        <div
+                            class="w-12 h-12 rounded-2xl border-4 border-blue-600 bg-white dark:bg-slate-800 flex items-center justify-center text-blue-600 font-black shadow-lg">
+                            L</div>
+                        <div
+                            class="w-12 h-12 rounded-2xl border-4 border-blue-600 bg-blue-400 flex items-center justify-center text-white font-black shadow-lg">
+                            B</div>
+                        <div
+                            class="w-12 h-12 rounded-2xl border-4 border-blue-600 bg-indigo-500 flex items-center justify-center text-white font-black shadow-lg">
+                            S</div>
                     </div>
-                    <div class="mt-8">
-                        <div class="flex items-center -space-x-3 mb-4">
-                            <div
-                                class="w-10 h-10 rounded-full border-2 border-slate-800 bg-blue-500 flex items-center justify-center text-xs font-bold">
-                                L</div>
-                            <div
-                                class="w-10 h-10 rounded-full border-2 border-slate-800 bg-indigo-500 flex items-center justify-center text-xs font-bold">
-                                B</div>
-                            <div
-                                class="w-10 h-10 rounded-full border-2 border-slate-800 bg-cyan-500 flex items-center justify-center text-xs font-bold">
-                                M</div>
+                    <div class="flex items-center justify-between border-t border-white/10 pt-4">
+                        <span class="text-[10px] font-black text-blue-200 uppercase tracking-widest">Library Suite
+                            v2.0</span>
+                        <div class="flex gap-1">
+                            <div class="w-1.5 h-1.5 rounded-full bg-blue-300/40"></div>
+                            <div class="w-1.5 h-1.5 rounded-full bg-blue-300/40"></div>
+                            <div class="w-1.5 h-1.5 rounded-full bg-blue-300"></div>
                         </div>
-                        <p class="text-xs text-slate-500 font-medium">Migración Phase 12 completada.</p>
                     </div>
                 </div>
             </div>

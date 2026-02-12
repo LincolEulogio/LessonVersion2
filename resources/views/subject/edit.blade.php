@@ -2,19 +2,22 @@
     <div class="py-8 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
         <!-- Breadcrumbs & Header -->
         <div
-            class="mb-8 items-center justify-between gap-6 bg-amber-500/5 p-8 rounded-3xl border border-amber-500/10 backdrop-blur-md">
+            class="mb-8 items-center justify-between gap-6 bg-white dark:bg-amber-500/5 p-8 rounded-3xl border border-slate-200 dark:border-amber-500/10 shadow-sm dark:shadow-none backdrop-blur-md">
             <nav class="flex items-center gap-2 text-sm text-slate-500 mb-4">
                 <a href="{{ route('subject.index') }}"
-                    class="hover:text-amber-500 text-slate-400 transition-colors uppercase tracking-widest font-bold text-[10px]">Materias</a>
+                    class="hover:text-amber-600 dark:hover:text-amber-500 text-slate-400 transition-colors uppercase tracking-widest font-bold text-[10px]">Materias</a>
                 <i class="ti ti-chevron-right text-xs"></i>
-                <span class="text-amber-400 uppercase tracking-widest font-bold text-[10px]">Editar Materia</span>
+                <span class="text-amber-600 dark:text-amber-400 uppercase tracking-widest font-bold text-[10px]">Editar
+                    Materia</span>
             </nav>
-            <h1 class="text-3xl font-bold text-white tracking-tight">Modificar Materia</h1>
-            <p class="text-slate-400 mt-1">Actualiza los requisitos, el código o el docente a cargo de la asignatura.</p>
+            <h1 class="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Modificar Materia</h1>
+            <p class="text-slate-500 dark:text-slate-400 mt-1">Actualiza los requisitos, el código o el docente a cargo
+                de la asignatura.</p>
         </div>
 
         <!-- Form Card -->
-        <div class="rounded-3xl bg-slate-800/30 border border-slate-700/50 backdrop-blur-xl overflow-hidden shadow-2xl">
+        <div
+            class="rounded-3xl bg-white dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 shadow-sm dark:shadow-none backdrop-blur-xl overflow-hidden">
             <form action="{{ route('subject.update', $subject->subjectID) }}" method="POST" class="p-8 space-y-8">
                 @csrf
                 @method('PUT')
@@ -27,12 +30,12 @@
                             Materia</label>
                         <div class="relative group">
                             <div
-                                class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500 group-focus-within:text-amber-400 transition-colors">
+                                class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 dark:text-slate-500 group-focus-within:text-amber-600 dark:group-focus-within:text-amber-400 transition-colors">
                                 <i class="ti ti-notebook"></i>
                             </div>
                             <input type="text" name="subject" id="subject"
                                 value="{{ old('subject', $subject->subject) }}" required
-                                class="w-full pl-11 pr-4 py-3 bg-slate-900/50 border border-slate-700/50 rounded-2xl text-slate-200 placeholder-slate-600 focus:border-amber-500/50 focus:ring-4 focus:ring-amber-500/10 transition-all outline-none"
+                                class="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-2xl text-slate-700 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-600 focus:border-amber-500/50 focus:ring-4 focus:ring-amber-500/10 transition-all outline-none"
                                 placeholder="Ej: Álgebra Avanzada">
                         </div>
                         @error('subject')
@@ -47,12 +50,12 @@
                             Académico</label>
                         <div class="relative group">
                             <div
-                                class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500 group-focus-within:text-amber-400 transition-colors">
+                                class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 dark:text-slate-500 group-focus-within:text-amber-600 dark:group-focus-within:text-amber-400 transition-colors">
                                 <i class="ti ti-code-asterisk"></i>
                             </div>
                             <input type="text" name="subject_code" id="subject_code"
                                 value="{{ old('subject_code', $subject->subject_code) }}" required
-                                class="w-full pl-11 pr-4 py-3 bg-slate-900/50 border border-slate-700/50 rounded-2xl text-slate-200 placeholder-slate-600 focus:border-amber-500/50 focus:ring-4 focus:ring-amber-500/10 transition-all outline-none uppercase font-mono tracking-widest"
+                                class="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-2xl text-slate-700 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-600 focus:border-amber-500/50 focus:ring-4 focus:ring-amber-500/10 transition-all outline-none uppercase font-mono tracking-widest"
                                 placeholder="Ej: MAT-101">
                         </div>
                         @error('subject_code')
@@ -67,11 +70,11 @@
                             Académico</label>
                         <div class="relative group">
                             <div
-                                class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500 group-focus-within:text-amber-400 transition-colors">
+                                class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 dark:text-slate-500 group-focus-within:text-amber-600 dark:group-focus-within:text-amber-400 transition-colors">
                                 <i class="ti ti-school"></i>
                             </div>
                             <select name="classesID" id="classesID" required
-                                class="w-full pl-11 pr-10 py-3 bg-slate-900/50 border border-slate-700/50 rounded-2xl text-slate-200 focus:border-amber-500/50 focus:ring-4 focus:ring-amber-500/10 transition-all outline-none appearance-none">
+                                class="w-full pl-11 pr-10 py-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-2xl text-slate-700 dark:text-slate-200 focus:border-amber-500/50 focus:ring-4 focus:ring-amber-500/10 transition-all outline-none appearance-none cursor-pointer">
                                 <option value="" disabled>Selecciona una clase</option>
                                 @foreach ($classes as $class)
                                     <option value="{{ $class->classesID }}"
@@ -97,11 +100,11 @@
                             Responsable</label>
                         <div class="relative group">
                             <div
-                                class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500 group-focus-within:text-amber-400 transition-colors">
+                                class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 dark:text-slate-500 group-focus-within:text-amber-600 dark:group-focus-within:text-amber-400 transition-colors">
                                 <i class="ti ti-user-star"></i>
                             </div>
                             <select name="teacherID" id="teacherID" required
-                                class="w-full pl-11 pr-10 py-3 bg-slate-900/50 border border-slate-700/50 rounded-2xl text-slate-200 focus:border-amber-500/50 focus:ring-4 focus:ring-amber-500/10 transition-all outline-none appearance-none">
+                                class="w-full pl-11 pr-10 py-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-2xl text-slate-700 dark:text-slate-200 focus:border-amber-500/50 focus:ring-4 focus:ring-amber-500/10 transition-all outline-none appearance-none cursor-pointer">
                                 <option value="" disabled>Selecciona un docente</option>
                                 @foreach ($teachers as $teacher)
                                     <option value="{{ $teacher->teacherID }}"
@@ -130,18 +133,18 @@
                                 <input type="radio" name="type" value="1" class="peer hidden"
                                     {{ $subject->type == 1 ? 'checked' : '' }}>
                                 <div
-                                    class="p-3 bg-slate-900/50 border border-slate-700/50 rounded-2xl text-center peer-checked:border-amber-500 peer-checked:bg-amber-500/10 group-hover:bg-slate-700/30 transition-all">
+                                    class="p-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-2xl text-center peer-checked:border-amber-500 peer-checked:bg-amber-600/10 dark:peer-checked:bg-amber-500/10 group-hover:bg-slate-100 dark:group-hover:bg-slate-700/30 transition-all shadow-sm peer-checked:shadow-none">
                                     <span
-                                        class="text-xs font-bold text-slate-400 peer-checked:text-amber-400">Obligatoria</span>
+                                        class="text-xs font-bold text-slate-500 dark:text-slate-400 peer-checked:text-amber-600 dark:peer-checked:text-amber-400">Obligatoria</span>
                                 </div>
                             </label>
                             <label class="relative group cursor-pointer">
                                 <input type="radio" name="type" value="2" class="peer hidden"
                                     {{ $subject->type == 2 ? 'checked' : '' }}>
                                 <div
-                                    class="p-3 bg-slate-900/50 border border-slate-700/50 rounded-2xl text-center peer-checked:border-slate-500 peer-checked:bg-slate-500/10 group-hover:bg-slate-700/30 transition-all">
+                                    class="p-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-2xl text-center peer-checked:border-slate-400 dark:peer-checked:border-slate-500 peer-checked:bg-slate-200/50 dark:peer-checked:bg-slate-500/10 group-hover:bg-slate-100 dark:group-hover:bg-slate-700/30 transition-all shadow-sm peer-checked:shadow-none">
                                     <span
-                                        class="text-xs font-bold text-slate-400 peer-checked:text-slate-300">Opcional</span>
+                                        class="text-xs font-bold text-slate-500 dark:text-slate-400 peer-checked:text-slate-700 dark:peer-checked:text-slate-300">Opcional</span>
                                 </div>
                             </label>
                         </div>
@@ -158,7 +161,7 @@
                                 (Aprobación)</label>
                             <input type="number" name="passmark" id="passmark"
                                 value="{{ old('passmark', $subject->passmark) }}" required min="0"
-                                class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700/50 rounded-2xl text-slate-200 text-center font-mono text-lg focus:border-emerald-500/50 focus:ring-4 focus:ring-emerald-500/10 transition-all outline-none">
+                                class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-2xl text-slate-700 dark:text-slate-200 text-center font-mono text-lg focus:border-emerald-500/50 focus:ring-4 focus:ring-emerald-500/10 transition-all outline-none">
                             @error('passmark')
                                 <p class="text-red-400 text-[10px] mt-1 text-center">{{ $message }}</p>
                             @enderror
@@ -169,7 +172,7 @@
                                 (Materia)</label>
                             <input type="number" name="finalmark" id="finalmark"
                                 value="{{ old('finalmark', $subject->finalmark) }}" required min="0"
-                                class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700/50 rounded-2xl text-slate-200 text-center font-mono text-lg focus:border-amber-500/50 focus:ring-4 focus:ring-amber-500/10 transition-all outline-none">
+                                class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-2xl text-slate-700 dark:text-slate-200 text-center font-mono text-lg focus:border-amber-500/50 focus:ring-4 focus:ring-amber-500/10 transition-all outline-none">
                             @error('finalmark')
                                 <p class="text-red-400 text-[10px] mt-1 text-center">{{ $message }}</p>
                             @enderror
@@ -183,12 +186,12 @@
                             Referencia Bibliográfica</label>
                         <div class="relative group">
                             <div
-                                class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500 group-focus-within:text-amber-400 transition-colors">
+                                class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 dark:text-slate-500 group-focus-within:text-amber-600 dark:group-focus-within:text-amber-400 transition-colors">
                                 <i class="ti ti-book-2"></i>
                             </div>
                             <input type="text" name="subject_author" id="subject_author"
                                 value="{{ old('subject_author', $subject->subject_author) }}"
-                                class="w-full pl-11 pr-4 py-3 bg-slate-900/50 border border-slate-700/50 rounded-2xl text-slate-200 placeholder-slate-600 focus:border-amber-500/50 focus:ring-4 focus:ring-amber-500/10 transition-all outline-none"
+                                class="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-2xl text-slate-700 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-600 focus:border-amber-500/50 focus:ring-4 focus:ring-amber-500/10 transition-all outline-none"
                                 placeholder="Ej: Editorial Santillana / Dr. Pedro Pérez">
                         </div>
                         @error('subject_author')
@@ -199,9 +202,9 @@
 
                 <!-- Footer Actions -->
                 <div
-                    class="pt-8 border-t border-slate-700/50 flex items-center justify-end gap-4 uppercase font-bold tracking-widest text-[10px]">
+                    class="pt-8 border-t border-slate-100 dark:border-slate-700/50 flex items-center justify-end gap-4 uppercase font-bold tracking-widest text-[10px]">
                     <a href="{{ route('subject.index') }}"
-                        class="px-7 py-3 bg-slate-700/50 hover:bg-slate-700 text-slate-400 hover:text-white rounded-2xl transition-all">
+                        class="px-7 py-3 bg-white dark:bg-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 rounded-2xl border border-slate-200 dark:border-transparent transition-all">
                         Cancelar
                     </a>
                     <button type="submit"

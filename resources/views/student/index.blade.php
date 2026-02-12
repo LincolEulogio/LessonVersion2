@@ -3,10 +3,11 @@
         <!-- Header & Action Section -->
         <div class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div>
-                <h1 class="text-3xl font-bold">
+                <h1 class="text-3xl font-bold text-slate-900 dark:text-white">
                     {{ __('Gestión de Estudiantes') }}
                 </h1>
-                <p class="mt-2 text-slate-400">Listado completo de estudiantes registrados en el sistema.</p>
+                <p class="mt-2 text-slate-500 dark:text-slate-400">Listado completo de estudiantes registrados en el
+                    sistema.</p>
             </div>
             <div class="flex items-center gap-4">
                 <a href="{{ route('student.create') }}"
@@ -18,14 +19,16 @@
         </div>
 
         <!-- Filter Card -->
-        <div class="mb-8 p-6 rounded-2xl bg-slate-800/30 border border-slate-700/50 backdrop-blur-sm">
+        <div
+            class="mb-8 p-6 rounded-2xl bg-white dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 shadow-sm dark:shadow-none backdrop-blur-sm">
             <form action="{{ route('student.index') }}" method="GET" class="flex flex-col md:flex-row items-end gap-6">
                 <div class="flex-1 w-full">
                     <label for="classesID"
-                        class="block text-sm font-medium text-slate-400 mb-2 uppercase tracking-wider">Filtrar por
+                        class="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wider">Filtrar
+                        por
                         Grado/Clase</label>
                     <select name="classesID" id="classesID"
-                        class="w-full bg-slate-900/50 border border-slate-700/50 rounded-xl text-slate-200 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all cursor-pointer">
+                        class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all cursor-pointer">
                         <option value="">Todas las Clases</option>
                         @foreach ($classes as $class)
                             <option value="{{ $class->classesID }}"
@@ -36,7 +39,7 @@
                     </select>
                 </div>
                 <button type="submit"
-                    class="w-full md:w-auto px-6 py-2.5 bg-slate-700 hover:bg-slate-600 text-white rounded-xl font-bold transition-all border border-slate-600/50 flex items-center justify-center gap-2">
+                    class="w-full md:w-auto px-6 py-2.5 bg-white dark:bg-slate-700 hover:bg-slate-50 dark:hover:bg-slate-600 text-slate-700 dark:text-white rounded-xl font-bold transition-all border border-slate-200 dark:border-slate-600/50 flex items-center justify-center gap-2">
                     <i class="ti ti-filter"></i>
                     Filtrar
                 </button>
@@ -44,12 +47,13 @@
         </div>
 
         <!-- Students Table Card -->
-        <div class="rounded-2xl bg-slate-800/30 border border-slate-700/50 backdrop-blur-sm overflow-hidden">
+        <div
+            class="rounded-2xl bg-white dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 shadow-sm dark:shadow-none backdrop-blur-sm overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                     <thead>
                         <tr
-                            class="text-slate-400 text-xs font-bold uppercase tracking-widest border-b border-slate-700/50">
+                            class="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-widest border-b border-slate-100 dark:border-slate-700/50">
                             <th class="px-6 py-4">#</th>
                             <th class="px-6 py-4">Foto</th>
                             <th class="px-6 py-4">Estudiante</th>
@@ -58,24 +62,24 @@
                             <th class="px-6 py-4 text-right pr-10">Acciones</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-700/30">
+                    <tbody class="divide-y divide-slate-100 dark:divide-slate-700/30">
                         @forelse($students as $student)
-                            <tr class="group hover:bg-slate-700/20 transition-all duration-200">
+                            <tr class="group hover:bg-slate-50 dark:hover:bg-slate-700/20 transition-all duration-200">
                                 <td class="px-6 py-4 text-slate-400 text-sm">{{ $loop->iteration }}</td>
                                 <td class="px-6 py-4">
                                     <img src="{{ $student->photo ? asset('uploads/images/' . $student->photo) : asset('uploads/images/default.png') }}"
-                                        class="w-10 h-10 rounded-full object-cover border-2 border-slate-700 group-hover:border-indigo-500 transition-colors"
+                                        class="w-10 h-10 rounded-full object-cover border-2 border-slate-200 dark:border-slate-700 group-hover:border-indigo-500 transition-colors"
                                         alt="{{ $student->name }}">
                                 </td>
                                 <td class="px-6 py-4">
                                     <div class="flex flex-col">
                                         <span
-                                            class="font-bold text-slate-100 group-hover:text-indigo-400 transition-colors">{{ $student->name }}</span>
+                                            class="font-bold text-slate-800 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{{ $student->name }}</span>
                                         <span
                                             class="text-xs text-slate-500">{{ $student->email ?? 'Sin email' }}</span>
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 text-slate-300 text-sm">
+                                <td class="px-6 py-4 text-slate-600 dark:text-slate-300 text-sm">
                                     <div class="flex items-center gap-2">
                                         <span
                                             class="px-2 py-0.5 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-md text-xs font-bold">{{ $student->classes->classes ?? 'N/A' }}</span>
@@ -127,7 +131,8 @@
                 </table>
             </div>
             @if ($students->hasPages())
-                <div class="px-6 py-4 border-t border-slate-700/50 bg-slate-900/20">
+                <div
+                    class="px-6 py-4 border-t border-slate-100 dark:border-slate-700/50 bg-slate-50 dark:bg-slate-900/20">
                     {{ $students->links() }}
                 </div>
             @endif

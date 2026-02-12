@@ -20,7 +20,28 @@ use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\MediaController;
 use App\Http\Controllers\MailandsmsController;
 use App\Http\Controllers\TransportController;
+use App\Http\Controllers\HostelController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\HostelMemberController;
+use App\Http\Controllers\FeetypeController;
+use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\NoticeController;
+use App\Http\Controllers\EventController;
+use App\Http\Controllers\HolidayController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\SchoolyearController;
+use App\Http\Controllers\UsertypeController;
+use App\Http\Controllers\SettingController;
 use Illuminate\Support\Facades\Route;
+
+Route::get('lang/{locale}', function ($locale) {
+    if (in_array($locale, ['en', 'es', 'pt'])) {
+        session()->put('locale', $locale);
+    }
+    return redirect()->back();
+})->name('lang.switch');
 
 Route::get('/', function () {
     return view('welcome');
@@ -66,6 +87,12 @@ Route::middleware('auth:web,systemadmin,teacher')->group(function () {
     
     // API for Select2/Dynamic Dropdowns
     Route::get('/api/users/{usertypeID}', [ConversationController::class, 'getUsers']);
+    Route::get('/api/hostel/{hostelID}/categories', function ($hostelID) {
+        return \App\Models\Category::where('hostelID', $hostelID)->get();
+    });
+    Route::get('/api/students/{classID}', function ($classID) {
+        return \App\Models\Student::where('classesID', $classID)->get();
+    });
 
     // Media
     Route::get('/media/index', [MediaController::class, 'index'])->name('media.index');
@@ -87,6 +114,35 @@ Route::middleware('auth:web,systemadmin,teacher')->group(function () {
     Route::resource('lmember', LibraryMemberController::class);
     Route::resource('issue', IssueController::class);
     Route::resource('transport', TransportController::class);
+
+    // Hostel Module
+    Route::resource('hostel', HostelController::class);
+    Route::resource('category', CategoryController::class);
+    Route::resource('hmember', HostelMemberController::class);
+
+    // Cuenta Module
+    Route::resource('feetypes', FeetypeController::class);
+    Route::resource('invoice', InvoiceController::class);
+    Route::resource('payment', PaymentController::class);
+    Route::resource('expense', ExpenseController::class);
+
+    // Anuncio Module
+    Route::resource('notice', NoticeController::class);
+    Route::resource('event', EventController::class);
+    Route::resource('holiday', HolidayController::class);
+
+    // Report Module
+    Route::get('report', [ReportController::class, 'index'])->name('report.index');
+    Route::get('report/class', [ReportController::class, 'classReport'])->name('report.class');
+    Route::get('report/attendance', [ReportController::class, 'attendanceReport'])->name('report.attendance');
+    Route::get('report/student', [ReportController::class, 'studentReport'])->name('report.student');
+
+    // Administrator Module
+    Route::resource('schoolyear', SchoolyearController::class);
+    Route::resource('systemadmin', SystemadminController::class);
+    Route::resource('usertype', UsertypeController::class);
+    Route::get('setting', [SettingController::class, 'index'])->name('setting.index');
+    Route::post('setting/update', [SettingController::class, 'update'])->name('setting.update');
 });
 
 // Role-specific Dashboards

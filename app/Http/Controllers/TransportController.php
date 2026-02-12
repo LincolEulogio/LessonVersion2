@@ -22,7 +22,7 @@ class TransportController extends Controller
     {
         $request->validate([
             'route' => 'required|string|max:128|unique:transport,route',
-            'vehicle' => 'required|numeric|min:0',
+            'vehicle' => 'required|string|max:128',
             'cost' => 'required|numeric|min:0',
             'note' => 'nullable|string|max:200',
         ]);
@@ -53,7 +53,7 @@ class TransportController extends Controller
         
         $request->validate([
             'route' => 'required|string|max:128|unique:transport,route,' . $id . ',transportID',
-            'vehicle' => 'required|numeric|min:0',
+            'vehicle' => 'required|string|max:128',
             'cost' => 'required|numeric|min:0',
             'note' => 'nullable|string|max:200',
         ]);

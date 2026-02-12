@@ -15,4 +15,19 @@ class Invoice extends Model
         'create_date', 'day', 'month', 'year', 'paidstatus', 
         'userID', 'usertypeID', 'uname'
     ];
+
+    public function student()
+    {
+        return $this->belongsTo(Student::class, 'studentID', 'studentID');
+    }
+
+    public function classes()
+    {
+        return $this->belongsTo(Classes::class, 'classesID', 'classesID');
+    }
+
+    public function feetype()
+    {
+        return $this->belongsTo(Feetype::class, 'feetypesID', 'feetypesID');
+    }
 }

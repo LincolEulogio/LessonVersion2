@@ -14,4 +14,14 @@ class Payment extends Model
         'paymenttype', 'paymentdate', 'paymentday', 'paymentmonth', 
         'paymentyear', 'userID', 'usertypeID', 'uname', 'transactionID', 'notice'
     ];
+
+    public function invoice()
+    {
+        return $this->belongsTo(Invoice::class, 'invoiceID', 'invoiceID');
+    }
+
+    public function student()
+    {
+        return $this->belongsTo(Student::class, 'studentID', 'studentID');
+    }
 }

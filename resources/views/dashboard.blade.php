@@ -100,9 +100,10 @@
     <!-- Charts Section -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         <!-- Income Chart Placeholder -->
-        <div class="bg-slate-800/30 border border-slate-700/50 rounded-2xl p-6 backdrop-blur-sm overflow-hidden">
+        <div
+            class="bg-white dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 rounded-2xl p-6 shadow-sm dark:shadow-none backdrop-blur-sm overflow-hidden">
             <div class="flex items-center justify-between mb-6">
-                <h3 class="text-lg font-bold text-slate-100 flex items-center gap-2">
+                <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
                     <i class="ti ti-chart-area-line text-indigo-400"></i>
                     {{ __('Resumen de Cuentas') }}
                 </h3>
@@ -131,14 +132,15 @@
         </div>
 
         <!-- Attendance Chart Placeholder -->
-        <div class="bg-slate-800/30 border border-slate-700/50 rounded-2xl p-6 backdrop-blur-sm overflow-hidden">
+        <div
+            class="bg-white dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 rounded-2xl p-6 shadow-sm dark:shadow-none backdrop-blur-sm overflow-hidden">
             <div class="flex items-center justify-between mb-6">
-                <h3 class="text-lg font-bold text-slate-100 flex items-center gap-2">
+                <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
                     <i class="ti ti-chart-donut text-purple-400"></i>
                     {{ __('Estadísticas del Año') }}
                 </h3>
                 <select
-                    class="bg-slate-900/50 border-slate-700 text-slate-400 text-xs rounded-lg focus:ring-indigo-500 py-1">
+                    class="bg-slate-50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 text-xs rounded-lg focus:ring-indigo-500 py-1">
                     <option>2026</option>
                     <option>2025</option>
                 </select>
@@ -158,7 +160,7 @@
                         stroke-linecap="round" />
                 </svg>
                 <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                    <span class="text-2xl font-bold text-white">94%</span>
+                    <span class="text-2xl font-bold text-slate-900 dark:text-white">94%</span>
                     <span class="text-[10px] text-slate-500 uppercase tracking-widest">{{ __('Promedio') }}</span>
                 </div>
             </div>
@@ -176,13 +178,15 @@
     </div>
 
     <!-- Calendar Section -->
-    <div class="bg-slate-800/30 border border-slate-700/50 rounded-2xl p-6 backdrop-blur-sm mb-8">
+    <div
+        class="bg-white dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 rounded-2xl p-6 shadow-sm dark:shadow-none backdrop-blur-sm mb-8">
         <div class="flex items-center justify-between mb-8">
-            <h3 class="text-xl font-bold text-slate-100 flex items-center gap-2 lowercase">
+            <h3 class="text-xl font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2 lowercase">
                 <i class="ti ti-calendar-event text-emerald-400"></i>
                 <span class="capitalize">{{ now()->translatedFormat('F Y') }}</span>
             </h3>
-            <div class="flex gap-1 bg-slate-900/50 p-1 rounded-xl border border-slate-800">
+            <div
+                class="flex gap-1 bg-slate-50 dark:bg-slate-900/50 p-1 rounded-xl border border-slate-200 dark:border-slate-800">
                 <button
                     class="px-4 py-2 text-xs font-bold text-slate-400 hover:text-white transition-colors rounded-lg">{{ __('Semana') }}</button>
                 <button
@@ -192,7 +196,7 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-7 border-b border-slate-800 pb-4 mb-4">
+        <div class="grid grid-cols-7 border-b border-slate-100 dark:border-slate-800 pb-4 mb-4">
             @foreach (['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'] as $day)
                 <div class="text-center">
                     <span
@@ -201,7 +205,8 @@
             @endforeach
         </div>
 
-        <div class="grid grid-cols-7 gap-px bg-slate-800/50 rounded-xl overflow-hidden border border-slate-800">
+        <div
+            class="grid grid-cols-7 gap-px bg-slate-100 dark:bg-slate-800/50 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800">
             @php
                 $startOfMonth = now()->startOfMonth();
                 $endOfMonth = now()->endOfMonth();
@@ -211,11 +216,12 @@
             @endphp
 
             @for ($i = 0; $i < $startDay; $i++)
-                <div class="h-28 bg-[#0f172a]/30"></div>
+                <div class="h-28 bg-slate-50/50 dark:bg-[#0f172a]/30"></div>
             @endfor
 
             @for ($day = 1; $day <= $daysInMonth; $day++)
-                <div class="h-28 bg-[#0f172a]/50 p-2 relative group hover:bg-[#1e293b]/50 transition-colors">
+                <div
+                    class="h-28 bg-white dark:bg-[#0f172a]/50 p-2 relative group hover:bg-slate-50 dark:hover:bg-[#1e293b]/50 transition-colors">
                     <span
                         class="text-sm font-bold {{ $day == $today ? 'bg-indigo-600 text-white w-7 h-7 flex items-center justify-center rounded-lg shadow-lg shadow-indigo-600/30' : 'text-slate-400 group-hover:text-slate-200' }}">
                         {{ $day }}

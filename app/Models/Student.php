@@ -52,4 +52,9 @@ class Student extends Authenticatable
     {
         return $this->hasMany(Mark::class, 'studentID', 'studentID');
     }
+
+    public function hmember()
+    {
+        return $this->hasOne(Hmember::class, 'studentID', 'studentID');
+    }
 }

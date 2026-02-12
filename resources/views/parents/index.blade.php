@@ -3,10 +3,11 @@
         <!-- Header -->
         <div class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div>
-                <h1 class="text-3xl font-bold">
+                <h1 class="text-3xl font-bold text-slate-900 dark:text-white">
                     {{ __('Gestión de Padres y Tutores') }}
                 </h1>
-                <p class="mt-2 text-slate-400">Padres de familia y tutores legales registrados en la institución.</p>
+                <p class="mt-2 text-slate-500 dark:text-slate-400">Padres de familia y tutores legales registrados en la
+                    institución.</p>
             </div>
             <a href="{{ route('parents.create') }}"
                 class="group flex items-center gap-2 px-5 py-2.5 bg-sky-600 hover:bg-sky-500 text-white rounded-xl font-bold transition-all active:scale-95">
@@ -16,12 +17,13 @@
         </div>
 
         <!-- Table Card -->
-        <div class="rounded-2xl bg-slate-800/30 border border-slate-700/50 backdrop-blur-sm overflow-hidden shadow-2xl">
+        <div
+            class="rounded-2xl bg-white dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 shadow-sm dark:shadow-none backdrop-blur-sm overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                     <thead>
                         <tr
-                            class="text-slate-400 text-xs font-bold uppercase tracking-widest border-b border-slate-700/50 bg-slate-900/20">
+                            class="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-widest border-b border-slate-100 dark:border-slate-700/50 bg-slate-50 dark:bg-slate-900/20">
                             <th class="px-6 py-4">#</th>
                             <th class="px-6 py-4">Tutor / Guardian</th>
                             <th class="px-6 py-4">DNI / Email</th>
@@ -30,25 +32,26 @@
                             <th class="px-6 py-4 text-right pr-10">Acciones</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-700/30">
+                    <tbody class="divide-y divide-slate-100 dark:divide-slate-700/30">
                         @forelse($parents as $parent)
-                            <tr class="group hover:bg-slate-700/20 transition-all duration-200">
+                            <tr class="group hover:bg-slate-50 dark:hover:bg-slate-700/20 transition-all duration-200">
                                 <td class="px-6 py-4 text-slate-400 text-sm">{{ $loop->iteration }}</td>
                                 <td class="px-6 py-4">
                                     <div class="flex items-center gap-4">
                                         <img src="{{ asset($parent->photo && $parent->photo != 'default.png' ? 'storage/images/' . $parent->photo : 'uploads/images/default.png') }}"
-                                            class="w-10 h-10 rounded-xl object-cover border-2 border-slate-700 group-hover:border-sky-500 transition-colors"
+                                            class="w-10 h-10 rounded-xl object-cover border-2 border-slate-200 dark:border-slate-700 group-hover:border-sky-500 transition-colors"
                                             alt="{{ $parent->name }}">
                                         <div class="flex flex-col">
                                             <span
-                                                class="font-bold text-slate-100 group-hover:text-sky-400 transition-colors">{{ $parent->name }}</span>
+                                                class="font-bold text-slate-800 dark:text-slate-100 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors">{{ $parent->name }}</span>
                                             <span class="text-xs text-slate-500">@ {{ $parent->username }}</span>
                                         </div>
                                     </div>
                                 </td>
                                 <td class="px-6 py-4">
                                     <div class="flex flex-col">
-                                        <span class="text-sm text-slate-300 font-medium">{{ $parent->dni }}</span>
+                                        <span
+                                            class="text-sm text-slate-700 dark:text-slate-300 font-medium">{{ $parent->dni }}</span>
                                         <span class="text-xs text-slate-500">{{ $parent->email ?? 'Sin email' }}</span>
                                     </div>
                                 </td>
@@ -97,7 +100,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="px-6 py-4 bg-slate-900/20 border-t border-slate-700/50">
+            <div class="px-6 py-4 bg-slate-50 dark:bg-slate-900/20 border-t border-slate-100 dark:border-slate-700/50">
                 {{ $parents->links() }}
             </div>
         </div>

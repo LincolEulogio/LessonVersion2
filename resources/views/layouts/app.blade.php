@@ -16,11 +16,12 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="font-sans antialiased bg-[#0b1120] text-slate-200 selection:bg-indigo-500/30 overflow-hidden">
+<body
+    class="font-sans antialiased bg-slate-50 text-slate-900 dark:bg-[#0b1120] dark:text-slate-200 selection:bg-indigo-500/30 overflow-hidden">
     <div class="flex h-screen overflow-hidden">
         <!-- Sidebar -->
         <aside id="sidebar"
-            class="fixed inset-y-0 left-0 z-50 w-72 bg-[#0f172a] border-r border-slate-800 transform -translate-x-full transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0">
+            class="fixed inset-y-0 left-0 z-50 w-72 bg-white dark:bg-[#0f172a] border-r border-slate-200 dark:border-slate-800 transform -translate-x-full transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0">
             @include('layouts.navigation')
         </aside>
 
@@ -28,13 +29,13 @@
         <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
             <!-- Top Header -->
             <header
-                class="h-16 flex items-center justify-between px-6 bg-[#0f172a]/80 backdrop-blur-md border-b border-slate-800 sticky top-0 z-40">
+                class="h-16 flex items-center justify-between px-6 bg-white/90 dark:bg-[#0f172a]/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 sticky top-0 z-40">
                 <div class="flex items-center gap-4">
                     <button id="toggle-sidebar"
-                        class="lg:hidden p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors">
+                        class="lg:hidden p-2 rounded-lg text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-800 transition-colors">
                         <i class="ti ti-menu-2 text-xl"></i>
                     </button>
-                    <h2 class="text-lg font-semibold text-slate-100">
+                    <h2 class="text-lg font-semibold text-slate-800 dark:text-slate-100">
                         @isset($header)
                             {{ $header }}
                         @endisset
@@ -42,10 +43,54 @@
                 </div>
 
                 <div class="flex items-center gap-4">
-                    <!-- Right side header items like Search, Notifications, User Profile -->
+                    <!-- Academic Year -->
                     <div
-                        class="hidden sm:flex items-center gap-3 px-3 py-1.5 bg-slate-800/50 rounded-full border border-slate-700/50">
-                        <span class="text-sm font-medium text-slate-300">{{ Auth::user()->name }}</span>
+                        class="hidden md:flex items-center gap-2 px-3 py-1.5 bg-indigo-500/10 text-indigo-400 rounded-lg border border-indigo-500/20">
+                        <i class="ti ti-calendar-event text-lg"></i>
+                        <span class="text-xs font-bold uppercase tracking-wider">Año Lectivo: 2026</span>
+                    </div>
+
+                    <!-- Language Switcher -->
+                    <div class="relative group">
+                        <button
+                            class="p-2 rounded-lg text-slate-400 hover:text-indigo-400 hover:bg-indigo-400/10 transition-all flex items-center gap-1">
+                            <i class="ti ti-language text-xl"></i>
+                            <span class="text-xs font-bold uppercase">{{ app()->getLocale() }}</span>
+                        </button>
+                        <div
+                            class="absolute right-0 mt-2 w-32 bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-800 rounded-xl shadow-xl py-2 invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all z-50">
+                            <a href="{{ route('lang.switch', 'es') }}"
+                                class="flex items-center gap-3 px-4 py-2 text-sm text-slate-600 dark:text-slate-300 hover:bg-indigo-500/10 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                                <span class="w-5 text-center">🇪🇸</span> Español
+                            </a>
+                            <a href="{{ route('lang.switch', 'en') }}"
+                                class="flex items-center gap-3 px-4 py-2 text-sm text-slate-600 dark:text-slate-300 hover:bg-indigo-500/10 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                                <span class="w-5 text-center">🇺🇸</span> English
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Theme Switcher -->
+                    <button id="theme-toggle"
+                        class="p-2 rounded-lg text-slate-400 hover:text-yellow-400 hover:bg-yellow-400/10 transition-all"
+                        title="Cambiar Tema">
+                        <i id="theme-icon" class="ti ti-moon text-xl"></i>
+                    </button>
+
+                    <!-- Notifications -->
+                    <button
+                        class="relative p-2 rounded-lg text-slate-400 hover:text-indigo-400 hover:bg-indigo-400/10 transition-all"
+                        title="Notificaciones">
+                        <i class="ti ti-bell text-xl"></i>
+                        <span
+                            class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-[#0f172a]"></span>
+                    </button>
+
+                    <!-- User Profile -->
+                    <div
+                        class="hidden sm:flex items-center gap-3 px-3 py-1.5 bg-slate-100 dark:bg-slate-800/50 rounded-full border border-slate-200 dark:border-slate-700/50">
+                        <span
+                            class="text-sm font-medium text-slate-600 dark:text-slate-300">{{ Auth::user()->name }}</span>
                         <div
                             class="h-8 w-8 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold text-xs uppercase">
                             {{ substr(Auth::user()->name, 0, 2) }}
@@ -71,7 +116,7 @@
                 </div>
 
                 <!-- Footer -->
-                <footer class="mt-12 py-6 border-t border-slate-800/50 text-center">
+                <footer class="mt-12 py-6 border-t border-slate-200 dark:border-slate-800/50 text-center">
                     <p class="text-sm text-slate-500">
                         &copy; {{ date('Y') }} {{ config('app.name', 'Lesson') }}. Todos los derechos reservados.
                     </p>
@@ -99,6 +144,31 @@
 
             toggleBtn?.addEventListener('click', toggleSidebar);
             overlay?.addEventListener('click', toggleSidebar);
+
+            // Theme Toggle Logic
+            const themeToggle = document.getElementById('theme-toggle');
+            const themeIcon = document.getElementById('theme-icon');
+            const htmlElement = document.documentElement;
+
+            const applyTheme = (theme) => {
+                if (theme === 'dark') {
+                    htmlElement.classList.add('dark');
+                    themeIcon.classList.replace('ti-sun', 'ti-moon');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    htmlElement.classList.remove('dark');
+                    themeIcon.classList.replace('ti-moon', 'ti-sun');
+                    localStorage.setItem('theme', 'light');
+                }
+            };
+
+            const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)')
+                .matches ? 'dark' : 'light');
+            applyTheme(savedTheme);
+
+            themeToggle?.addEventListener('click', () => {
+                applyTheme(htmlElement.classList.contains('dark') ? 'light' : 'dark');
+            });
         });
     </script>
 </body>

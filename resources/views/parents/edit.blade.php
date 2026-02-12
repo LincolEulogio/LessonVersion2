@@ -3,20 +3,22 @@
         <!-- Header -->
         <div class="mb-8 flex items-center justify-between">
             <div>
-                <h1 class="text-3xl font-bold bg-linear-to-r from-sky-400 to-indigo-400 bg-clip-text text-transparent">
+                <h1
+                    class="text-3xl font-bold bg-linear-to-r from-sky-600 to-indigo-600 dark:from-sky-400 dark:to-indigo-400 bg-clip-text text-transparent">
                     {{ __('Editar Tutor') }}
                 </h1>
-                <p class="mt-2 text-slate-400">Actualizando datos de: <span
-                        class="text-sky-400 font-bold uppercase">{{ $parent->username }}</span></p>
+                <p class="mt-2 text-slate-500 dark:text-slate-400">Actualizando datos de: <span
+                        class="text-sky-600 dark:text-sky-400 font-bold uppercase">{{ $parent->username }}</span></p>
             </div>
             <a href="{{ route('parents.index') }}"
-                class="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl transition-all border border-slate-700/50">
+                class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl transition-all border border-slate-200 dark:border-slate-700/50 shadow-sm dark:shadow-none">
                 <i class="ti ti-arrow-left"></i>
                 Volver
             </a>
         </div>
 
-        <div class="p-8 rounded-3xl bg-slate-800/30 border border-slate-700/50 backdrop-blur-sm shadow-2xl">
+        <div
+            class="p-8 rounded-3xl bg-white dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 shadow-sm dark:shadow-none backdrop-blur-sm">
             <form action="{{ route('parents.update', $parent->parentsID) }}" method="POST" enctype="multipart/form-data"
                 class="space-y-8">
                 @csrf
@@ -24,25 +26,26 @@
 
                 <!-- Tutor Info -->
                 <div>
-                    <h3 class="text-lg font-bold text-slate-100 flex items-center gap-2 mb-6">
-                        <i class="ti ti-user-edit text-sky-400 text-xl"></i>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2 mb-6">
+                        <i class="ti ti-user-edit text-sky-600 dark:text-sky-400 text-xl"></i>
                         Datos de Tutoría
                     </h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-2">
-                            <label for="name" class="text-sm font-medium text-slate-400">Nombre Completo del Tutor
+                            <label for="name" class="text-sm font-medium text-slate-600 dark:text-slate-400">Nombre
+                                Completo del Tutor
                                 <span class="text-red-500">*</span></label>
                             <input type="text" name="name" id="name" value="{{ old('name', $parent->name) }}"
                                 required
-                                class="w-full bg-slate-900/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all">
+                                class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all">
                             <x-input-error :messages="$errors->get('name')" class="mt-1" />
                         </div>
                         <div class="space-y-2">
-                            <label for="dni" class="text-sm font-medium text-slate-400">DNI / Documento <span
-                                    class="text-red-500">*</span></label>
+                            <label for="dni" class="text-sm font-medium text-slate-600 dark:text-slate-400">DNI /
+                                Documento <span class="text-red-500">*</span></label>
                             <input type="text" name="dni" id="dni" value="{{ old('dni', $parent->dni) }}"
                                 required
-                                class="w-full bg-slate-900/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all">
+                                class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all">
                             <x-input-error :messages="$errors->get('dni')" class="mt-1" />
                         </div>
                     </div>
@@ -53,30 +56,34 @@
                 <!-- Family details -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="space-y-2">
-                        <label for="father_name" class="text-sm font-medium text-slate-400">Nombre del Padre</label>
+                        <label for="father_name" class="text-sm font-medium text-slate-600 dark:text-slate-400">Nombre
+                            del Padre</label>
                         <input type="text" name="father_name" id="father_name"
                             value="{{ old('father_name', $parent->father_name) }}"
-                            class="w-full bg-slate-900/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all">
+                            class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all">
                     </div>
                     <div class="space-y-2">
-                        <label for="father_profession" class="text-sm font-medium text-slate-400">Profesión del
+                        <label for="father_profession"
+                            class="text-sm font-medium text-slate-600 dark:text-slate-400">Profesión del
                             Padre</label>
                         <input type="text" name="father_profession" id="father_profession"
                             value="{{ old('father_profession', $parent->father_profession) }}"
-                            class="w-full bg-slate-900/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all">
+                            class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all">
                     </div>
                     <div class="space-y-2">
-                        <label for="mother_name" class="text-sm font-medium text-slate-400">Nombre de la Madre</label>
+                        <label for="mother_name" class="text-sm font-medium text-slate-600 dark:text-slate-400">Nombre
+                            de la Madre</label>
                         <input type="text" name="mother_name" id="mother_name"
                             value="{{ old('mother_name', $parent->mother_name) }}"
-                            class="w-full bg-slate-900/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all">
+                            class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all">
                     </div>
                     <div class="space-y-2">
-                        <label for="mother_profession" class="text-sm font-medium text-slate-400">Profesión de la
+                        <label for="mother_profession"
+                            class="text-sm font-medium text-slate-600 dark:text-slate-400">Profesión de la
                             Madre</label>
                         <input type="text" name="mother_profession" id="mother_profession"
                             value="{{ old('mother_profession', $parent->mother_profession) }}"
-                            class="w-full bg-slate-900/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all">
+                            class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all">
                     </div>
                 </div>
 
@@ -85,42 +92,46 @@
                 <!-- Account & Contact -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="space-y-2">
-                        <label for="email" class="text-sm font-medium text-slate-400">Email</label>
+                        <label for="email"
+                            class="text-sm font-medium text-slate-600 dark:text-slate-400">Email</label>
                         <input type="email" name="email" id="email" value="{{ old('email', $parent->email) }}"
-                            class="w-full bg-slate-900/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all">
+                            class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all">
                         <x-input-error :messages="$errors->get('email')" class="mt-1" />
                     </div>
                     <div class="space-y-2">
-                        <label for="phone" class="text-sm font-medium text-slate-400">Teléfono</label>
+                        <label for="phone"
+                            class="text-sm font-medium text-slate-600 dark:text-slate-400">Teléfono</label>
                         <input type="text" name="phone" id="phone" value="{{ old('phone', $parent->phone) }}"
-                            class="w-full bg-slate-900/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all">
+                            class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all">
                     </div>
                     <div class="space-y-2">
-                        <label for="username" class="text-sm font-medium text-slate-400">Usuario <span
-                                class="text-red-500">*</span></label>
+                        <label for="username" class="text-sm font-medium text-slate-600 dark:text-slate-400">Usuario
+                            <span class="text-red-500">*</span></label>
                         <input type="text" name="username" id="username"
                             value="{{ old('username', $parent->username) }}" required
-                            class="w-full bg-slate-900/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all">
+                            class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all">
                         <x-input-error :messages="$errors->get('username')" class="mt-1" />
                     </div>
                     <div class="space-y-2">
-                        <label for="password" class="text-sm font-medium text-slate-400">Nueva Contraseña
+                        <label for="password" class="text-sm font-medium text-slate-600 dark:text-slate-400">Nueva
+                            Contraseña
                             (Opcional)</label>
                         <input type="password" name="password" id="password"
-                            class="w-full bg-slate-900/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all">
+                            class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all">
                         <x-input-error :messages="$errors->get('password')" class="mt-1" />
                     </div>
                 </div>
 
                 <div class="space-y-2">
-                    <label for="address" class="text-sm font-medium text-slate-400">Dirección</label>
+                    <label for="address"
+                        class="text-sm font-medium text-slate-600 dark:text-slate-400">Dirección</label>
                     <textarea name="address" id="address" rows="2"
-                        class="w-full bg-slate-900/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all">{{ old('address', $parent->address) }}</textarea>
+                        class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all">{{ old('address', $parent->address) }}</textarea>
                 </div>
 
                 <!-- Photo -->
                 <div class="flex items-center gap-6">
-                    <div class="w-24 h-24 rounded-2xl border-2 border-slate-700/50 flex items-center justify-center text-slate-500 overflow-hidden shadow-inner bg-slate-900/30"
+                    <div class="w-24 h-24 rounded-2xl border-2 border-slate-200 dark:border-slate-700/50 flex items-center justify-center text-slate-400 dark:text-slate-500 overflow-hidden shadow-inner bg-slate-50 dark:bg-slate-900/30"
                         id="photo-preview-container">
                         <img src="{{ asset($parent->photo && $parent->photo != 'default.png' ? 'storage/images/' . $parent->photo : 'uploads/images/default.png') }}"
                             class="w-full h-full object-cover">

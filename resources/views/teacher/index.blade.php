@@ -3,10 +3,11 @@
         <!-- Header & Action Section -->
         <div class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div>
-                <h1 class="text-3xl font-bold">
+                <h1 class="text-3xl font-bold text-slate-900 dark:text-white">
                     {{ __('Gestión de Docentes') }}
                 </h1>
-                <p class="mt-2 text-slate-400">Administre el personal docente y sus perfiles profesionales.</p>
+                <p class="mt-2 text-slate-500 dark:text-slate-400">Administre el personal docente y sus perfiles
+                    profesionales.</p>
             </div>
             <div class="flex items-center gap-4">
                 <a href="{{ route('teacher.create') }}"
@@ -18,12 +19,13 @@
         </div>
 
         <!-- Teachers Table Card -->
-        <div class="rounded-2xl bg-slate-800/30 border border-slate-700/50 backdrop-blur-sm overflow-hidden shadow-2xl">
+        <div
+            class="rounded-2xl bg-white dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 shadow-sm dark:shadow-none backdrop-blur-sm overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                     <thead>
                         <tr
-                            class="text-slate-400 text-xs font-bold uppercase tracking-widest border-b border-slate-700/50 bg-slate-900/20">
+                            class="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-widest border-b border-slate-100 dark:border-slate-700/50 bg-slate-50 dark:bg-slate-900/20">
                             <th class="px-6 py-4">#</th>
                             <th class="px-6 py-4">Docente</th>
                             <th class="px-6 py-4">Cargo / Email</th>
@@ -32,18 +34,18 @@
                             <th class="px-6 py-4 text-right pr-10">Acciones</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-700/30">
+                    <tbody class="divide-y divide-slate-100 dark:divide-slate-700/30">
                         @forelse($teachers as $teacher)
-                            <tr class="group hover:bg-slate-700/20 transition-all duration-200">
+                            <tr class="group hover:bg-slate-50 dark:hover:bg-slate-700/20 transition-all duration-200">
                                 <td class="px-6 py-4 text-slate-400 text-sm">{{ $loop->iteration }}</td>
                                 <td class="px-6 py-4">
                                     <div class="flex items-center gap-4">
                                         <img src="{{ asset($teacher->photo && $teacher->photo != 'default.png' ? 'storage/images/' . $teacher->photo : 'uploads/images/default.png') }}"
-                                            class="w-10 h-10 rounded-xl object-cover border-2 border-slate-700 group-hover:border-emerald-500 transition-colors"
+                                            class="w-10 h-10 rounded-xl object-cover border-2 border-slate-200 dark:border-slate-700 group-hover:border-emerald-500 transition-colors"
                                             alt="{{ $teacher->name }}">
                                         <div class="flex flex-col">
                                             <span
-                                                class="font-bold text-slate-100 group-hover:text-emerald-400 transition-colors">{{ $teacher->name }}</span>
+                                                class="font-bold text-slate-800 dark:text-slate-100 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">{{ $teacher->name }}</span>
                                             <span class="text-xs text-slate-500">DNI: {{ $teacher->dni }}</span>
                                         </div>
                                     </div>
@@ -51,7 +53,7 @@
                                 <td class="px-6 py-4">
                                     <div class="flex flex-col">
                                         <span
-                                            class="text-sm text-slate-300 font-medium">{{ $teacher->designation }}</span>
+                                            class="text-sm text-slate-700 dark:text-slate-300 font-medium">{{ $teacher->designation }}</span>
                                         <span class="text-xs text-slate-500">{{ $teacher->email }}</span>
                                     </div>
                                 </td>
@@ -108,7 +110,8 @@
                 </table>
             </div>
             @if ($teachers->hasPages())
-                <div class="px-6 py-4 border-t border-slate-700/50 bg-slate-900/20">
+                <div
+                    class="px-6 py-4 border-t border-slate-100 dark:border-slate-700/50 bg-slate-50 dark:bg-slate-900/20">
                     {{ $teachers->links() }}
                 </div>
             @endif
