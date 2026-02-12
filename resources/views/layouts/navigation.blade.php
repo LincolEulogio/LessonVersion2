@@ -396,12 +396,12 @@
             </div>
 
             <!-- Administrador (Dropdown) -->
-            <div x-data="{ open: {{ request()->routeIs('schoolyear.*') || request()->routeIs('systemadmin.*') || request()->routeIs('usertype.*') || request()->routeIs('setting.*') ? 'true' : 'false' }} }" class="relative">
+            <div x-data="{ open: {{ request()->routeIs('schoolyear.*') || request()->routeIs('systemadmin.*') || request()->routeIs('usertype.*') || request()->routeIs('setting.*') || request()->routeIs('permission.*') ? 'true' : 'false' }} }" class="relative">
                 <button @click="open = !open"
-                    class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all duration-200 {{ request()->is('schoolyear*') || request()->is('systemadmin*') || request()->is('usertype*') || request()->is('setting*') ? 'text-indigo-600 dark:text-indigo-400' : 'hover:bg-slate-100 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-slate-200' }} group">
+                    class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all duration-200 {{ request()->is('schoolyear*') || request()->is('systemadmin*') || request()->is('usertype*') || request()->is('setting*') || request()->is('permission*') ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'hover:bg-slate-100 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-slate-200' }} group">
                     <div class="flex items-center gap-3">
                         <i
-                            class="ti ti-settings-automation text-lg {{ request()->routeIs('schoolyear.*') || request()->routeIs('systemadmin.*') || request()->routeIs('usertype.*') || request()->routeIs('setting.*') ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400 dark:text-slate-500 group-hover:text-indigo-500' }}"></i>
+                            class="ti ti-settings-automation text-lg {{ request()->routeIs('schoolyear.*') || request()->routeIs('systemadmin.*') || request()->routeIs('usertype.*') || request()->routeIs('setting.*') || request()->routeIs('permission.*') ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400 dark:text-slate-500 group-hover:text-indigo-500' }}"></i>
                         <span class="text-sm tracking-wide capitalize">{{ __('Administrador') }}</span>
                     </div>
                     <i class="ti ti-chevron-down text-xs transition-transform duration-300"
@@ -419,6 +419,10 @@
                     <a href="{{ route('usertype.index') }}"
                         class="flex items-center gap-3 pl-10 py-2 text-sm rounded-lg hover:text-slate-900 dark:hover:text-white transition-colors {{ request()->routeIs('usertype.*') ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-slate-500 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800/30' }}">
                         <i class="ti ti-user-cog text-base"></i> {{ __('Rol de Usuarios') }}
+                    </a>
+                    <a href="{{ route('permission.index') }}"
+                        class="flex items-center gap-3 pl-10 py-2 text-sm rounded-lg hover:text-slate-900 dark:hover:text-white transition-colors {{ request()->routeIs('permission.*') ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-slate-500 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800/30' }}">
+                        <i class="ti ti-shield-lock text-base"></i> {{ __('Permisos') }}
                     </a>
                     <a href="#"
                         class="flex items-center gap-3 pl-10 py-2 text-sm rounded-lg hover:text-slate-900 dark:hover:text-white transition-colors text-slate-500 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800/30 opacity-50 cursor-not-allowed">

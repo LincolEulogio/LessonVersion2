@@ -46,6 +46,7 @@ use App\Http\Controllers\MarkpercentageController;
 use App\Http\Controllers\PromotionController;
 use App\Http\Controllers\TransportMemberController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\PermissionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('lang/{locale}', function ($locale) {
@@ -181,6 +182,8 @@ Route::middleware('auth:web,systemadmin,teacher')->group(function () {
     Route::resource('schoolyear', SchoolyearController::class);
     Route::resource('usertype', UsertypeController::class);
     Route::resource('user', UserController::class);
+    Route::get('permission', [PermissionController::class, 'index'])->name('permission.index');
+    Route::post('permission', [PermissionController::class, 'store'])->name('permission.store');
     Route::get('setting', [SettingController::class, 'index'])->name('setting.index');
     Route::post('setting/update', [SettingController::class, 'update'])->name('setting.update');
 });
