@@ -14,11 +14,12 @@ class Student extends Authenticatable
     protected $primaryKey = 'studentID';
 
     protected $fillable = [
-        'name', 'dob', 'sex', 'religion', 'email', 'phone', 
+        'dni', 'name', 'dob', 'sex', 'religion', 'email', 'phone', 
         'address', 'classesID', 'sectionID', 'roll', 'library', 
         'hostel', 'transport', 'create_date', 'modify_date', 
         'create_userID', 'create_username', 'create_usertype', 
-        'active', 'username', 'password', 'usertypeID', 'photo'
+        'active', 'username', 'password', 'usertypeID', 'photo',
+        'createschoolyearID', 'schoolyearID'
     ];
 
     protected $hidden = [
@@ -56,5 +57,10 @@ class Student extends Authenticatable
     public function hmember()
     {
         return $this->hasOne(Hmember::class, 'studentID', 'studentID');
+    }
+
+    public function transportMember()
+    {
+        return $this->hasOne(TransportMember::class, 'studentID', 'studentID');
     }
 }

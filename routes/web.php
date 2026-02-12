@@ -42,6 +42,9 @@ use App\Http\Controllers\TeacherAttendanceController;
 use App\Http\Controllers\GradeController;
 use App\Http\Controllers\ExamScheduleController;
 use App\Http\Controllers\ExamAttendanceController;
+use App\Http\Controllers\MarkpercentageController;
+use App\Http\Controllers\PromotionController;
+use App\Http\Controllers\TransportMemberController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('lang/{locale}', function ($locale) {
@@ -98,6 +101,11 @@ Route::middleware('auth:web,systemadmin,teacher')->group(function () {
     Route::get('mark', [MarkController::class, 'index'])->name('mark.index');
     Route::get('/mark/add', [MarkController::class, 'add'])->name('mark.add');
     Route::post('/mark/save', [MarkController::class, 'save'])->name('mark.save');
+    Route::resource('markpercentage', MarkpercentageController::class);
+
+    // Promotion Module
+    Route::get('promotion', [PromotionController::class, 'index'])->name('promotion.index');
+    Route::post('promotion/promote', [PromotionController::class, 'promote'])->name('promotion.promote');
 
     // Conversation
     Route::get('/conversation/index', [ConversationController::class, 'index'])->name('conversation.index');
@@ -141,7 +149,11 @@ Route::middleware('auth:web,systemadmin,teacher')->group(function () {
     Route::resource('book', BookController::class);
     Route::resource('lmember', LibraryMemberController::class);
     Route::resource('issue', IssueController::class);
+    // Transport Module
     Route::resource('transport', TransportController::class);
+    Route::get('tmember', [TransportMemberController::class, 'index'])->name('tmember.index');
+    Route::post('tmember', [TransportMemberController::class, 'store'])->name('tmember.store');
+    Route::delete('tmember/{id}', [TransportMemberController::class, 'destroy'])->name('tmember.destroy');
 
     // Hostel Module
     Route::resource('hostel', HostelController::class);

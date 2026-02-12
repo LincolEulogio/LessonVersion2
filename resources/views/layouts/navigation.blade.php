@@ -176,12 +176,12 @@
             </div>
 
             <!-- Calificación (Dropdown) -->
-            <div x-data="{ open: {{ request()->routeIs('mark.*') ? 'true' : 'false' }} }" class="relative">
+            <div x-data="{ open: {{ request()->routeIs('mark.*', 'markpercentage.*', 'promotion.*') ? 'true' : 'false' }} }" class="relative">
                 <button @click="open = !open"
-                    class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all duration-200 {{ request()->is('mark*') ? 'text-indigo-600 dark:text-indigo-400 font-bold bg-slate-100 dark:bg-slate-800/50' : 'hover:bg-slate-100 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-slate-200' }} group">
+                    class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all duration-200 {{ request()->is('mark*', 'markpercentage*', 'promotion*') ? 'text-indigo-600 dark:text-indigo-400 font-bold bg-slate-100 dark:bg-slate-800/50' : 'hover:bg-slate-100 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-slate-200' }} group">
                     <div class="flex items-center gap-3">
                         <i
-                            class="ti ti-report-analytics text-lg {{ request()->routeIs('mark.*') ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400 dark:text-slate-500 group-hover:text-indigo-400' }}"></i>
+                            class="ti ti-report-analytics text-lg {{ request()->routeIs('mark.*', 'markpercentage.*', 'promotion.*') ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400 dark:text-slate-500 group-hover:text-indigo-400' }}"></i>
                         <span class="text-sm tracking-wide capitalize">{{ __('Calificación') }}</span>
                     </div>
                     <i class="ti ti-chevron-down text-xs transition-transform duration-300"
@@ -192,12 +192,12 @@
                         class="flex items-center gap-3 pl-10 py-2 text-sm rounded-lg hover:text-slate-900 dark:hover:text-white transition-colors {{ request()->routeIs('mark.*') ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-slate-500 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800/30' }}">
                         <i class="ti ti-test-pipe text-base"></i> {{ __('Calificación') }}
                     </a>
-                    <a href="#"
-                        class="flex items-center gap-3 pl-10 py-2 text-sm rounded-lg hover:text-slate-900 dark:hover:text-white transition-colors text-slate-500 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800/30">
+                    <a href="{{ route('markpercentage.index') }}"
+                        class="flex items-center gap-3 pl-10 py-2 text-sm rounded-lg hover:text-slate-900 dark:hover:text-white transition-colors {{ request()->routeIs('markpercentage.*') ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-slate-500 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800/30' }}">
                         <i class="ti ti-notebook text-base"></i> {{ __('Porcentaje De Calificación') }}
                     </a>
-                    <a href="#"
-                        class="flex items-center gap-3 pl-10 py-2 text-sm rounded-lg hover:text-slate-900 dark:hover:text-white transition-colors text-slate-500 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800/30">
+                    <a href="{{ route('promotion.index') }}"
+                        class="flex items-center gap-3 pl-10 py-2 text-sm rounded-lg hover:text-slate-900 dark:hover:text-white transition-colors {{ request()->routeIs('promotion.*') ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-slate-500 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800/30' }}">
                         <i class="ti ti-trending-up text-base"></i> {{ __('Promoción') }}
                     </a>
                 </div>
@@ -272,8 +272,8 @@
                         class="flex items-center gap-3 pl-10 py-2 text-sm rounded-lg hover:text-slate-900 dark:hover:text-white transition-colors {{ request()->routeIs('transport.*') ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-slate-500 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800/30' }}">
                         <i class="ti ti-route text-base"></i> {{ __('Transporte') }}
                     </a>
-                    <a href="#"
-                        class="flex items-center gap-3 pl-10 py-2 text-sm rounded-lg hover:text-slate-900 dark:hover:text-white transition-colors text-slate-500 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800/30">
+                    <a href="{{ route('tmember.index') }}"
+                        class="flex items-center gap-3 pl-10 py-2 text-sm rounded-lg hover:text-slate-900 dark:hover:text-white transition-colors {{ request()->routeIs('tmember.*') ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-slate-500 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800/30' }}">
                         <i class="ti ti-user text-base"></i> {{ __('Miembro') }}
                     </a>
                 </div>
