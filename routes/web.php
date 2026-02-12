@@ -38,6 +38,10 @@ use App\Http\Controllers\TopicController;
 use App\Http\Controllers\SyllabusController;
 use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\RoutineController;
+use App\Http\Controllers\TeacherAttendanceController;
+use App\Http\Controllers\GradeController;
+use App\Http\Controllers\ExamScheduleController;
+use App\Http\Controllers\ExamAttendanceController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('lang/{locale}', function ($locale) {
@@ -77,8 +81,18 @@ Route::middleware('auth:web,systemadmin,teacher')->group(function () {
     Route::post('attendance/save', [AttendanceController::class, 'save'])->name('attendance.save');
     Route::get('attendance/{id}', [AttendanceController::class, 'show'])->name('attendance.show');
 
+    // Teacher Attendance Module
+    Route::get('tattendance', [TeacherAttendanceController::class, 'index'])->name('tattendance.index');
+    Route::get('tattendance/add', [TeacherAttendanceController::class, 'add'])->name('tattendance.add');
+    Route::post('tattendance/save', [TeacherAttendanceController::class, 'save'])->name('tattendance.save');
+    Route::get('tattendance/{id}', [TeacherAttendanceController::class, 'show'])->name('tattendance.show');
+
     // Exam Module
     Route::resource('exam', ExamController::class);
+    Route::resource('grade', GradeController::class);
+    Route::resource('examschedule', ExamScheduleController::class);
+    Route::get('exam_attendance', [ExamAttendanceController::class, 'index'])->name('exam_attendance.index');
+    Route::post('exam_attendance/save', [ExamAttendanceController::class, 'save'])->name('exam_attendance.save');
 
     // Mark Module
     Route::get('mark', [MarkController::class, 'index'])->name('mark.index');

@@ -136,20 +136,20 @@
                         class="flex items-center gap-3 pl-10 py-2 text-sm rounded-lg hover:text-slate-900 dark:hover:text-white transition-colors {{ request()->routeIs('attendance.*') ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-slate-500 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800/30' }}">
                         <i class="ti ti-user-check text-base"></i> {{ __('Asistencia Al Estudiante') }}
                     </a>
-                    <a href="#"
-                        class="flex items-center gap-3 pl-10 py-2 text-sm rounded-lg hover:text-slate-900 dark:hover:text-white transition-colors text-slate-500 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800/30">
+                    <a href="{{ route('tattendance.index') }}"
+                        class="flex items-center gap-3 pl-10 py-2 text-sm rounded-lg hover:text-slate-900 dark:hover:text-white transition-colors {{ request()->routeIs('tattendance.*') ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-slate-500 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800/30' }}">
                         <i class="ti ti-user-cog text-base"></i> {{ __('Asistencia Del Docente') }}
                     </a>
                 </div>
             </div>
 
             <!-- Examen (Dropdown) -->
-            <div x-data="{ open: {{ request()->routeIs('exam.*') ? 'true' : 'false' }} }" class="relative">
+            <div x-data="{ open: {{ request()->routeIs('exam.*', 'grade.*', 'examschedule.*', 'exam_attendance.*') ? 'true' : 'false' }} }" class="relative">
                 <button @click="open = !open"
-                    class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all duration-200 {{ request()->is('exam*') ? 'text-indigo-600 dark:text-indigo-400 font-bold bg-slate-100 dark:bg-slate-800/50' : 'hover:bg-slate-100 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-slate-200' }} group">
+                    class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all duration-200 {{ request()->is('exam*', 'grade*', 'examschedule*', 'exam_attendance*') ? 'text-indigo-600 dark:text-indigo-400 font-bold bg-slate-100 dark:bg-slate-800/50' : 'hover:bg-slate-100 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-slate-200' }} group">
                     <div class="flex items-center gap-3">
                         <i
-                            class="ti ti-file-certificate text-lg {{ request()->routeIs('exam.*') ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400 dark:text-slate-500 group-hover:text-indigo-500' }}"></i>
+                            class="ti ti-file-certificate text-lg {{ request()->routeIs('exam.*', 'grade.*', 'examschedule.*', 'exam_attendance.*') ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400 dark:text-slate-500 group-hover:text-indigo-500' }}"></i>
                         <span class="text-sm tracking-wide capitalize">{{ __('Examen') }}</span>
                     </div>
                     <i class="ti ti-chevron-down text-xs transition-transform duration-300"
@@ -160,16 +160,16 @@
                         class="flex items-center gap-3 pl-10 py-2 text-sm rounded-lg hover:text-slate-900 dark:hover:text-white transition-colors {{ request()->routeIs('exam.*') ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-slate-500 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800/30' }}">
                         <i class="ti ti-pencil text-base"></i> {{ __('Examen') }}
                     </a>
-                    <a href="#"
-                        class="flex items-center gap-3 pl-10 py-2 text-sm rounded-lg hover:text-slate-900 dark:hover:text-white transition-colors text-slate-500 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800/30">
+                    <a href="{{ route('examschedule.index') }}"
+                        class="flex items-center gap-3 pl-10 py-2 text-sm rounded-lg hover:text-slate-900 dark:hover:text-white transition-colors {{ request()->routeIs('examschedule.*') ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-slate-500 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800/30' }}">
                         <i class="ti ti-calendar-event text-base"></i> {{ __('Horario Del Examen') }}
                     </a>
-                    <a href="#"
-                        class="flex items-center gap-3 pl-10 py-2 text-sm rounded-lg hover:text-slate-900 dark:hover:text-white transition-colors text-slate-500 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800/30">
+                    <a href="{{ route('grade.index') }}"
+                        class="flex items-center gap-3 pl-10 py-2 text-sm rounded-lg hover:text-slate-900 dark:hover:text-white transition-colors {{ request()->routeIs('grade.*') ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-slate-500 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800/30' }}">
                         <i class="ti ti-chart-bar text-base"></i> {{ __('Grado') }}
                     </a>
-                    <a href="#"
-                        class="flex items-center gap-3 pl-10 py-2 text-sm rounded-lg hover:text-slate-900 dark:hover:text-white transition-colors text-slate-500 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800/30">
+                    <a href="{{ route('exam_attendance.index') }}"
+                        class="flex items-center gap-3 pl-10 py-2 text-sm rounded-lg hover:text-slate-900 dark:hover:text-white transition-colors {{ request()->routeIs('exam_attendance.*') ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-slate-500 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800/30' }}">
                         <i class="ti ti-user-search text-base"></i> {{ __('Asistencia Al Examen') }}
                     </a>
                 </div>
