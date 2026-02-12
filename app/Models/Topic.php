@@ -4,15 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Assignment extends Model
+class Topic extends Model
 {
-    protected $table = 'assignment';
-    protected $primaryKey = 'assignmentID';
+    protected $table = 'topics';
+    protected $primaryKey = 'topicID';
 
     protected $fillable = [
-        'title', 'description', 'deadlinedate', 'usertypeID', 'userID', 
-        'originalfile', 'file', 'classesID', 'schoolyearID', 
-        'sectionID', 'subjectID', 'assignusertypeID', 'assignuserID'
+        'title', 
+        'description', 
+        'classesID', 
+        'subjectID', 
+        'create_userID', 
+        'create_usertype'
     ];
 
     public function classes()

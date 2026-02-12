@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             CommunicationSeeder::class,
             InventorySeeder::class,
             FinancialSeeder::class,
+            TopicAndRoutineSeeder::class,
         ]);
     }
 }

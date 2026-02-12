@@ -34,6 +34,10 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SchoolyearController;
 use App\Http\Controllers\UsertypeController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\TopicController;
+use App\Http\Controllers\SyllabusController;
+use App\Http\Controllers\AssignmentController;
+use App\Http\Controllers\RoutineController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('lang/{locale}', function ($locale) {
@@ -60,6 +64,12 @@ Route::middleware('auth:web,systemadmin,teacher')->group(function () {
     Route::resource('section', SectionController::class);
     Route::resource('subject', SubjectController::class);
     Route::resource('studentgroup', StudentGroupController::class);
+    Route::resource('topic', TopicController::class);
+    Route::resource('syllabus', SyllabusController::class);
+    Route::resource('assignment', AssignmentController::class);
+    Route::resource('routine', RoutineController::class);
+    Route::get('syllabus/download/{id}', [SyllabusController::class, 'download'])->name('syllabus.download');
+    Route::get('assignment/download/{id}', [AssignmentController::class, 'download'])->name('assignment.download');
 
     // Attendance Module
     Route::get('attendance', [AttendanceController::class, 'index'])->name('attendance.index');
@@ -93,6 +103,10 @@ Route::middleware('auth:web,systemadmin,teacher')->group(function () {
     Route::get('/api/students/{classID}', function ($classID) {
         return \App\Models\Student::where('classesID', $classID)->get();
     });
+    Route::get('/api/sections/{classID}/json', function ($classID) {
+        return \App\Models\Section::where('classesID', $classID)->get();
+    });
+    Route::get('/api/topic/subjects/{classID}', [TopicController::class, 'getSubjectsByClass']);
 
     // Media
     Route::get('/media/index', [MediaController::class, 'index'])->name('media.index');

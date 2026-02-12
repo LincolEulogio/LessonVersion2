@@ -16,11 +16,16 @@ return new class extends Migration
             $table->integer('classesID');
             $table->integer('sectionID');
             $table->integer('subjectID');
-            $table->string('day', 60);
+            $table->integer('teacherID');
+            $table->integer('schoolyearID');
+            $table->string('day', 20);
             $table->string('start_time', 10);
             $table->string('end_time', 10);
-            $table->string('room', 10);
-            $table->integer('schoolyearID');
+            $table->string('room', 64);
+            $table->dateTime('create_date');
+            $table->dateTime('modify_date');
+            $table->integer('create_userID');
+            $table->integer('create_usertypeID');
             $table->timestamps();
         });
     }

@@ -96,24 +96,24 @@
                         class="flex items-center gap-3 pl-10 py-2 text-sm rounded-lg hover:text-slate-900 dark:hover:text-white transition-colors {{ request()->routeIs('classes.*') ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-slate-500 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800/30' }}">
                         <i class="ti ti-subtask text-base"></i> {{ __('Clase') }}
                     </a>
-                    <a href="#"
-                        class="flex items-center gap-3 pl-10 py-2 text-sm rounded-lg hover:text-slate-900 dark:hover:text-white transition-colors text-slate-500 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800/30">
+                    <a href="{{ route('topic.index') }}"
+                        class="flex items-center gap-3 pl-10 py-2 text-sm rounded-lg hover:text-slate-900 dark:hover:text-white transition-colors {{ request()->routeIs('topic.*') ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-slate-500 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800/30' }}">
                         <i class="ti ti-stack-2 text-base"></i> {{ __('Tema') }}
                     </a>
                     <a href="{{ route('section.index') }}"
                         class="flex items-center gap-3 pl-10 py-2 text-sm rounded-lg hover:text-slate-900 dark:hover:text-white transition-colors {{ request()->routeIs('section.*') ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-slate-500 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800/30' }}">
                         <i class="ti ti-star text-base"></i> {{ __('Sección') }}
                     </a>
-                    <a href="#"
-                        class="flex items-center gap-3 pl-10 py-2 text-sm rounded-lg hover:text-slate-900 dark:hover:text-white transition-colors text-slate-500 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800/30">
+                    <a href="{{ route('syllabus.index') }}"
+                        class="flex items-center gap-3 pl-10 py-2 text-sm rounded-lg hover:text-slate-900 dark:hover:text-white transition-colors {{ request()->routeIs('syllabus.*') ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-slate-500 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800/30' }}">
                         <i class="ti ti-folder text-base"></i> {{ __('Plan De Estudios') }}
                     </a>
-                    <a href="#"
-                        class="flex items-center gap-3 pl-10 py-2 text-sm rounded-lg hover:text-slate-900 dark:hover:text-white transition-colors text-slate-500 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800/30">
+                    <a href="{{ route('assignment.index') }}"
+                        class="flex items-center gap-3 pl-10 py-2 text-sm rounded-lg hover:text-slate-900 dark:hover:text-white transition-colors {{ request()->routeIs('assignment.*') ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-slate-500 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800/30' }}">
                         <i class="ti ti-copy text-base"></i> {{ __('Asignación') }}
                     </a>
-                    <a href="#"
-                        class="flex items-center gap-3 pl-10 py-2 text-sm rounded-lg hover:text-slate-900 dark:hover:text-white transition-colors text-slate-500 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800/30">
+                    <a href="{{ route('routine.index') }}"
+                        class="flex items-center gap-3 pl-10 py-2 text-sm rounded-lg hover:text-slate-900 dark:hover:text-white transition-colors {{ request()->routeIs('routine.*') ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-slate-500 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800/30' }}">
                         <i class="ti ti-clock-hour-4 text-base"></i> {{ __('Horarios') }}
                     </a>
                 </div>

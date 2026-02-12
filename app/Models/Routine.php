@@ -10,7 +10,28 @@ class Routine extends Model
     protected $primaryKey = 'routineID';
 
     protected $fillable = [
-        'classesID', 'sectionID', 'subjectID', 'day', 'start_time', 
-        'end_time', 'room', 'schoolyearID'
+        'classesID', 'sectionID', 'subjectID', 'teacherID', 'day', 'start_time', 
+        'end_time', 'room', 'schoolyearID', 'create_date', 'modify_date',
+        'create_userID', 'create_usertypeID'
     ];
+
+    public function classes()
+    {
+        return $this->belongsTo(Classes::class, 'classesID', 'classesID');
+    }
+
+    public function section()
+    {
+        return $this->belongsTo(Section::class, 'sectionID', 'sectionID');
+    }
+
+    public function subject()
+    {
+        return $this->belongsTo(Subject::class, 'subjectID', 'subjectID');
+    }
+
+    public function teacher()
+    {
+        return $this->belongsTo(Teacher::class, 'teacherID', 'teacherID');
+    }
 }
