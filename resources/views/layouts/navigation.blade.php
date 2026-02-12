@@ -12,29 +12,34 @@
     </div>
 
     <!-- User Profile Section -->
-    <div class="p-5 border-b border-slate-200 dark:border-slate-800/50 bg-slate-50 dark:bg-slate-900/10">
+    <a href="{{ route('profile.edit') }}"
+        class="block p-5 border-b border-slate-200 dark:border-slate-800/50 bg-slate-50 dark:bg-slate-900/10 hover:bg-slate-100 dark:hover:bg-slate-800/30 transition-all group">
         <div class="flex items-center gap-3">
             <div class="relative flex-shrink-0">
-                <div class="w-10 h-10 rounded-full border border-indigo-500/50 p-0.5 overflow-hidden">
-                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=admin" alt="Admin"
-                        class="w-full h-full rounded-full bg-slate-800">
+                <div
+                    class="w-10 h-10 rounded-full border border-indigo-500/50 p-0.5 overflow-hidden transition-transform group-hover:scale-110">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{ Auth::user()->username ?? Auth::user()->name }}"
+                        alt="User" class="w-full h-full rounded-full bg-slate-800">
                 </div>
                 <div
                     class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-white dark:border-[#0f172a]">
                 </div>
             </div>
             <div class="flex-1 min-w-0">
-                <p class="text-slate-900 dark:text-slate-200 font-bold text-xs truncate uppercase tracking-wider">
+                <p
+                    class="text-slate-900 dark:text-slate-200 font-black text-sm truncate uppercase tracking-widest leading-none">
                     {{ Auth::user()->name }}
                 </p>
                 <div
-                    class="flex items-center gap-1 text-indigo-400 text-[10px] font-bold mt-0.5 uppercase tracking-widest opacity-80">
-                    <i class="ti ti-shield-check"></i>
-                    <span>Administrador</span>
+                    class="flex items-center gap-1.5 text-indigo-500 dark:text-indigo-400 text-xs font-black mt-1.5 uppercase tracking-tighter opacity-80 group-hover:opacity-100 transition-opacity">
+                    <i class="ti ti-user-circle"></i>
+                    <span>{{ __('Ver Perfil') }}</span>
                 </div>
             </div>
+            <i
+                class="ti ti-chevron-right text-slate-300 dark:text-slate-600 text-xs transition-transform group-hover:translate-x-1"></i>
         </div>
-    </div>
+    </a>
 
     <!-- Navigation Menu -->
     <div class="flex-1 overflow-y-auto overflow-x-hidden p-3 space-y-6 scrollbar-hide">

@@ -86,25 +86,59 @@
                             class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-[#0f172a]"></span>
                     </button>
 
-                    <!-- User Profile -->
-                    <div
-                        class="hidden sm:flex items-center gap-3 px-3 py-1.5 bg-slate-100 dark:bg-slate-800/50 rounded-full border border-slate-200 dark:border-slate-700/50">
-                        <span
-                            class="text-sm font-medium text-slate-600 dark:text-slate-300">{{ Auth::user()->name }}</span>
-                        <div
-                            class="h-8 w-8 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold text-xs uppercase">
-                            {{ substr(Auth::user()->name, 0, 2) }}
+                    <!-- User Profile Dropdown -->
+                    <div x-data="{ open: false }" class="relative">
+                        <button @click="open = !open" @click.away="open = false"
+                            class="flex items-center gap-3 px-3 py-1.5 bg-slate-100 dark:bg-slate-800/50 rounded-full border border-slate-200 dark:border-slate-700/50 hover:bg-slate-200 dark:hover:bg-slate-800 transition-all">
+                            <span
+                                class="hidden sm:inline text-sm font-bold text-slate-600 dark:text-slate-300">{{ Auth::user()->name }}</span>
+                            <div
+                                class="h-8 w-8 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white font-black text-xs uppercase shadow-sm">
+                                {{ substr(Auth::user()->name, 0, 2) }}
+                            </div>
+                        </button>
+
+                        <!-- Dropdown Menu -->
+                        <div x-show="open" x-transition:enter="transition ease-out duration-100"
+                            x-transition:enter-start="transform opacity-0 scale-95"
+                            x-transition:enter-end="transform opacity-100 scale-100"
+                            x-transition:leave="transition ease-in duration-75"
+                            x-transition:leave-start="transform opacity-100 scale-100"
+                            x-transition:leave-end="transform opacity-0 scale-95"
+                            class="absolute right-0 mt-3 w-56 origin-top-right divide-y divide-slate-100 dark:divide-slate-800 rounded-2xl bg-white dark:bg-[#0f172a] shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none z-50 overflow-hidden border border-slate-200 dark:border-slate-800"
+                            x-cloak>
+                            <div class="px-4 py-4 bg-slate-50/50 dark:bg-slate-800/20">
+                                <p
+                                    class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">
+                                    Conectado como</p>
+                                <p class="text-sm font-bold text-slate-900 dark:text-white truncate">
+                                    {{ Auth::user()->email }}</p>
+                            </div>
+                            <div class="py-1">
+                                <a href="{{ route('profile.edit') }}"
+                                    class="group flex items-center px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-indigo-500/10 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                                    <i
+                                        class="ti ti-user-circle text-lg mr-3 text-slate-400 group-hover:text-indigo-500"></i>
+                                    Ver Perfil
+                                </a>
+                                <a href="{{ route('profile.edit') }}#update-password"
+                                    class="group flex items-center px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-indigo-500/10 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                                    <i class="ti ti-lock text-lg mr-3 text-slate-400 group-hover:text-indigo-500"></i>
+                                    Contraseña
+                                </a>
+                            </div>
+                            <div class="py-1">
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit"
+                                        class="group flex w-full items-center px-4 py-2.5 text-sm font-medium text-rose-500 hover:bg-rose-500/10 transition-colors">
+                                        <i class="ti ti-logout text-lg mr-3 opacity-70"></i>
+                                        Cerrar Sesión
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     </div>
-
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit"
-                            class="p-2 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-400/10 transition-colors"
-                            title="{{ __('Log Out') }}">
-                            <i class="ti ti-logout text-xl"></i>
-                        </button>
-                    </form>
                 </div>
             </header>
 
