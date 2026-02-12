@@ -14,9 +14,13 @@ class SetLocale
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (session()->has('locale')) {
-            App::setLocale(session()->get('locale'));
+        // Si el usuario no ha elegido manualmente un idioma, forzamos el de la configuración (ES)
+        // Esto soluciona que sesiones antiguas sigan en inglés por defecto.
+        if (!session()->has('locale_manually_set')) {
+            session()->put('locale', config('app.locale', 'es'));
         }
+
+        App::setLocale(session()->get('locale', 'es'));
 
         return $next($request);
     }

@@ -53,19 +53,35 @@
                     <!-- Language Switcher -->
                     <div class="relative group">
                         <button
-                            class="p-2 rounded-lg text-slate-400 hover:text-indigo-400 hover:bg-indigo-400/10 transition-all flex items-center gap-1">
-                            <i class="ti ti-language text-xl"></i>
-                            <span class="text-xs font-bold uppercase">{{ app()->getLocale() }}</span>
+                            class="p-2 rounded-lg text-slate-400 hover:text-indigo-400 hover:bg-indigo-400/10 transition-all flex items-center gap-2">
+                            <i class="ti ti-world text-xl"></i>
+                            <span class="text-xs font-bold uppercase">
+                                {{ app()->getLocale() == 'en' ? 'EN' : (app()->getLocale() == 'pt' ? 'PT' : 'ES') }}
+                            </span>
+                            <i class="ti ti-chevron-down text-xs opacity-50"></i>
                         </button>
                         <div
-                            class="absolute right-0 mt-2 w-32 bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-800 rounded-xl shadow-xl py-2 invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all z-50">
+                            class="absolute right-0 mt-2 w-36 bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-800 rounded-xl shadow-xl py-2 invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all z-50 overflow-hidden">
                             <a href="{{ route('lang.switch', 'es') }}"
-                                class="flex items-center gap-3 px-4 py-2 text-sm text-slate-600 dark:text-slate-300 hover:bg-indigo-500/10 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                                class="flex items-center gap-3 px-4 py-2 text-sm {{ app()->getLocale() == 'es' ? 'bg-indigo-500/10 text-indigo-600 font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-indigo-500/10 hover:text-indigo-600' }} transition-colors">
                                 <span class="w-5 text-center">🇪🇸</span> Español
+                                @if (app()->getLocale() == 'es')
+                                    <i class="ti ti-check ml-auto text-xs"></i>
+                                @endif
                             </a>
                             <a href="{{ route('lang.switch', 'en') }}"
-                                class="flex items-center gap-3 px-4 py-2 text-sm text-slate-600 dark:text-slate-300 hover:bg-indigo-500/10 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                                class="flex items-center gap-3 px-4 py-2 text-sm {{ app()->getLocale() == 'en' ? 'bg-indigo-500/10 text-indigo-600 font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-indigo-500/10 hover:text-indigo-600' }} transition-colors">
                                 <span class="w-5 text-center">🇺🇸</span> English
+                                @if (app()->getLocale() == 'en')
+                                    <i class="ti ti-check ml-auto text-xs"></i>
+                                @endif
+                            </a>
+                            <a href="{{ route('lang.switch', 'pt') }}"
+                                class="flex items-center gap-3 px-4 py-2 text-sm {{ app()->getLocale() == 'pt' ? 'bg-indigo-500/10 text-indigo-600 font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-indigo-500/10 hover:text-indigo-600' }} transition-colors">
+                                <span class="w-5 text-center">🇧🇷</span> Português
+                                @if (app()->getLocale() == 'pt')
+                                    <i class="ti ti-check ml-auto text-xs"></i>
+                                @endif
                             </a>
                         </div>
                     </div>

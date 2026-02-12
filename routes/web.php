@@ -52,6 +52,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('lang/{locale}', function ($locale) {
     if (in_array($locale, ['en', 'es', 'pt'])) {
         session()->put('locale', $locale);
+        session()->put('locale_manually_set', true);
     }
     return redirect()->back();
 })->name('lang.switch');

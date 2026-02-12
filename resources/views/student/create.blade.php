@@ -7,13 +7,13 @@
                     class="text-3xl font-bold bg-linear-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
                     {{ __('Nuevo Estudiante') }}
                 </h1>
-                <p class="mt-2 text-slate-500 dark:text-slate-400">Complete la información para registrar un nuevo
-                    estudiante.</p>
+                <p class="mt-2 text-slate-500 dark:text-slate-400">
+                    {{ __('Complete la información para registrar un nuevo estudiante.') }}</p>
             </div>
             <a href="{{ route('student.index') }}"
                 class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl transition-all border border-slate-200 dark:border-slate-700/50 shadow-sm dark:shadow-none">
                 <i class="ti ti-arrow-left"></i>
-                Volver
+                {{ __('Volver') }}
             </a>
         </div>
 
@@ -27,13 +27,14 @@
                 <div>
                     <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2 mb-6">
                         <i class="ti ti-user-circle text-indigo-500 dark:text-indigo-400 text-xl"></i>
-                        Información Personal
+                        {{ __('Información Personal') }}
                     </h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- Name -->
                         <div class="space-y-2">
-                            <label for="name" class="text-sm font-medium text-slate-600 dark:text-slate-400">Nombre
-                                Completo <span class="text-red-500">*</span></label>
+                            <label for="name"
+                                class="text-sm font-medium text-slate-600 dark:text-slate-400">{{ __('Nombre Completo') }}
+                                <span class="text-red-500">*</span></label>
                             <input type="text" name="name" id="name" value="{{ old('name') }}" required
                                 class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all">
                             <x-input-error :messages="$errors->get('name')" class="mt-1" />
@@ -50,14 +51,17 @@
 
                         <!-- Sex -->
                         <div class="space-y-2">
-                            <label for="sex" class="text-sm font-medium text-slate-600 dark:text-slate-400">Género
+                            <label for="sex"
+                                class="text-sm font-medium text-slate-600 dark:text-slate-400">{{ __('Género') }}
                                 <span class="text-red-500">*</span></label>
                             <select name="sex" id="sex" required
                                 class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all cursor-pointer">
-                                <option value="">Seleccionar...</option>
-                                <option value="Masculino" {{ old('sex') == 'Masculino' ? 'selected' : '' }}>Masculino
+                                <option value="">{{ __('Seleccionar...') }}</option>
+                                <option value="Masculino" {{ old('sex') == 'Masculino' ? 'selected' : '' }}>
+                                    {{ __('Masculino') }}
                                 </option>
-                                <option value="Femenino" {{ old('sex') == 'Femenino' ? 'selected' : '' }}>Femenino
+                                <option value="Femenino" {{ old('sex') == 'Femenino' ? 'selected' : '' }}>
+                                    {{ __('Femenino') }}
                                 </option>
                             </select>
                             <x-input-error :messages="$errors->get('sex')" class="mt-1" />
@@ -66,8 +70,7 @@
                         <!-- Phone -->
                         <div class="space-y-2">
                             <label for="phone"
-                                class="text-sm font-medium text-slate-600 dark:text-slate-400">Teléfono /
-                                Celular</label>
+                                class="text-sm font-medium text-slate-600 dark:text-slate-400">{{ __('Teléfono / Celular') }}</label>
                             <input type="text" name="phone" id="phone" value="{{ old('phone') }}"
                                 class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all">
                             <x-input-error :messages="$errors->get('phone')" class="mt-1" />
@@ -81,16 +84,17 @@
                 <div>
                     <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2 mb-6">
                         <i class="ti ti-school text-indigo-500 dark:text-indigo-400 text-xl"></i>
-                        Información Académica
+                        {{ __('Información Académica') }}
                     </h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- Classes -->
                         <div class="space-y-2">
-                            <label for="classesID" class="text-sm font-medium text-slate-600 dark:text-slate-400">Clase
-                                / Grado <span class="text-red-500">*</span></label>
+                            <label for="classesID"
+                                class="text-sm font-medium text-slate-600 dark:text-slate-400">{{ __('Clase / Grado') }}
+                                <span class="text-red-500">*</span></label>
                             <select name="classesID" id="classesID" required
                                 class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all cursor-pointer">
-                                <option value="">Seleccionar Clase...</option>
+                                <option value="">{{ __('Seleccionar Clase...') }}</option>
                                 @foreach ($classes as $class)
                                     <option value="{{ $class->classesID }}"
                                         {{ old('classesID') == $class->classesID ? 'selected' : '' }}>
@@ -108,7 +112,7 @@
                                     class="text-red-500">*</span></label>
                             <select name="sectionID" id="sectionID" required
                                 class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all cursor-pointer">
-                                <option value="">Seleccionar Sección...</option>
+                                <option value="">{{ __('Seleccionar Sección...') }}</option>
                                 @foreach ($sections as $section)
                                     <option value="{{ $section->sectionID }}"
                                         {{ old('sectionID') == $section->sectionID ? 'selected' : '' }}>
@@ -127,17 +131,16 @@
                 <div>
                     <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2 mb-6">
                         <i class="ti ti-heart-handshake text-indigo-500 dark:text-indigo-400 text-xl"></i>
-                        Vínculo Familiar
+                        {{ __('Vínculo Familiar') }}
                     </h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- Parent -->
                         <div class="space-y-2 md:col-span-2">
-                            <label for="parentID" class="text-sm font-medium text-slate-600 dark:text-slate-400">Padre
-                                de Familia /
-                                Tutor</label>
+                            <label for="parentID"
+                                class="text-sm font-medium text-slate-600 dark:text-slate-400">{{ __('Padre de Familia / Tutor') }}</label>
                             <select name="parentID" id="parentID"
                                 class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all cursor-pointer">
-                                <option value="">Sin Tutor Asignado...</option>
+                                <option value="">{{ __('Sin Tutor Asignado...') }}</option>
                                 @foreach ($parents as $parent)
                                     <option value="{{ $parent->parentsID }}"
                                         {{ old('parentID') == $parent->parentsID ? 'selected' : '' }}>
@@ -148,8 +151,7 @@
                             <x-input-error :messages="$errors->get('parentID')" class="mt-1" />
                             <p class="text-[10px] text-slate-500 dark:text-slate-500 italic mt-1 ml-1 leading-relaxed">
                                 <i class="ti ti-info-circle text-indigo-500/50 mr-1"></i>
-                                Seleccione al tutor responsable para habilitar el seguimiento académico desde el portal
-                                de padres.
+                                {{ __('Seleccione al tutor responsable para habilitar el seguimiento académico desde el portal de padres.') }}
                             </p>
                         </div>
                     </div>
@@ -161,12 +163,13 @@
                 <div>
                     <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2 mb-6">
                         <i class="ti ti-lock text-indigo-500 dark:text-indigo-400 text-xl"></i>
-                        Credenciales de Acceso
+                        {{ __('Credenciales de Acceso') }}
                     </h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- Username -->
                         <div class="space-y-2">
-                            <label for="username" class="text-sm font-medium text-slate-600 dark:text-slate-400">Usuario
+                            <label for="username"
+                                class="text-sm font-medium text-slate-600 dark:text-slate-400">{{ __('Usuario') }}
                                 <span class="text-red-500">*</span></label>
                             <input type="text" name="username" id="username" value="{{ old('username') }}"
                                 required
@@ -192,7 +195,7 @@
                 <div>
                     <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2 mb-6">
                         <i class="ti ti-camera text-indigo-500 dark:text-indigo-400 text-xl"></i>
-                        Fotografía del Estudiante
+                        {{ __('Fotografía del Estudiante') }}
                     </h3>
                     <div class="flex items-center gap-6">
                         <div class="w-24 h-24 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-400 dark:text-slate-500 overflow-hidden"
@@ -202,7 +205,8 @@
                         <div class="flex-1">
                             <input type="file" name="photo" id="photo" accept="image/*"
                                 class="block w-full text-sm text-slate-500 dark:text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-indigo-600/10 file:text-indigo-600 dark:file:text-indigo-400 hover:file:bg-indigo-600/20 transition-all">
-                            <p class="mt-2 text-xs text-slate-500 dark:text-slate-500">JPG, PNG o GIF. Tamaño máx. 2MB.
+                            <p class="mt-2 text-xs text-slate-500 dark:text-slate-500">
+                                {{ __('JPG, PNG o GIF. Tamaño máx. 2MB.') }}
                             </p>
                             <x-input-error :messages="$errors->get('photo')" class="mt-1" />
                         </div>
@@ -214,7 +218,7 @@
                     <button type="submit"
                         class="w-full py-4 bg-linear-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white rounded-2xl font-bold text-lg shadow-xl shadow-indigo-500/20 active:scale-[0.98] transition-all flex items-center justify-center gap-3">
                         <i class="ti ti-device-floppy text-2xl"></i>
-                        Registrar Estudiante
+                        {{ __('Registrar Estudiante') }}
                     </button>
                 </div>
             </form>

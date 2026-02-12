@@ -9,10 +9,11 @@
                 </div>
                 <div>
                     <h1 class="text-3xl font-black text-slate-900 dark:text-white tracking-tight">
-                        Permisos de Roles
+                        {{ __('Permisos de Roles') }}
                     </h1>
-                    <p class="text-slate-500 dark:text-slate-400 text-sm font-medium mt-1">Configura los accesos y
-                        privilegios para cada nivel de usuario</p>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm font-medium mt-1">
+                        {{ __('Configura los accesos y privilegios para cada nivel de usuario') }}
+                    </p>
                 </div>
             </div>
         </div>
@@ -38,8 +39,8 @@
             class="mb-8 p-8 bg-white dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 backdrop-blur-xl rounded-[40px] shadow-sm relative overflow-hidden">
             <form id="roleForm" action="{{ route('permission.index') }}" method="GET"
                 class="flex flex-col md:flex-row items-center justify-center gap-6">
-                <label for="usertypeID" class="text-sm font-black text-slate-400 uppercase tracking-widest">Seleccionar
-                    Rol</label>
+                <label for="usertypeID"
+                    class="text-sm font-black text-slate-400 uppercase tracking-widest">{{ __('Seleccionar Rol') }}</label>
                 <div class="relative w-full md:w-72">
                     <select name="usertypeID" id="usertypeID" onchange="this.form.submit()"
                         class="w-full px-6 py-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm font-black text-slate-700 dark:text-slate-200 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none appearance-none">
@@ -72,19 +73,19 @@
                                         class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
                                 </th>
                                 <th class="px-6 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
-                                    Nombre Del Módulo</th>
+                                    {{ __('Nombre Del Módulo') }}</th>
                                 <th
                                     class="px-6 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] text-center">
-                                    Agregar</th>
+                                    {{ __('Agregar') }}</th>
                                 <th
                                     class="px-6 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] text-center">
-                                    Editar</th>
+                                    {{ __('Editar') }}</th>
                                 <th
                                     class="px-6 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] text-center">
-                                    Borrar</th>
+                                    {{ __('Borrar') }}</th>
                                 <th
                                     class="px-6 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] text-center">
-                                    Ver</th>
+                                    {{ __('Ver') }}</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100 dark:divide-slate-700/50">
@@ -148,7 +149,7 @@
                 <button type="submit"
                     class="px-12 py-5 rounded-3xl bg-indigo-600 text-white font-black text-xs uppercase tracking-[0.2em] transition-all shadow-2xl shadow-indigo-600/20 hover:scale-105 active:scale-95 hover:bg-indigo-500 flex items-center gap-3">
                     <i class="ti ti-device-floppy text-lg"></i>
-                    Guardar Cambios
+                    {{ __('Guardar Cambios') }}
                 </button>
             </div>
         </form>

@@ -14,7 +14,8 @@
                             {{ $student->classes->classes ?? 'N/A' }}
                         </span>
                         <span class="text-slate-500">•</span>
-                        <span class="text-slate-400 text-sm">Sección: {{ $student->section->section ?? 'N/A' }}</span>
+                        <span class="text-slate-400 text-sm">{{ __('Sección') }}:
+                            {{ $student->section->section ?? 'N/A' }}</span>
                     </div>
                 </div>
             </div>
@@ -36,9 +37,10 @@
                 <!-- Status Card -->
                 <div
                     class="p-6 rounded-3xl bg-white dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 shadow-sm dark:shadow-none backdrop-blur-sm">
-                    <h3 class="text-sm font-bold text-slate-500 uppercase tracking-widest mb-4">Estado de Cuenta</h3>
+                    <h3 class="text-sm font-bold text-slate-500 uppercase tracking-widest mb-4">
+                        {{ __('Estado de Cuenta') }}</h3>
                     <div class="flex items-center justify-between">
-                        <span class="text-slate-200 font-medium">Asistencia Promedio</span>
+                        <span class="text-slate-200 font-medium">{{ __('Asistencia Promedio') }}</span>
                         <span class="text-green-400 font-bold">94%</span>
                     </div>
                     <div class="mt-4 w-full bg-slate-100 dark:bg-slate-700/30 rounded-full h-2">
@@ -48,13 +50,14 @@
 
                 <!-- Contact Info Card -->
                 <div class="p-6 rounded-3xl bg-slate-800/30 border border-slate-700/50 backdrop-blur-sm space-y-4">
-                    <h3 class="text-sm font-bold text-slate-500 uppercase tracking-widest mb-2">Contacto Directo</h3>
+                    <h3 class="text-sm font-bold text-slate-500 uppercase tracking-widest mb-2">
+                        {{ __('Contacto Directo') }}</h3>
                     <div class="flex items-center gap-3">
                         <div class="p-2 bg-indigo-500/10 text-indigo-400 rounded-lg">
                             <i class="ti ti-mail"></i>
                         </div>
                         <div class="flex flex-col">
-                            <span class="text-xs text-slate-500">Email</span>
+                            <span class="text-xs text-slate-500">{{ __('Email') }}</span>
                             <span
                                 class="text-sm text-slate-700 dark:text-slate-200 break-all">{{ $student->email ?? 'N/A' }}</span>
                         </div>
@@ -64,7 +67,7 @@
                             <i class="ti ti-phone"></i>
                         </div>
                         <div class="flex flex-col">
-                            <span class="text-xs text-slate-500">Teléfono</span>
+                            <span class="text-xs text-slate-500">{{ __('Teléfono') }}</span>
                             <span
                                 class="text-sm text-slate-700 dark:text-slate-200">{{ $student->phone ?? 'N/A' }}</span>
                         </div>
@@ -80,34 +83,35 @@
                     <h2
                         class="text-xl font-bold text-slate-900 dark:text-white mb-6 border-b border-slate-100 dark:border-slate-700/50 pb-4 flex items-center gap-2">
                         <i class="ti ti-info-circle text-indigo-500 dark:text-indigo-400"></i>
-                        Detalles del Estudiante
+                        {{ __('Detalles del Estudiante') }}
                     </h2>
                     <div class="grid grid-cols-2 gap-y-6 gap-x-12">
                         <div>
-                            <span class="block text-xs font-bold text-slate-500 uppercase tracking-widest">Nombre
-                                Completo</span>
+                            <span
+                                class="block text-xs font-bold text-slate-500 uppercase tracking-widest">{{ __('Nombre Completo') }}</span>
                             <span class="text-slate-200 mt-1 block font-medium">{{ $student->name }}</span>
                         </div>
                         <div>
                             <span
-                                class="block text-xs font-bold text-slate-500 uppercase tracking-widest">Usuario</span>
+                                class="block text-xs font-bold text-slate-500 uppercase tracking-widest">{{ __('Usuario') }}</span>
                             <span class="text-slate-200 mt-1 block font-medium">{{ $student->username }}</span>
                         </div>
                         <div>
-                            <span class="block text-xs font-bold text-slate-500 uppercase tracking-widest">Fecha de
-                                Nacimiento</span>
+                            <span
+                                class="block text-xs font-bold text-slate-500 uppercase tracking-widest">{{ __('Fecha de Nacimiento') }}</span>
                             <span
                                 class="text-slate-700 dark:text-slate-200 mt-1 block font-medium">{{ $student->dob ? \Carbon\Carbon::parse($student->dob)->format('d \d\e F, Y') : 'N/A' }}</span>
                         </div>
                         <div>
-                            <span class="block text-xs font-bold text-slate-500 uppercase tracking-widest">Género</span>
+                            <span
+                                class="block text-xs font-bold text-slate-500 uppercase tracking-widest">{{ __('Género') }}</span>
                             <span class="text-slate-200 mt-1 block font-medium">{{ $student->sex }}</span>
                         </div>
                         <div class="col-span-2">
                             <span
-                                class="block text-xs font-bold text-slate-500 uppercase tracking-widest">Dirección</span>
+                                class="block text-xs font-bold text-slate-500 uppercase tracking-widest">{{ __('Dirección') }}</span>
                             <span
-                                class="text-slate-700 dark:text-slate-200 mt-1 block font-medium">{{ $student->address ?? 'No registrada' }}</span>
+                                class="text-slate-700 dark:text-slate-200 mt-1 block font-medium">{{ $student->address ?? __('No registrada') }}</span>
                         </div>
                     </div>
                 </div>
@@ -118,7 +122,7 @@
                     <h2
                         class="text-xl font-bold text-slate-900 dark:text-white mb-6 border-b border-slate-100 dark:border-slate-700/50 pb-4 flex items-center gap-2">
                         <i class="ti ti-users text-indigo-500 dark:text-indigo-400"></i>
-                        Información del Padre / Tutor
+                        {{ __('Información del Padre / Tutor') }}
                     </h2>
                     @if ($student->parent)
                         <div class="flex items-center gap-6 mb-6">
@@ -128,31 +132,32 @@
                             <div>
                                 <h4 class="text-lg font-bold text-slate-900 dark:text-slate-100">
                                     {{ $student->parent->name }}</h4>
-                                <p class="text-sm text-slate-500 dark:text-slate-400">Padre / Tutor Legal</p>
+                                <p class="text-sm text-slate-500 dark:text-slate-400">{{ __('Padre / Tutor Legal') }}
+                                </p>
                             </div>
                         </div>
                         <div class="grid grid-cols-2 gap-y-6 gap-x-12">
                             <div>
                                 <span
-                                    class="block text-xs font-bold text-slate-500 uppercase tracking-widest">Padre</span>
+                                    class="block text-xs font-bold text-slate-500 uppercase tracking-widest">{{ __('Padre') }}</span>
                                 <span
                                     class="text-slate-200 mt-1 block font-medium">{{ $student->parent->father_name ?? 'N/A' }}</span>
                             </div>
                             <div>
                                 <span
-                                    class="block text-xs font-bold text-slate-500 uppercase tracking-widest">Madre</span>
+                                    class="block text-xs font-bold text-slate-500 uppercase tracking-widest">{{ __('Madre') }}</span>
                                 <span
                                     class="text-slate-200 mt-1 block font-medium">{{ $student->parent->mother_name ?? 'N/A' }}</span>
                             </div>
                             <div>
-                                <span class="block text-xs font-bold text-slate-500 uppercase tracking-widest">Teléfono
-                                    Tutor</span>
+                                <span
+                                    class="block text-xs font-bold text-slate-500 uppercase tracking-widest">{{ __('Teléfono Tutor') }}</span>
                                 <span
                                     class="text-slate-200 mt-1 block font-medium">{{ $student->parent->phone ?? 'N/A' }}</span>
                             </div>
                             <div>
-                                <span class="block text-xs font-bold text-slate-500 uppercase tracking-widest">Email
-                                    Tutor</span>
+                                <span
+                                    class="block text-xs font-bold text-slate-500 uppercase tracking-widest">{{ __('Email Tutor') }}</span>
                                 <span
                                     class="text-slate-200 mt-1 block font-medium">{{ $student->parent->email ?? 'N/A' }}</span>
                             </div>
@@ -161,8 +166,8 @@
                         <div
                             class="flex items-center gap-3 p-4 bg-amber-500/10 text-amber-500 border border-amber-500/20 rounded-2xl">
                             <i class="ti ti-alert-triangle text-xl"></i>
-                            <p class="text-sm font-medium">No hay información de padres/tutores asignada a este
-                                estudiante.</p>
+                            <p class="text-sm font-medium">
+                                {{ __('No hay información de padres/tutores asignada a este estudiante.') }}</p>
                         </div>
                     @endif
                 </div>

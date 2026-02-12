@@ -6,14 +6,14 @@
                 <h1 class="text-3xl font-bold text-slate-900 dark:text-white">
                     {{ __('Gestión de Estudiantes') }}
                 </h1>
-                <p class="mt-2 text-slate-500 dark:text-slate-400">Listado completo de estudiantes registrados en el
-                    sistema.</p>
+                <p class="mt-2 text-slate-500 dark:text-slate-400">
+                    {{ __('Listado completo de estudiantes registrados en el sistema.') }}</p>
             </div>
             <div class="flex items-center gap-4">
                 <a href="{{ route('student.create') }}"
                     class="group flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold transition-all active:scale-95">
                     <i class="ti ti-plus text-lg"></i>
-                    <span>Añadir Estudiante</span>
+                    <span>{{ __('Añadir Estudiante') }}</span>
                 </a>
             </div>
         </div>
@@ -24,12 +24,10 @@
             <form action="{{ route('student.index') }}" method="GET" class="flex flex-col md:flex-row items-end gap-6">
                 <div class="flex-1 w-full">
                     <label for="classesID"
-                        class="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wider">Filtrar
-                        por
-                        Grado/Clase</label>
+                        class="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wider">{{ __('Filtrar por Grado/Clase') }}</label>
                     <select name="classesID" id="classesID"
                         class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all cursor-pointer">
-                        <option value="">Todas las Clases</option>
+                        <option value="">{{ __('Todas las Clases') }}</option>
                         @foreach ($classes as $class)
                             <option value="{{ $class->classesID }}"
                                 {{ $classesID == $class->classesID ? 'selected' : '' }}>
@@ -41,7 +39,7 @@
                 <button type="submit"
                     class="w-full md:w-auto px-6 py-2.5 bg-white dark:bg-slate-700 hover:bg-slate-50 dark:hover:bg-slate-600 text-slate-700 dark:text-white rounded-xl font-bold transition-all border border-slate-200 dark:border-slate-600/50 flex items-center justify-center gap-2">
                     <i class="ti ti-filter"></i>
-                    Filtrar
+                    {{ __('Filtrar') }}
                 </button>
             </form>
         </div>
@@ -55,11 +53,11 @@
                         <tr
                             class="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-widest border-b border-slate-100 dark:border-slate-700/50">
                             <th class="px-6 py-4">#</th>
-                            <th class="px-6 py-4">Foto</th>
-                            <th class="px-6 py-4">Estudiante</th>
-                            <th class="px-6 py-4">Clase / Sección</th>
-                            <th class="px-6 py-4 text-center">Estado</th>
-                            <th class="px-6 py-4 text-right pr-10">Acciones</th>
+                            <th class="px-6 py-4">{{ __('Foto') }}</th>
+                            <th class="px-6 py-4">{{ __('Estudiante') }}</th>
+                            <th class="px-6 py-4">{{ __('Clase / Sección') }}</th>
+                            <th class="px-6 py-4 text-center">{{ __('Estado') }}</th>
+                            <th class="px-6 py-4 text-right pr-10">{{ __('Acciones') }}</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100 dark:divide-slate-700/30">
@@ -76,7 +74,7 @@
                                         <span
                                             class="font-bold text-slate-800 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{{ $student->name }}</span>
                                         <span
-                                            class="text-xs text-slate-500">{{ $student->email ?? 'Sin email' }}</span>
+                                            class="text-xs text-slate-500">{{ $student->email ?? __('Sin email') }}</span>
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 text-slate-600 dark:text-slate-300 text-sm">
@@ -90,10 +88,10 @@
                                 <td class="px-6 py-4 text-center">
                                     @if ($student->active)
                                         <span
-                                            class="px-3 py-1 bg-green-500/10 text-green-500 border border-green-500/20 rounded-full text-xs font-bold">Activo</span>
+                                            class="px-3 py-1 bg-green-500/10 text-green-500 border border-green-500/20 rounded-full text-xs font-bold">{{ __('Activo') }}</span>
                                     @else
                                         <span
-                                            class="px-3 py-1 bg-red-500/10 text-red-500 border border-red-500/20 rounded-full text-xs font-bold">Inactivo</span>
+                                            class="px-3 py-1 bg-red-500/10 text-red-500 border border-red-500/20 rounded-full text-xs font-bold">{{ __('Inactivo') }}</span>
                                     @endif
                                 </td>
                                 <td class="px-6 py-4 text-right pr-6">
@@ -122,7 +120,8 @@
                                 <td colspan="6" class="px-6 py-12 text-center text-slate-500">
                                     <div class="flex flex-col items-center gap-3">
                                         <i class="ti ti-users-minus text-4xl"></i>
-                                        <p>No se encontraron estudiantes para los filtros seleccionados.</p>
+                                        <p>{{ __('No se encontraron estudiantes para los filtros seleccionados.') }}
+                                        </p>
                                     </div>
                                 </td>
                             </tr>
