@@ -42,8 +42,8 @@
 
                         <!-- DOB -->
                         <div class="space-y-2">
-                            <label for="dob" class="text-sm font-medium text-slate-600 dark:text-slate-400">Fecha
-                                de Nacimiento</label>
+                            <label for="dob"
+                                class="text-sm font-medium text-slate-600 dark:text-slate-400">{{ __('Fecha de Nacimiento') }}</label>
                             <input type="date" name="dob" id="dob" value="{{ old('dob') }}"
                                 class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all">
                             <x-input-error :messages="$errors->get('dob')" class="mt-1" />
@@ -108,8 +108,8 @@
                         <!-- Section -->
                         <div class="space-y-2">
                             <label for="sectionID"
-                                class="text-sm font-medium text-slate-600 dark:text-slate-400">Sección <span
-                                    class="text-red-500">*</span></label>
+                                class="text-sm font-medium text-slate-600 dark:text-slate-400">{{ __('Sección') }}
+                                <span class="text-red-500">*</span></label>
                             <select name="sectionID" id="sectionID" required
                                 class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all cursor-pointer">
                                 <option value="">{{ __('Seleccionar Sección...') }}</option>
@@ -180,8 +180,8 @@
                         <!-- Password -->
                         <div class="space-y-2">
                             <label for="password"
-                                class="text-sm font-medium text-slate-600 dark:text-slate-400">Contraseña <span
-                                    class="text-red-500">*</span></label>
+                                class="text-sm font-medium text-slate-600 dark:text-slate-400">{{ __('Contraseña') }}
+                                <span class="text-red-500">*</span></label>
                             <input type="password" name="password" id="password" required
                                 class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all">
                             <x-input-error :messages="$errors->get('password')" class="mt-1" />
@@ -216,7 +216,7 @@
                 <!-- Submit Button -->
                 <div class="pt-6">
                     <button type="submit"
-                        class="w-full py-4 bg-linear-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white rounded-2xl font-bold text-lg shadow-xl shadow-indigo-500/20 active:scale-[0.98] transition-all flex items-center justify-center gap-3">
+                        class="w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl font-bold text-lg active:scale-[0.98] transition-all flex items-center justify-center gap-3">
                         <i class="ti ti-device-floppy text-2xl"></i>
                         {{ __('Registrar Estudiante') }}
                     </button>

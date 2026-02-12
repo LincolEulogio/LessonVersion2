@@ -149,5 +149,13 @@
     "Madre": "Mãe",
     "Teléfono Tutor": "Telefone do Tutor",
     "Email Tutor": "E-mail do Tutor",
-    "No hay información de padres/tutores asignada a este estudiante.": "Não há informações de pais/tutores atribuídas a este estudante."
+    "No hay información de padres/tutores asignada a este estudiante.": "Não há informações de pais/tutores atribuídas a este estudante.",
+    "Modificando el perfil de:": "Modificando o perfil de:",
+    "Seguridad": "Segurança",
+    "Nueva Contraseña (Dejar en blanco para mantener)": "Nova Senha (Deixar em branco para manter)",
+    "Fotografía": "Fotografia",
+    "Suba una nueva foto para reemplazar la actual.": "Carregue uma nova foto para substituir a atual.",
+    "Actualizar Estudiante": "Atualizar Estudante",
+    "Sin Teléfono": "Sem Telefone",
+    "Eliminar": "Excluir"
 }

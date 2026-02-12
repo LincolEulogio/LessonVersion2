@@ -149,5 +149,13 @@
     "Madre": "Mother",
     "Teléfono Tutor": "Guardian Phone",
     "Email Tutor": "Guardian Email",
-    "No hay información de padres/tutores asignada a este estudiante.": "No parent/guardian information assigned to this student."
+    "No hay información de padres/tutores asignada a este estudiante.": "No parent/guardian information assigned to this student.",
+    "Modificando el perfil de:": "Modifying the profile of:",
+    "Seguridad": "Security",
+    "Nueva Contraseña (Dejar en blanco para mantener)": "New Password (Leave blank to keep current)",
+    "Fotografía": "Photograph",
+    "Suba una nueva foto para reemplazar la actual.": "Upload a new photo to replace the current one.",
+    "Actualizar Estudiante": "Update Student",
+    "Sin Teléfono": "No Phone",
+    "Eliminar": "Delete"
 }

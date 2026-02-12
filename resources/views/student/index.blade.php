@@ -99,17 +99,17 @@
                                         class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                                         <a href="{{ route('student.show', $student->studentID) }}"
                                             class="p-2 bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white rounded-lg transition-all"
-                                            title="Ver Perfil">
+                                            title="{{ __('Ver Perfil') }}">
                                             <i class="ti ti-eye text-lg"></i>
                                         </a>
                                         <a href="{{ route('student.edit', $student->studentID) }}"
                                             class="p-2 bg-amber-500/10 text-amber-500 hover:bg-amber-500 hover:text-white rounded-lg transition-all"
-                                            title="Editar">
+                                            title="{{ __('Editar') }}">
                                             <i class="ti ti-edit text-lg"></i>
                                         </a>
                                         <button
                                             class="p-2 bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white rounded-lg transition-all"
-                                            title="Eliminar">
+                                            title="{{ __('Eliminar') }}">
                                             <i class="ti ti-trash text-lg"></i>
                                         </button>
                                     </div>
