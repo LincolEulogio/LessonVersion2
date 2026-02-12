@@ -71,12 +71,12 @@
                 <span class="text-sm tracking-wide capitalize">{{ __('Docente') }}</span>
             </a>
 
-            <!-- Usuario -->
-            <a href="{{ route('systemadmin.index') }}"
-                class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all duration-200 group {{ request()->routeIs('systemadmin.*') ? 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400' : 'hover:bg-slate-100 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-slate-200' }}">
+            <!-- Usuarios -->
+            <a href="{{ route('user.index') }}"
+                class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all duration-200 group {{ request()->routeIs('user.*') ? 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-bold' : 'hover:bg-slate-100 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-slate-200' }}">
                 <i
-                    class="ti ti-user-circle text-lg {{ request()->routeIs('systemadmin.*') ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400 dark:text-slate-500 group-hover:text-indigo-500' }}"></i>
-                <span class="text-sm tracking-wide capitalize">{{ __('Usuario') }}</span>
+                    class="ti ti-user-circle text-lg {{ request()->routeIs('user.*') ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400 dark:text-slate-500 group-hover:text-indigo-500' }}"></i>
+                <span class="text-sm tracking-wide capitalize">{{ __('Usuarios') }}</span>
             </a>
 
             <!-- Académico (Dropdown) -->
