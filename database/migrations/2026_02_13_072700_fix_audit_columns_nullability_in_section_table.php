@@ -1,0 +1,31 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::table('section', function (Blueprint $table) {
+            $table->integer('create_usertypeID')->nullable()->change();
+            $table->dateTime('create_date')->nullable()->change();
+            $table->dateTime('modify_date')->nullable()->change();
+            $table->integer('create_userID')->nullable()->change();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('section', function (Blueprint $table) {
+            //
+        });
+    }
+};

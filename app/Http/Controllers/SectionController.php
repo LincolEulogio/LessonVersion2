@@ -13,37 +13,56 @@ class SectionController extends Controller
     public function index(Request $request)
     {
         $classesID = $request->get('classesID');
-        $classes = Classes::all();
+        $search = $request->get('search');
         
-        $query = Section::leftJoin('classes', 'section.classesID', '=', 'classes.classesID')
+        $classes = Classes::orderBy('classes_numeric')->get();
+        
+        $query = Section::with(['class'])
             ->leftJoin('teachers', 'section.teacherID', '=', 'teachers.teacherID')
-            ->select('section.*', 'classes.classes as class_name', 'teachers.name as teacher_name');
+            ->select('section.*', 'teachers.name as teacher_name', 'teachers.photo as teacher_photo');
 
         if ($classesID) {
             $query->where('section.classesID', $classesID);
         }
 
-        $sections = $query->get();
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('section.section', 'like', "%{$search}%")
+                  ->orWhere('section.category', 'like', "%{$search}%")
+                  ->orWhere('teachers.name', 'like', "%{$search}%");
+            });
+        }
+
+        $sections = $query->latest('section.sectionID')->paginate(10)->withQueryString();
             
-        return view('section.index', compact('sections', 'classes', 'classesID'));
+        return view('section.index', compact('sections', 'classes', 'classesID', 'search'));
     }
 
     public function create()
     {
-        $classes = Classes::all();
-        $teachers = Teacher::where('active', 1)->get();
+        $classes = Classes::orderBy('classes_numeric')->get();
+        $teachers = Teacher::where('active', 1)->orderBy('name')->get();
         return view('section.create', compact('classes', 'teachers'));
     }
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $request->validate([
             'section' => 'required|string|max:60',
             'category' => 'required|string|max:128',
             'capacity' => 'required|numeric|min:1',
             'classesID' => 'required|exists:classes,classesID',
             'teacherID' => 'required|exists:teachers,teacherID',
-            'note' => 'nullable|string|max:200',
+            'note' => 'required|string|max:500',
+        ], [
+            'section.required' => 'El nombre de la sección es obligatorio.',
+            'category.required' => 'La categoría es obligatoria.',
+            'capacity.required' => 'La capacidad es obligatoria.',
+            'capacity.numeric' => 'La capacidad debe ser un número.',
+            'classesID.required' => 'Debe seleccionar una clase.',
+            'teacherID.required' => 'Debe asignar un mentor.',
+            'note.required' => 'La descripción es obligatoria.',
+            'note.max' => 'La nota no debe exceder los 500 caracteres.',
         ]);
 
         // Check uniqueness per class
@@ -60,18 +79,19 @@ class SectionController extends Controller
         $data['modify_date'] = now();
         $data['create_userID'] = Auth::id();
         $data['create_username'] = Auth::user()->username;
-        $data['create_usertype'] = Auth::user()->usertypeID;
+        $data['create_usertype'] = Auth::user()->usertype->usertype ?? 'Admin';
+        $data['create_usertypeID'] = Auth::user()->usertypeID;
 
         Section::create($data);
 
-        return redirect()->route('section.index', ['classesID' => $request->classesID])->with('success', 'Sección creada exitosamente.');
+        return redirect()->route('section.index', ['classesID' => $request->classesID])->with('success', 'Sección registrada exitosamente.');
     }
 
     public function show($id)
     {
-        $section = Section::leftJoin('classes', 'section.classesID', '=', 'classes.classesID')
+        $section = Section::with(['class'])
             ->leftJoin('teachers', 'section.teacherID', '=', 'teachers.teacherID')
-            ->select('section.*', 'classes.classes as class_name', 'teachers.name as teacher_name')
+            ->select('section.*', 'teachers.name as teacher_name', 'teachers.photo as teacher_photo')
             ->where('section.sectionID', $id)
             ->firstOrFail();
             
@@ -81,8 +101,8 @@ class SectionController extends Controller
     public function edit($id)
     {
         $section = Section::findOrFail($id);
-        $classes = Classes::all();
-        $teachers = Teacher::where('active', 1)->get();
+        $classes = Classes::orderBy('classes_numeric')->get();
+        $teachers = Teacher::where('active', 1)->orderBy('name')->get();
         return view('section.edit', compact('section', 'classes', 'teachers'));
     }
 
@@ -90,13 +110,22 @@ class SectionController extends Controller
     {
         $section = Section::findOrFail($id);
         
-        $validated = $request->validate([
+        $request->validate([
             'section' => 'required|string|max:60',
             'category' => 'required|string|max:128',
             'capacity' => 'required|numeric|min:1',
             'classesID' => 'required|exists:classes,classesID',
             'teacherID' => 'required|exists:teachers,teacherID',
-            'note' => 'nullable|string|max:200',
+            'note' => 'required|string|max:500',
+        ], [
+            'section.required' => 'El nombre de la sección es obligatorio.',
+            'category.required' => 'La categoría es obligatoria.',
+            'capacity.required' => 'La capacidad es obligatoria.',
+            'capacity.numeric' => 'La capacidad debe ser un número.',
+            'classesID.required' => 'Debe seleccionar una clase.',
+            'teacherID.required' => 'Debe asignar un mentor.',
+            'note.required' => 'La descripción es obligatoria.',
+            'note.max' => 'La nota no debe exceder los 500 caracteres.',
         ]);
 
         // Check uniqueness per class excluding current

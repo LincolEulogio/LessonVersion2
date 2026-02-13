@@ -12,7 +12,7 @@ class Section extends Model
     protected $fillable = [
         'section', 'category', 'capacity', 'classesID', 'teacherID', 
         'note', 'create_date', 'modify_date', 'create_userID', 
-        'create_username', 'create_usertype'
+        'create_username', 'create_usertype', 'create_usertypeID'
     ];
 
     public function students()
@@ -23,5 +23,10 @@ class Section extends Model
     public function class()
     {
         return $this->belongsTo(Classes::class, 'classesID', 'classesID');
+    }
+
+    public function teacher()
+    {
+        return $this->belongsTo(Teacher::class, 'teacherID', 'teacherID');
     }
 }
