@@ -14,7 +14,7 @@ return new class extends Migration
         if (!Schema::hasTable('issue')) {
             Schema::create('issue', function (Blueprint $table) {
                 $table->id('issueID');
-                $table->string('lID', 128);
+                $table->string('lmembercardID', 128);
                 $table->unsignedBigInteger('bookID');
                 $table->string('serial_no', 40);
                 $table->date('issue_date');

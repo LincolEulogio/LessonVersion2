@@ -28,7 +28,7 @@ class HostelMemberController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'studentID' => 'required|exists:student,studentID',
+            'studentID' => 'required|exists:students,studentID',
             'hostelID' => 'required|exists:hostel,hostelID',
             'categoryID' => 'required|exists:category,categoryID',
         ]);

@@ -156,6 +156,7 @@ Route::middleware('auth:web,systemadmin,teacher')->group(function () {
     Route::resource('book', BookController::class);
     Route::resource('lmember', LibraryMemberController::class);
     Route::resource('issue', IssueController::class);
+    Route::patch('issue/{id}/return', [IssueController::class, 'markAsReturned'])->name('issue.return');
     // Transport Module
     Route::resource('transport', TransportController::class);
     Route::get('tmember', [TransportMemberController::class, 'index'])->name('tmember.index');

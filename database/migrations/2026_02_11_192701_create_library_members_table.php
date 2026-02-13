@@ -14,7 +14,7 @@ return new class extends Migration
         if (!Schema::hasTable('lmember')) {
             Schema::create('lmember', function (Blueprint $table) {
                 $table->id('lmemberID');
-                $table->string('lID', 40);
+                $table->string('lmembercardID', 40);
                 $table->unsignedBigInteger('studentID');
                 $table->string('name', 60);
                 $table->string('email', 40)->nullable();
@@ -23,7 +23,7 @@ return new class extends Migration
                 $table->date('ljoindate');
                 $table->timestamps();
                 
-                $table->foreign('studentID')->references('studentID')->on('student')->onDelete('cascade');
+                $table->foreign('studentID')->references('studentID')->on('students')->onDelete('cascade');
             });
         }
     }

@@ -2,112 +2,86 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
 use App\Models\Book;
-use Illuminate\Validation\Rule;
+use App\Http\Requests\StoreBookRequest;
+use App\Http\Requests\UpdateBookRequest;
+use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of books.
      */
     public function index()
     {
-        $books = Book::orderBy('bookID', 'asc')->get();
+        $books = Book::orderBy('bookID', 'desc')->get();
         return view('book.index', compact('books'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new book.
      */
     public function create()
     {
-        return view('book.add');
+        return view('book.create');
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created book in storage.
      */
-    public function store(Request $request)
+    public function store(StoreBookRequest $request)
     {
-        $request->validate([
-            'book' => [
-                'required', 'string', 'max:60',
-                Rule::unique('book')->where(function ($query) use ($request) {
-                    return $query->where('author', $request->author)
-                                 ->where('subject_code', $request->subject_code);
-                })
-            ],
-            'author' => 'required|string|max:100',
-            'subject_code' => 'required|string|max:20',
-            'price' => 'required|numeric|min:0',
-            'quantity' => 'required|integer|min:0',
-            'rack' => 'required|string|max:60'
-        ]);
-
-        $data = $request->all();
+        $data = $request->validated();
         $data['due_quantity'] = 0;
         
         Book::create($data);
 
-        return redirect()->route('book.index')->with('success', 'Libro agregado correctamente.');
+        return redirect()->route('book.index')->with('success', 'Libro agregado a la biblioteca correctamente.');
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified book.
      */
-    public function show(string $id)
+    public function show($id)
     {
         $book = Book::findOrFail($id);
         return view('book.show', compact('book'));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing the specified book.
      */
-    public function edit(string $id)
+    public function edit($id)
     {
         $book = Book::findOrFail($id);
         return view('book.edit', compact('book'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified book in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateBookRequest $request, $id)
     {
         $book = Book::findOrFail($id);
+        $book->update($request->validated());
 
-        $request->validate([
-            'book' => [
-                'required', 'string', 'max:60',
-                Rule::unique('book')->where(function ($query) use ($request, $id) {
-                    return $query->where('author', $request->author)
-                                 ->where('subject_code', $request->subject_code)
-                                 ->where('bookID', '!=', $id);
-                })
-            ],
-            'author' => 'required|string|max:100',
-            'subject_code' => 'required|string|max:20',
-            'price' => 'required|numeric|min:0',
-            'quantity' => 'required|integer|min:0',
-            'rack' => 'required|string|max:60'
-        ]);
-
-        $book->update($request->all());
-
-        return redirect()->route('book.index')->with('success', 'Libro actualizado correctamente.');
+        return redirect()->route('book.index')->with('success', 'Información del libro actualizada.');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified book from storage.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
         $book = Book::findOrFail($id);
+        
+        // Check if book has active issues before deleting?
+        if ($book->due_quantity > 0) {
+            return redirect()->back()->with('error', 'No se puede eliminar un libro que tiene préstamos pendientes.');
+        }
+
         $book->delete();
 
-        return redirect()->route('book.index')->with('success', 'Libro eliminado correctamente.');
+        return redirect()->route('book.index')->with('success', 'Libro eliminado de la biblioteca.');
     }
 }

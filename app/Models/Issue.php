@@ -10,7 +10,7 @@ class Issue extends Model
     protected $primaryKey = 'issueID';
 
     protected $fillable = [
-        'lID', 'bookID', 'serial_no', 'issue_date', 'due_date', 
+        'lmembercardID', 'bookID', 'serial_no', 'issue_date', 'due_date', 
         'return_date', 'note'
     ];
 
@@ -21,6 +21,6 @@ class Issue extends Model
 
     public function member()
     {
-        return $this->belongsTo(LibraryMember::class, 'lID', 'lID');
+        return $this->belongsTo(LibraryMember::class, 'lmembercardID', 'lmembercardID');
     }
 }

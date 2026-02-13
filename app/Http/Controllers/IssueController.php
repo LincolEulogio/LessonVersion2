@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
 use App\Models\Issue;
 use App\Models\Book;
 use App\Models\LibraryMember;
+use App\Http\Requests\StoreIssueRequest;
+use Illuminate\Http\Request;
 
 class IssueController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of book issues.
      */
     public function index()
     {
@@ -20,71 +20,82 @@ class IssueController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new issue.
      */
     public function create()
     {
-        $books = Book::where('quantity', '>', 'due_quantity')->get();
-        return view('issue.add', compact('books'));
+        // Only books with available stock
+        $books = Book::all()->filter(function ($book) {
+            return ($book->quantity - $book->due_quantity) > 0;
+        });
+        
+        $members = LibraryMember::orderBy('name', 'asc')->get();
+        
+        return view('issue.create', compact('books', 'members'));
     }
 
     /**
-     * Store a newly created resource (Issue book).
+     * Store a newly created book issue.
      */
-    public function store(Request $request)
+    public function store(StoreIssueRequest $request)
     {
-        $request->validate([
-            'lID' => 'required|exists:lmember,lID',
-            'bookID' => 'required|exists:book,bookID',
-            'serial_no' => 'required|string|max:40',
-            'due_date' => 'required|date|after_or_equal:issue_date',
-            'issue_date' => 'required|date'
-        ]);
-
         $book = Book::findOrFail($request->bookID);
-        
-        if ($book->due_quantity >= $book->quantity) {
-            return redirect()->back()->with('error', 'Este libro no tiene ejemplares disponibles.');
+
+        // Double check availability
+        if (($book->quantity - $book->due_quantity) <= 0) {
+            return redirect()->back()->with('error', 'Lo sentimos, este libro ya no tiene copias disponibles.');
         }
 
-        Issue::create($request->all());
+        // Create issue
+        Issue::create($request->validated());
 
-        // Update book due quantity
+        // Update book due quantity (increase books out)
         $book->increment('due_quantity');
 
-        return redirect()->route('issue.index')->with('success', 'Libro prestado correctamente.');
+        return redirect()->route('issue.index')->with('success', 'Préstamo registrado correctamente.');
     }
 
     /**
-     * Update the specified resource (Return book).
+     * Display the specified issue.
      */
-    public function update(Request $request, string $id)
+    public function show($id)
+    {
+        $issue = Issue::with(['book', 'member.student'])->findOrFail($id);
+        return view('issue.show', compact('issue'));
+    }
+
+    /**
+     * Update the issue to mark as returned.
+     */
+    public function markAsReturned(Request $request, $id)
     {
         $issue = Issue::findOrFail($id);
-        
+
         if ($issue->return_date) {
-            return redirect()->back()->with('error', 'Este libro ya ha sido devuelto.');
+            return redirect()->back()->with('error', 'Este libro ya fue marcado como devuelto.');
         }
 
         $issue->update([
             'return_date' => now()->toDateString()
         ]);
 
-        // Update book due quantity
-        $book = Book::findOrFail($issue->bookID);
-        $book->decrement('due_quantity');
+        // Update book stock (decrease books out)
+        $book = Book::find($issue->bookID);
+        if ($book) {
+            $book->decrement('due_quantity');
+        }
 
         return redirect()->route('issue.index')->with('success', 'Libro devuelto correctamente.');
     }
 
     /**
-     * Remove the specified resource.
+     * Remove the specified issue from storage.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
         $issue = Issue::findOrFail($id);
-        
-        // If not returned, update book quantity first?
+
+        // If it wasn't returned yet, give stock back
         if (!$issue->return_date) {
             $book = Book::find($issue->bookID);
             if ($book) {

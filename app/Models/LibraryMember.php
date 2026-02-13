@@ -10,7 +10,7 @@ class LibraryMember extends Model
     protected $primaryKey = 'lmemberID';
 
     protected $fillable = [
-        'lID', 'studentID', 'name', 'email', 'phone', 'lbalance', 'ljoindate'
+        'lmembercardID', 'studentID', 'name', 'email', 'phone', 'lbalance', 'ljoindate'
     ];
 
     public function student()
