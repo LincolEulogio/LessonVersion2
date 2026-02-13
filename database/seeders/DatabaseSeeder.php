@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             InventorySeeder::class,
             FinancialSeeder::class,
             TopicAndRoutineSeeder::class,
+            BulkUserSeeder::class,
         ]);
     }
 }
