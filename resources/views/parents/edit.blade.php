@@ -19,8 +19,8 @@
 
         <div
             class="p-8 rounded-3xl bg-white dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 shadow-sm dark:shadow-none backdrop-blur-sm">
-            <form action="{{ route('parents.update', $parent->parentsID) }}" method="POST" enctype="multipart/form-data"
-                class="space-y-8">
+            <form id="parents-form" action="{{ route('parents.update', $parent->parentsID) }}" method="POST"
+                enctype="multipart/form-data" class="space-y-8">
                 @csrf
                 @method('PUT')
 
@@ -36,7 +36,7 @@
                                 Completo del Tutor
                                 <span class="text-red-500">*</span></label>
                             <input type="text" name="name" id="name" value="{{ old('name', $parent->name) }}"
-                                required
+                                oninput="this.value = this.value.replace(/[0-9]/g, '')"
                                 class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all">
                             <x-input-error :messages="$errors->get('name')" class="mt-1" />
                         </div>
@@ -44,71 +44,82 @@
                             <label for="dni" class="text-sm font-medium text-slate-600 dark:text-slate-400">DNI /
                                 Documento <span class="text-red-500">*</span></label>
                             <input type="text" name="dni" id="dni" value="{{ old('dni', $parent->dni) }}"
-                                required
+                                maxlength="8" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                                 class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all">
                             <x-input-error :messages="$errors->get('dni')" class="mt-1" />
                         </div>
                     </div>
                 </div>
 
-                <hr class="border-slate-700/30">
+                <hr class="border-slate-200 dark:border-slate-700/30">
 
                 <!-- Family details -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="space-y-2">
                         <label for="father_name" class="text-sm font-medium text-slate-600 dark:text-slate-400">Nombre
-                            del Padre</label>
+                            del Padre <span class="text-red-500">*</span></label>
                         <input type="text" name="father_name" id="father_name"
                             value="{{ old('father_name', $parent->father_name) }}"
+                            oninput="this.value = this.value.replace(/[0-9]/g, '')"
                             class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all">
+                        <x-input-error :messages="$errors->get('father_name')" class="mt-1" />
                     </div>
                     <div class="space-y-2">
                         <label for="father_profession"
                             class="text-sm font-medium text-slate-600 dark:text-slate-400">Profesión del
-                            Padre</label>
+                            Padre <span class="text-red-500">*</span></label>
                         <input type="text" name="father_profession" id="father_profession"
                             value="{{ old('father_profession', $parent->father_profession) }}"
+                            oninput="this.value = this.value.replace(/[0-9]/g, '')"
                             class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all">
+                        <x-input-error :messages="$errors->get('father_profession')" class="mt-1" />
                     </div>
                     <div class="space-y-2">
                         <label for="mother_name" class="text-sm font-medium text-slate-600 dark:text-slate-400">Nombre
-                            de la Madre</label>
+                            de la Madre <span class="text-red-500">*</span></label>
                         <input type="text" name="mother_name" id="mother_name"
                             value="{{ old('mother_name', $parent->mother_name) }}"
+                            oninput="this.value = this.value.replace(/[0-9]/g, '')"
                             class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all">
+                        <x-input-error :messages="$errors->get('mother_name')" class="mt-1" />
                     </div>
                     <div class="space-y-2">
                         <label for="mother_profession"
                             class="text-sm font-medium text-slate-600 dark:text-slate-400">Profesión de la
-                            Madre</label>
+                            Madre <span class="text-red-500">*</span></label>
                         <input type="text" name="mother_profession" id="mother_profession"
                             value="{{ old('mother_profession', $parent->mother_profession) }}"
+                            oninput="this.value = this.value.replace(/[0-9]/g, '')"
                             class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all">
+                        <x-input-error :messages="$errors->get('mother_profession')" class="mt-1" />
                     </div>
                 </div>
 
-                <hr class="border-slate-700/30">
+                <hr class="border-slate-200 dark:border-slate-700/30">
 
                 <!-- Account & Contact -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="space-y-2">
-                        <label for="email"
-                            class="text-sm font-medium text-slate-600 dark:text-slate-400">Email</label>
+                        <label for="email" class="text-sm font-medium text-slate-600 dark:text-slate-400">Email <span
+                                class="text-red-500">*</span></label>
                         <input type="email" name="email" id="email" value="{{ old('email', $parent->email) }}"
                             class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all">
                         <x-input-error :messages="$errors->get('email')" class="mt-1" />
                     </div>
                     <div class="space-y-2">
-                        <label for="phone"
-                            class="text-sm font-medium text-slate-600 dark:text-slate-400">Teléfono</label>
-                        <input type="text" name="phone" id="phone" value="{{ old('phone', $parent->phone) }}"
+                        <label for="phone" class="text-sm font-medium text-slate-600 dark:text-slate-400">Teléfono
+                            <span class="text-red-500">*</span></label>
+                        <input type="text" name="phone" id="phone"
+                            value="{{ old('phone', $parent->phone) }}" maxlength="9"
+                            oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                             class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all">
+                        <x-input-error :messages="$errors->get('phone')" class="mt-1" />
                     </div>
                     <div class="space-y-2">
                         <label for="username" class="text-sm font-medium text-slate-600 dark:text-slate-400">Usuario
                             <span class="text-red-500">*</span></label>
                         <input type="text" name="username" id="username"
-                            value="{{ old('username', $parent->username) }}" required
+                            value="{{ old('username', $parent->username) }}"
                             class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all">
                         <x-input-error :messages="$errors->get('username')" class="mt-1" />
                     </div>
@@ -123,17 +134,18 @@
                 </div>
 
                 <div class="space-y-2">
-                    <label for="address"
-                        class="text-sm font-medium text-slate-600 dark:text-slate-400">Dirección</label>
+                    <label for="address" class="text-sm font-medium text-slate-600 dark:text-slate-400">Dirección
+                        <span class="text-red-500">*</span></label>
                     <textarea name="address" id="address" rows="2"
                         class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all">{{ old('address', $parent->address) }}</textarea>
+                    <x-input-error :messages="$errors->get('address')" class="mt-1" />
                 </div>
 
                 <!-- Photo -->
                 <div class="flex items-center gap-6">
                     <div class="w-24 h-24 rounded-2xl border-2 border-slate-200 dark:border-slate-700/50 flex items-center justify-center text-slate-400 dark:text-slate-500 overflow-hidden shadow-inner bg-slate-50 dark:bg-slate-900/30"
                         id="photo-preview-container">
-                        <img src="{{ asset($parent->photo && $parent->photo != 'default.png' ? 'storage/images/' . $parent->photo : 'uploads/images/default.png') }}"
+                        <img src="{{ $parent->photo && $parent->photo != 'default.png' ? asset('storage/images/' . $parent->photo) : asset('uploads/images/default.png') }}"
                             class="w-full h-full object-cover">
                     </div>
                     <div class="flex-1">
@@ -144,7 +156,7 @@
                 </div>
 
                 <button type="submit"
-                    class="w-full py-4 bg-linear-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white rounded-2xl font-bold text-lg shadow-xl shadow-amber-500/20 active:scale-[0.98] transition-all flex items-center justify-center gap-3">
+                    class="w-full py-4 bg-amber-600 hover:bg-amber-500 text-white rounded-2xl font-bold text-lg active:scale-[0.98] transition-all flex items-center justify-center gap-3">
                     <i class="ti ti-device-floppy text-2xl"></i>
                     Actualizar Tutor
                 </button>
@@ -152,14 +164,59 @@
         </div>
     </div>
 
-    <script>
-        document.getElementById('photo').onchange = evt => {
-            const [file] = evt.target.files
-            if (file) {
-                const container = document.getElementById('photo-preview-container');
-                container.innerHTML = `<img src="${URL.createObjectURL(file)}" class="w-full h-full object-cover">`;
-                container.classList.add('border-sky-500/50');
+    @push('scripts')
+        <script>
+            document.getElementById('photo').onchange = evt => {
+                const [file] = evt.target.files
+                if (file) {
+                    const container = document.getElementById('photo-preview-container');
+                    container.innerHTML = `<img src="${URL.createObjectURL(file)}" class="w-full h-full object-cover">`;
+                    container.classList.add('border-sky-500/50');
+                }
             }
-        }
-    </script>
+
+            // Live validation logic
+            document.addEventListener('DOMContentLoaded', function() {
+                const form = document.getElementById('parents-form');
+                if (!form) return;
+
+                const fields = form.querySelectorAll('input, select, textarea');
+
+                fields.forEach(field => {
+                    const handler = () => {
+                        const parentDiv = field.closest('.space-y-2');
+                        if (!parentDiv) return;
+
+                        const errorContainer = parentDiv.querySelector('ul, .text-red-600, .text-red-500');
+                        if (!errorContainer) return;
+
+                        // Basic validation check
+                        let isValid = true;
+                        const val = field.value.trim();
+
+                        if (field.hasAttribute('required') && !val) {
+                            isValid = false;
+                        } else if (field.type === 'email' && val) {
+                            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                            if (!emailRegex.test(val)) isValid = false;
+                        } else if (field.getAttribute('minlength') && val && val.length < parseInt(field
+                                .getAttribute('minlength'))) {
+                            isValid = false;
+                        }
+
+                        if (isValid) {
+                            errorContainer.classList.add('hidden');
+                            field.classList.remove('border-red-500', 'ring-red-500/20');
+                        } else {
+                            // Keep error visible if still invalid
+                            errorContainer.classList.remove('hidden');
+                        }
+                    };
+
+                    field.addEventListener('input', handler);
+                    field.addEventListener('change', handler);
+                });
+            });
+        </script>
+    @endpush
 </x-app-layout>

@@ -16,7 +16,7 @@ class Parents extends Authenticatable
     protected $fillable = [
         'name', 'father_name', 'mother_name', 'father_profession', 
         'mother_profession', 'email', 'phone', 'address', 'photo', 
-        'username', 'password', 'usertypeID', 'create_date', 
+        'username', 'password', 'usertypeID', 'dni', 'create_date', 
         'modify_date', 'create_userID', 'create_username', 
         'create_usertype', 'active'
     ];
