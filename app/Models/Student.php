@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Student extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, \App\Traits\HasPermissions;
 
     protected $table = 'students';
     protected $primaryKey = 'studentID';
@@ -62,5 +62,10 @@ class Student extends Authenticatable
     public function transportMember()
     {
         return $this->hasOne(TransportMember::class, 'studentID', 'studentID');
+    }
+
+    public function usertype()
+    {
+        return $this->belongsTo(Usertype::class, 'usertypeID', 'usertypeID');
     }
 }

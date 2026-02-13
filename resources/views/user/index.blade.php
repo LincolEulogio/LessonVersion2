@@ -108,6 +108,30 @@
                     </thead>
                     <tbody class="divide-y divide-slate-100 dark:divide-slate-700/30">
                         @forelse ($users as $index => $user)
+                            @php
+                                $role = $usertypes->firstWhere('usertypeID', $user->usertypeID);
+                                $editRoute = match ($user->source) {
+                                    'student' => route('student.edit', $user->globalID),
+                                    'teacher' => route('teacher.edit', $user->globalID),
+                                    'parents' => route('parents.edit', $user->globalID),
+                                    'systemadmin' => route('systemadmin.edit', $user->globalID),
+                                    default => route('user.edit', $user->globalID),
+                                };
+                                $showRoute = match ($user->source) {
+                                    'student' => route('student.show', $user->globalID),
+                                    'teacher' => route('teacher.show', $user->globalID),
+                                    'parents' => route('parents.show', $user->globalID),
+                                    'systemadmin' => route('systemadmin.show', $user->globalID),
+                                    default => route('user.show', $user->globalID),
+                                };
+                                $deleteAction = match ($user->source) {
+                                    'student' => route('student.destroy', $user->globalID),
+                                    'teacher' => route('teacher.destroy', $user->globalID),
+                                    'parents' => route('parents.destroy', $user->globalID),
+                                    'systemadmin' => route('systemadmin.destroy', $user->globalID),
+                                    default => route('user.destroy', $user->globalID),
+                                };
+                            @endphp
                             <tr class="group hover:bg-slate-50 dark:hover:bg-slate-700/20 transition-all duration-200">
                                 <td class="px-8 py-5 text-slate-400 text-sm font-bold">
                                     {{ $users->firstItem() + $index }}
@@ -144,7 +168,7 @@
                                 <td class="px-6 py-5 text-center">
                                     <span
                                         class="px-3 py-1 bg-blue-500/10 text-blue-500 dark:text-blue-400 border border-blue-500/20 rounded-lg text-[10px] font-black uppercase tracking-wider">
-                                        {{ $user->usertype->usertype ?? 'N/A' }}
+                                        {{ $role->usertype ?? 'N/A' }}
                                     </span>
                                 </td>
                                 <td class="px-6 py-5 text-center">
@@ -163,25 +187,24 @@
                                 <td class="px-8 py-5 text-right">
                                     <div
                                         class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                                        <a href="{{ route('user.show', $user->userID) }}"
+                                        <a href="{{ $showRoute }}"
                                             class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-emerald-600 dark:hover:text-emerald-400 transition-all"
                                             title="Ver Perfil">
                                             <i class="ti ti-eye text-xl"></i>
                                         </a>
-                                        <a href="{{ route('user.edit', $user->userID) }}"
+                                        <a href="{{ $editRoute }}"
                                             class="p-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-500/10 text-indigo-500 hover:bg-indigo-600 hover:text-white transition-all shadow-sm"
                                             title="Editar">
                                             <i class="ti ti-edit text-xl"></i>
                                         </a>
                                         <button type="button"
-                                            onclick="confirmDelete('{{ $user->userID }}', '{{ $user->name }}')"
+                                            onclick="confirmDelete('{{ $user->globalID }}', '{{ $user->name }}', '{{ $user->source }}')"
                                             class="p-2.5 rounded-xl bg-rose-50 dark:bg-rose-500/10 text-rose-500 hover:bg-rose-600 hover:text-white transition-all shadow-sm"
                                             title="Eliminar">
                                             <i class="ti ti-trash text-xl"></i>
                                         </button>
-                                        <form id="delete-form-{{ $user->userID }}"
-                                            action="{{ route('user.destroy', $user->userID) }}" method="POST"
-                                            class="hidden">
+                                        <form id="delete-form-{{ $user->source }}-{{ $user->globalID }}"
+                                            action="{{ $deleteAction }}" method="POST" class="hidden">
                                             @csrf @method('DELETE')
                                         </form>
                                     </div>
@@ -264,7 +287,7 @@
                 }
             });
 
-            function confirmDelete(id, name) {
+            function confirmDelete(id, name, source) {
                 Swal.fire({
                     title: '¿Estás seguro?',
                     text: `Estás a punto de eliminar al usuario "${name}". Esta acción no se puede deshacer.`,
@@ -278,7 +301,7 @@
                     color: document.documentElement.classList.contains('dark') ? '#f1f5f9' : '#1e293b',
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        document.getElementById(`delete-form-${id}`).submit();
+                        document.getElementById(`delete-form-${source}-${id}`).submit();
                     }
                 });
             }

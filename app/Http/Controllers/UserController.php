@@ -17,27 +17,63 @@ class UserController extends Controller
         $active = $request->input('active');
         $usertypeID = $request->input('usertypeID');
 
-        $query = User::query();
+        $tables = [
+            ['table' => 'systemadmins', 'id' => 'systemadminID', 'source' => 'systemadmin'],
+            ['table' => 'teachers', 'id' => 'teacherID', 'source' => 'teacher'],
+            ['table' => 'students', 'id' => 'studentID', 'source' => 'student'],
+            ['table' => 'parents', 'id' => 'parentsID', 'source' => 'parents'],
+            ['table' => 'users', 'id' => 'userID', 'source' => 'user'],
+        ];
 
-        if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('dni', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%")
-                    ->orWhere('phone', 'like', "%{$search}%")
-                    ->orWhere('username', 'like', "%{$search}%");
-            });
+        $queries = [];
+
+        foreach ($tables as $t) {
+            $q = \DB::table($t['table'])
+                ->select(
+                    $t['id'] . ' as globalID',
+                    'name',
+                    'username',
+                    'email',
+                    'dni',
+                    'phone',
+                    'photo',
+                    'usertypeID',
+                    'active',
+                    \DB::raw("'".$t['source']."' as source")
+                );
+            
+            if ($active !== null && $active !== '') {
+                $q->where('active', $active);
+            }
+
+            if ($usertypeID) {
+                $q->where('usertypeID', $usertypeID);
+            }
+
+            if ($search) {
+                $q->where(function ($query) use ($search) {
+                    $query->where('name', 'like', "%{$search}%")
+                        ->orWhere('dni', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%")
+                        ->orWhere('phone', 'like', "%{$search}%")
+                        ->orWhere('username', 'like', "%{$search}%");
+                });
+            }
+
+            $queries[] = $q;
         }
 
-        if ($active !== null && $active !== '') {
-            $query->where('active', $active);
+        $mainQuery = array_shift($queries);
+        foreach ($queries as $unionQuery) {
+            $mainQuery->union($unionQuery);
         }
 
-        if ($usertypeID) {
-            $query->where('usertypeID', $usertypeID);
-        }
+        // Wrap in a subquery to allow pagination and sorting
+        $users = \DB::table(\DB::raw("({$mainQuery->toSql()}) as combined_users"))
+            ->mergeBindings($mainQuery)
+            ->paginate(10)
+            ->withQueryString();
 
-        $users = $query->paginate(10)->withQueryString();
         $usertypes = Usertype::all();
 
         return view('user.index', compact('users', 'search', 'active', 'usertypes', 'usertypeID'));

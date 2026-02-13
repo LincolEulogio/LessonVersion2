@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Traits\HasPermissions;
 
 class Parents extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasPermissions;
 
     protected $table = 'parents';
     protected $primaryKey = 'parentsID';
@@ -36,5 +37,10 @@ class Parents extends Authenticatable
     public function students()
     {
         return $this->hasMany(Student::class, 'parentID', 'parentsID');
+    }
+
+    public function usertype()
+    {
+        return $this->belongsTo(Usertype::class, 'usertypeID', 'usertypeID');
     }
 }

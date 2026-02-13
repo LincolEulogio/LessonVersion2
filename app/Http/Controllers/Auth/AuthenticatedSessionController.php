@@ -48,7 +48,13 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
-        Auth::guard('web')->logout();
+        $guards = ['systemadmin', 'teacher', 'student', 'parent', 'web'];
+        
+        foreach ($guards as $guard) {
+            if (Auth::guard($guard)->check()) {
+                Auth::guard($guard)->logout();
+            }
+        }
 
         $request->session()->invalidate();
 

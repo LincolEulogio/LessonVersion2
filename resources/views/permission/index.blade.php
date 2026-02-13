@@ -89,11 +89,17 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100 dark:divide-slate-700/50">
-                            @foreach ($modules as $module)
+                            @foreach ($modules as $index => $module)
                                 @php
                                     $moduleSlug = Str::slug($module['name'], '_');
+                                    // Alternating background color as seen in images (light green/white)
+                                    $bgColor =
+                                        $index % 2 === 0
+                                            ? 'bg-emerald-50/30 dark:bg-emerald-500/5'
+                                            : 'bg-white dark:bg-transparent';
                                 @endphp
-                                <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-900/20 transition-colors">
+                                <tr
+                                    class="{{ $bgColor }} hover:bg-slate-50/50 dark:hover:bg-slate-900/20 transition-colors">
                                     <td class="px-8 py-5">
                                         <input type="checkbox"
                                             class="moduleGroups rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
@@ -114,10 +120,7 @@
                                             @if (in_array($action, $module['actions']))
                                                 @php
                                                     $permName = $moduleSlug . '_' . $action;
-                                                    // We need to check if this permission exists and is assigned
-                                                    // For now, names are the keys in DB as well
                                                     $isAssigned = false;
-                                                    // Find the permission ID for this name to check if assigned
                                                     $currentPerm = \App\Models\Permission::where(
                                                         'name',
                                                         $permName,

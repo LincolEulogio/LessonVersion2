@@ -1,62 +1,18 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Database\Seeders;
 
+use Illuminate\Database\Seeder;
 use App\Models\Permission;
 use App\Models\PermissionRelationship;
 use App\Models\Usertype;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
-class PermissionController extends Controller
+class DefaultPermissionsSeeder extends Seeder
 {
-    public function index(Request $request)
+    public function run()
     {
-        $usertypeID = $request->get('usertypeID', 1); // Default to Admin
-        
-        // Ordered as requested: Administrador, Docente, Estudiante, Padres, Secretaria, Bibliotecario
-        // Excluding English duplicates: Admin, Teacher, Student, Parent, Accountant, Librarian, Receptionist
-        $usertypes = Usertype::whereNotIn('usertype', ['Admin', 'Teacher', 'Student', 'Parent', 'Accountant', 'Librarian', 'Receptionist'])
-            ->orderByRaw("FIELD(usertype, 'Administrador', 'Docente', 'Estudiante', 'Padres', 'Secretaria', 'Bibliotecario') ASC, usertypeID ASC")
-            ->get();
-
-        $assignedPermissionIDs = PermissionRelationship::where('usertypeID', $usertypeID)
-            ->pluck('permissionID')
-            ->toArray();
-
-        $modules = $this->getModuleDefinitions();
-
-        return view('permission.index', compact('usertypes', 'usertypeID', 'modules', 'assignedPermissionIDs'));
-    }
-
-    public function store(Request $request)
-    {
-        $usertypeID = $request->usertypeID;
-        $permissions = $request->permissions ?? [];
-
-        DB::beginTransaction();
-        try {
-            PermissionRelationship::where('usertypeID', $usertypeID)->delete();
-
-            foreach ($permissions as $permissionName) {
-                $permission = Permission::firstOrCreate(['name' => $permissionName]);
-                PermissionRelationship::create([
-                    'usertypeID' => $usertypeID,
-                    'permissionID' => $permission->permissionID
-                ]);
-            }
-
-            DB::commit();
-            return redirect()->back()->with('success', 'Permisos actualizados correctamente.');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return redirect()->back()->with('error', 'Error al actualizar los permisos: ' . $e->getMessage());
-        }
-    }
-
-    private function getModuleDefinitions()
-    {
-        return [
+        $modules = [
             ['name' => 'Dashboard', 'actions' => ['view']],
             ['name' => 'Estudiante', 'actions' => ['add', 'edit', 'delete', 'view']],
             ['name' => 'Padres', 'actions' => ['add', 'edit', 'delete', 'view']],
@@ -110,5 +66,90 @@ class PermissionController extends Controller
             ['name' => 'Configuración de pago', 'actions' => ['edit', 'view']],
             ['name' => 'Configuración sms', 'actions' => ['edit', 'view']],
         ];
+
+        // Ensure all permutations exist
+        foreach ($modules as $m) {
+            $slug = Str::slug($m['name'], '_');
+            foreach ($m['actions'] as $a) {
+                Permission::firstOrCreate(['name' => $slug . '_' . $a]);
+            }
+        }
+
+        $roles = [
+            'Administrador' => 'all',
+            'Docente' => [
+                'dashboard_view', 'estudiante_view', 'docente_view', 
+                'plan_de_estudios_add', 'plan_de_estudios_edit', 'plan_de_estudios_delete',
+                'asignacion_add', 'asignacion_edit', 'asignacion_view', 'asignacion_delete',
+                'asistencia_de_estudiante_add', 'asistencia_de_estudiante_view',
+                'asistencia_docente_view', 'asistencia_examen_add',
+                'promedio_add', 'promedio_view',
+                'multimedia_add', 'multimedia_delete',
+                'noticias_view', 'evento_view', 'vacaciones_view'
+            ],
+            'Estudiante' => [
+                'dashboard_view', 'docente_view', 'asignacion_view',
+                'libro_de_publicacion_view', 'factura_view',
+                'noticias_view', 'evento_view', 'vacaciones_view', 'horario_view'
+            ],
+            'Padres' => [
+                'dashboard_view', 'docente_view', 'asistencia_de_estudiante_view',
+                'promedio_view', 'miembro_de_la_biblioteca_view', 'libro_de_publicacion_view',
+                'miembro_transporte_view', 'miembro_hospedaje_view',
+                'factura_view', 'noticias_view', 'evento_view', 'vacaciones_view'
+            ],
+            'Secretaria' => [
+                'dashboard_view', 'docente_view',
+                'miembro_transporte_add', 'miembro_transporte_edit', 'miembro_transporte_delete', 'miembro_transporte_view',
+                'miembro_hospedaje_add', 'miembro_hospedaje_edit', 'miembro_hospedaje_delete', 'miembro_hospedaje_view',
+                'tipo_de_tarifa_add', 'tipo_de_tarifa_edit', 'tipo_de_tarifa_delete',
+                'factura_add', 'factura_edit', 'factura_delete', 'factura_view',
+                'historial_de_pago_edit', 'historial_de_pago_delete',
+                'gasto_add', 'gasto_edit', 'gasto_delete',
+                'noticias_view', 'evento_view', 'vacaciones_view'
+            ],
+            'Bibliotecario' => [
+                'dashboard_view', 'docente_view',
+                'miembro_de_la_biblioteca_add', 'miembro_de_la_biblioteca_edit', 'miembro_de_la_biblioteca_delete', 'miembro_de_la_biblioteca_view',
+                'libros_add', 'libros_edit', 'libros_delete',
+                'libro_de_publicacion_add', 'libro_de_publicacion_edit', 'libro_de_publicacion_view',
+                'noticias_view', 'evento_view', 'vacaciones_view'
+            ]
+        ];
+
+        foreach ($roles as $roleName => $perms) {
+            $userType = Usertype::firstOrCreate(
+                ['usertype' => $roleName],
+                [
+                    'create_date' => now(),
+                    'modify_date' => now(),
+                    'create_userID' => 1,
+                    'create_username' => 'system',
+                    'create_usertype' => 'Admin'
+                ]
+            );
+
+            PermissionRelationship::where('usertypeID', $userType->usertypeID)->delete();
+
+            if ($perms === 'all') {
+                $allPerms = Permission::all();
+                foreach ($allPerms as $p) {
+                    PermissionRelationship::create([
+                        'usertypeID' => $userType->usertypeID,
+                        'permissionID' => $p->permissionID
+                    ]);
+                }
+            } else {
+                foreach ($perms as $pName) {
+                    $p = Permission::where('name', $pName)->first();
+                    if ($p) {
+                        PermissionRelationship::create([
+                            'usertypeID' => $userType->usertypeID,
+                            'permissionID' => $p->permissionID
+                        ]);
+                    }
+                }
+            }
+        }
     }
 }

@@ -105,15 +105,25 @@
                             class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-[#0f172a]"></span>
                     </button>
 
+                    @php
+                        $user = null;
+                        foreach (['systemadmin', 'teacher', 'student', 'parent', 'web'] as $guard) {
+                            if (Auth::guard($guard)->check()) {
+                                $user = Auth::guard($guard)->user();
+                                break;
+                            }
+                        }
+                    @endphp
+
                     <!-- User Profile Dropdown -->
                     <div x-data="{ open: false }" class="relative">
                         <button @click="open = !open" @click.away="open = false"
                             class="flex items-center gap-3 px-3 py-1.5 bg-slate-100 dark:bg-slate-800/50 rounded-full border border-slate-200 dark:border-slate-700/50 hover:bg-slate-200 dark:hover:bg-slate-800 transition-all">
                             <span
-                                class="hidden sm:inline text-sm font-bold text-slate-600 dark:text-slate-300">{{ Auth::user()->name }}</span>
+                                class="hidden sm:inline text-sm font-bold text-slate-600 dark:text-slate-300">{{ $user->name ?? 'Usuario' }}</span>
                             <div
                                 class="h-8 w-8 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white font-black text-xs uppercase shadow-sm">
-                                {{ substr(Auth::user()->name, 0, 2) }}
+                                {{ substr($user->name ?? 'U', 0, 2) }}
                             </div>
                         </button>
 
@@ -131,7 +141,7 @@
                                     class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">
                                     Conectado como</p>
                                 <p class="text-sm font-bold text-slate-900 dark:text-white truncate">
-                                    {{ Auth::user()->email }}</p>
+                                    {{ $user->email ?? '---' }}</p>
                             </div>
                             <div class="py-1">
                                 <a href="{{ route('profile.edit') }}"
