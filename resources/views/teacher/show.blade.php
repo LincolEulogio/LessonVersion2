@@ -8,14 +8,26 @@
                     alt="{{ $teacher->name }}">
                 <div>
                     <h1 class="text-3xl font-bold text-slate-900 dark:text-white">{{ $teacher->name }}</h1>
-                    <div class="mt-2 flex items-center gap-3">
+                    <div class="mt-2 flex items-center gap-3 flex-wrap">
                         <span
                             class="px-3 py-1 bg-emerald-600/10 dark:bg-emerald-600/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 rounded-lg text-xs font-bold uppercase tracking-wider">
                             {{ $teacher->designation }}
                         </span>
+                        @if ($teacher->active)
+                            <span
+                                class="px-3 py-1 bg-green-500/10 text-green-500 border border-green-500/20 rounded-lg text-xs font-bold uppercase tracking-wider">
+                                {{ __('Activo') }}
+                            </span>
+                        @else
+                            <span
+                                class="px-3 py-1 bg-red-500/10 text-red-500 border border-red-500/20 rounded-lg text-xs font-bold uppercase tracking-wider">
+                                {{ __('Inactivo') }}
+                            </span>
+                        @endif
                         <span class="text-slate-300 dark:text-slate-500">•</span>
-                        <span class="text-slate-500 dark:text-slate-400 text-sm italic">Miembro desde:
-                            {{ \Carbon\Carbon::parse($teacher->jod)->format('M Y') }}</span>
+                        <span class="text-slate-500 dark:text-slate-400 text-sm italic">
+                            {{ __('Miembro desde') }}: {{ \Carbon\Carbon::parse($teacher->jod)->format('M Y') }}
+                        </span>
                     </div>
                 </div>
             </div>

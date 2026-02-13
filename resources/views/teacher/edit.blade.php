@@ -3,10 +3,7 @@
         <!-- Header -->
         <div class="mb-8 flex items-center justify-between">
             <div>
-                <h1
-                    class="text-3xl font-bold bg-linear-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent">
-                    {{ __('Editar Docente') }}
-                </h1>
+                <h1 class="text-3xl font-bold">{{ __('Editar Docente') }}</h1>
                 <p class="mt-2 text-slate-500 dark:text-slate-400">Actualizando el perfil de: <span
                         class="text-emerald-600 dark:text-emerald-400 font-bold">{{ $teacher->name }}</span></p>
             </div>
@@ -37,7 +34,8 @@
                             <label for="name" class="text-sm font-medium text-slate-600 dark:text-slate-400">Nombre
                                 Completo <span class="text-red-500">*</span></label>
                             <input type="text" name="name" id="name"
-                                value="{{ old('name', $teacher->name) }}" required
+                                value="{{ old('name', $teacher->name) }}"
+                                oninput="this.value = this.value.replace(/[0-9]/g, '')"
                                 class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all">
                             <x-input-error :messages="$errors->get('name')" class="mt-1" />
                         </div>
@@ -48,7 +46,8 @@
                                 class="text-sm font-medium text-slate-600 dark:text-slate-400">Cargo / Especialidad
                                 <span class="text-red-500">*</span></label>
                             <input type="text" name="designation" id="designation"
-                                value="{{ old('designation', $teacher->designation) }}" required
+                                value="{{ old('designation', $teacher->designation) }}"
+                                oninput="this.value = this.value.replace(/[0-9]/g, '')"
                                 class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all">
                             <x-input-error :messages="$errors->get('designation')" class="mt-1" />
                         </div>
@@ -58,7 +57,7 @@
                             <label for="dni" class="text-sm font-medium text-slate-600 dark:text-slate-400">DNI /
                                 Documento <span class="text-red-500">*</span></label>
                             <input type="text" name="dni" id="dni" value="{{ old('dni', $teacher->dni) }}"
-                                required
+                                maxlength="8" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                                 class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all">
                             <x-input-error :messages="$errors->get('dni')" class="mt-1" />
                         </div>
@@ -68,7 +67,6 @@
                             <label for="jod" class="text-sm font-medium text-slate-600 dark:text-slate-400">Fecha
                                 de Ingreso <span class="text-red-500">*</span></label>
                             <input type="date" name="jod" id="jod" value="{{ old('jod', $teacher->jod) }}"
-                                required
                                 class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all [color-scheme:light] dark:[color-scheme:dark]">
                             <x-input-error :messages="$errors->get('jod')" class="mt-1" />
                         </div>
@@ -89,7 +87,6 @@
                             <label for="dob" class="text-sm font-medium text-slate-600 dark:text-slate-400">Fecha
                                 de Nacimiento <span class="text-red-500">*</span></label>
                             <input type="date" name="dob" id="dob" value="{{ old('dob', $teacher->dob) }}"
-                                required
                                 class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all [color-scheme:light] dark:[color-scheme:dark]">
                             <x-input-error :messages="$errors->get('dob')" class="mt-1" />
                         </div>
@@ -98,7 +95,7 @@
                         <div class="space-y-2">
                             <label for="sex" class="text-sm font-medium text-slate-600 dark:text-slate-400">Género
                                 <span class="text-red-500">*</span></label>
-                            <select name="sex" id="sex" required
+                            <select name="sex" id="sex"
                                 class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all cursor-pointer">
                                 <option value="Masculino"
                                     {{ old('sex', $teacher->sex) == 'Masculino' ? 'selected' : '' }}>Masculino</option>
@@ -113,7 +110,7 @@
                             <label for="email" class="text-sm font-medium text-slate-600 dark:text-slate-400">Email
                                 <span class="text-red-500">*</span></label>
                             <input type="email" name="email" id="email"
-                                value="{{ old('email', $teacher->email) }}" required
+                                value="{{ old('email', $teacher->email) }}"
                                 class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all">
                             <x-input-error :messages="$errors->get('email')" class="mt-1" />
                         </div>
@@ -121,13 +118,24 @@
                         <!-- Phone -->
                         <div class="space-y-2">
                             <label for="phone"
-                                class="text-sm font-medium text-slate-600 dark:text-slate-400">Teléfono</label>
+                                class="text-sm font-medium text-slate-600 dark:text-slate-400">Teléfono <span
+                                    class="text-red-500">*</span></label>
                             <input type="text" name="phone" id="phone"
-                                value="{{ old('phone', $teacher->phone) }}"
+                                value="{{ old('phone', $teacher->phone) }}" maxlength="9"
+                                oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                                 class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all">
                             <x-input-error :messages="$errors->get('phone')" class="mt-1" />
                         </div>
                     </div>
+                </div>
+
+                <!-- Address Section (Full Width) -->
+                <div class="space-y-2 mt-6">
+                    <label for="address" class="text-sm font-medium text-slate-600 dark:text-slate-400">Dirección
+                        Domiciliaria <span class="text-red-500">*</span></label>
+                    <textarea name="address" id="address" rows="2"
+                        class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all">{{ old('address', $teacher->address) }}</textarea>
+                    <x-input-error :messages="$errors->get('address')" class="mt-1" />
                 </div>
 
                 <hr class="border-slate-700/30">
@@ -145,7 +153,7 @@
                                 class="text-sm font-medium text-slate-600 dark:text-slate-400">Usuario <span
                                     class="text-red-500">*</span></label>
                             <input type="text" name="username" id="username"
-                                value="{{ old('username', $teacher->username) }}" required
+                                value="{{ old('username', $teacher->username) }}"
                                 class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all">
                             <x-input-error :messages="$errors->get('username')" class="mt-1" />
                         </div>
@@ -188,7 +196,7 @@
                 <!-- Submit Button -->
                 <div class="pt-6">
                     <button type="submit"
-                        class="w-full py-4 bg-linear-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white rounded-2xl font-bold text-lg shadow-xl shadow-amber-500/20 active:scale-[0.98] transition-all flex items-center justify-center gap-3">
+                        class="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl font-bold text-lg active:scale-[0.98] transition-all flex items-center justify-center gap-3">
                         <i class="ti ti-device-floppy text-2xl"></i>
                         Actualizar Docente
                     </button>
@@ -203,7 +211,8 @@
             const [file] = evt.target.files
             if (file) {
                 const container = document.getElementById('photo-preview-container');
-                container.innerHTML = `<img src="${URL.createObjectURL(file)}" class="w-full h-full object-cover">`;
+                container.innerHTML =
+                    `<img src="${URL.createObjectURL(file)}" class="w-full h-full object-cover shadow-lg rounded-xl">`;
                 container.classList.add('border-emerald-500/50');
             }
         }
