@@ -38,7 +38,7 @@ class ExamScheduleController extends Controller
         $validated = $request->validate([
             'examID' => 'required|exists:exam,examID',
             'classesID' => 'required|exists:classes,classesID',
-            'sectionID' => 'required|exists:sections,sectionID',
+            'sectionID' => 'required|exists:section,sectionID',
             'subjectID' => 'required|exists:subject,subjectID',
             'edate' => 'required|date',
             'examfrom' => 'required|string|max:10',
@@ -51,6 +51,12 @@ class ExamScheduleController extends Controller
 
         return redirect()->route('examschedule.index', ['classesID' => $request->classesID])
             ->with('success', 'Horario de examen creado correctamente.');
+    }
+
+    public function show($id)
+    {
+        $schedule = ExamSchedule::with(['exam', 'classes', 'section', 'subject'])->findOrFail($id);
+        return view('examschedule.show', compact('schedule'));
     }
 
     public function edit($id)
@@ -71,7 +77,7 @@ class ExamScheduleController extends Controller
         $validated = $request->validate([
             'examID' => 'required|exists:exam,examID',
             'classesID' => 'required|exists:classes,classesID',
-            'sectionID' => 'required|exists:sections,sectionID',
+            'sectionID' => 'required|exists:section,sectionID',
             'subjectID' => 'required|exists:subject,subjectID',
             'edate' => 'required|date',
             'examfrom' => 'required|string|max:10',

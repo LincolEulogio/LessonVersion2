@@ -63,21 +63,29 @@ class ExamAttendanceController extends Controller
             'status' => 'required|in:P,A',
         ]);
 
+        $student = Student::findOrFail($request->studentID);
+        $schoolyearID = $student->schoolyearID ?? 1;
+
         $attendance = Eattendance::updateOrCreate([
             'examID' => $request->examID,
             'classesID' => $request->classesID,
             'sectionID' => $request->sectionID,
             'subjectID' => $request->subjectID,
             'studentID' => $request->studentID,
-            'schoolyearID' => 1,
-            'year' => date('Y'),
+            'schoolyearID' => $schoolyearID,
         ], [
+            's_name' => $student->name,
             'eattendance' => $request->status,
             'date' => date('Y-m-d'),
+            'year' => date('Y'),
         ]);
 
         if ($request->ajax()) {
-            return response()->json(['success' => true]);
+            return response()->json([
+                'success' => true,
+                'status' => $request->status,
+                'message' => __('Asistencia registrada correctamente')
+            ]);
         }
 
         return back()->with('success', 'Asistencia de examen guardada.');

@@ -32,6 +32,12 @@ class ExamController extends Controller
         return redirect()->route('exam.index')->with('success', 'Examen creado exitosamente.');
     }
 
+    public function show(string $id)
+    {
+        $exam = Exam::findOrFail($id);
+        return view('exam.show', compact('exam'));
+    }
+
     public function edit(string $id)
     {
         $exam = Exam::findOrFail($id);

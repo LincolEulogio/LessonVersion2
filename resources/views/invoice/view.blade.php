@@ -27,7 +27,7 @@
                         Pendiente</p>
                     <p
                         class="text-xl font-black {{ $balance > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-emerald-600 dark:text-emerald-400' }}">
-                        ${{ number_format($balance, 2) }}</p>
+                        ${{ number_format((float) $balance, 2) }}</p>
                 </div>
                 @if ($balance > 0)
                     <a href="{{ route('payment.create', ['invoiceID' => $invoice->invoiceID]) }}"
@@ -120,7 +120,7 @@
                                             </td>
                                             <td
                                                 class="px-8 py-4 text-right font-black text-slate-900 dark:text-white text-sm">
-                                                ${{ number_format($payment->paymentamount, 2) }}
+                                                ${{ number_format((float) $payment->paymentamount, 2) }}
                                             </td>
                                             <td class="px-8 py-4 text-right">
                                                 <form action="{{ route('payment.destroy', $payment->paymentID) }}"
@@ -163,22 +163,24 @@
                                 class="flex justify-between items-center bg-white/5 p-3 rounded-2xl border border-white/10">
                                 <span class="text-xs text-indigo-100/70 font-bold">Monto Base</span>
                                 <span
-                                    class="text-sm font-black text-white">${{ number_format($invoice->amount, 2) }}</span>
+                                    class="text-sm font-black text-white">${{ number_format((float) $invoice->amount, 2) }}</span>
                             </div>
                             <div
                                 class="flex justify-between items-center bg-white/5 p-3 rounded-2xl border border-white/10">
                                 <span class="text-xs text-indigo-100/70 font-bold">Descuento
                                     ({{ $invoice->discount }}%)</span>
                                 <span
-                                    class="text-sm font-black text-emerald-300">-${{ number_format($discountAmount, 2) }}</span>
+                                    class="text-sm font-black text-emerald-300">-${{ number_format((float) $discountAmount, 2) }}</span>
                             </div>
                             <div class="pt-4 border-t border-white/10 flex justify-between items-center">
                                 <span class="text-sm font-black text-white uppercase tracking-tight">Total Neto</span>
-                                <span class="text-2xl font-black text-white">${{ number_format($netAmount, 2) }}</span>
+                                <span
+                                    class="text-2xl font-black text-white">${{ number_format((float) $netAmount, 2) }}</span>
                             </div>
                             <div class="pt-2 flex justify-between items-center text-indigo-100/80">
                                 <span class="text-xs font-bold italic">Total Pagado</span>
-                                <span class="text-sm font-black">-${{ number_format($invoice->paidamount, 2) }}</span>
+                                <span
+                                    class="text-sm font-black">-${{ number_format((float) $invoice->paidamount, 2) }}</span>
                             </div>
                         </div>
 
@@ -187,7 +189,7 @@
                                 <span class="text-[10px] font-black text-indigo-100/60 uppercase tracking-widest">Saldo
                                     Restante</span>
                                 <span
-                                    class="text-3xl font-black text-white mt-1">${{ number_format($balance, 2) }}</span>
+                                    class="text-3xl font-black text-white mt-1">${{ number_format((float) $balance, 2) }}</span>
                             </div>
                         </div>
                     </div>

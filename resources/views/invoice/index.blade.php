@@ -91,7 +91,7 @@
                                 <td class="px-6 py-4">
                                     <div class="flex flex-col">
                                         <span
-                                            class="text-xs font-black text-slate-900 dark:text-white">${{ number_format($netAmount, 2) }}</span>
+                                            class="text-xs font-black text-slate-900 dark:text-white">${{ number_format((float) $netAmount, 2) }}</span>
                                         @if ($invoice->discount > 0)
                                             <span
                                                 class="text-[9px] font-bold text-emerald-500 uppercase tracking-tight">-{{ $invoice->discount }}%
@@ -101,7 +101,7 @@
                                 </td>
                                 <td class="px-6 py-4">
                                     <span
-                                        class="text-xs font-bold text-slate-600 dark:text-slate-400">${{ number_format($invoice->paidamount, 2) }}</span>
+                                        class="text-xs font-bold text-slate-600 dark:text-slate-400">${{ number_format((float) $invoice->paidamount, 2) }}</span>
                                 </td>
                                 <td class="px-6 py-4">
                                     @if ($invoice->status == 0)

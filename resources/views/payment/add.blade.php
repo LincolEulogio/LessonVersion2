@@ -56,7 +56,7 @@
                                 class="text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">
                                 Saldo Pendiente</p>
                             <p class="text-2xl font-black text-slate-900 dark:text-white">
-                                ${{ number_format($balance, 2) }}</p>
+                                ${{ number_format((float) $balance, 2) }}</p>
                         </div>
                     </div>
                 @else
@@ -69,7 +69,8 @@
                             <option value="">Seleccione factura pendiente...</option>
                             @foreach (\App\Models\Invoice::where('status', '<', 2)->with('student')->get() as $inv)
                                 <option value="{{ $inv->invoiceID }}">{{ $inv->student->name }} - {{ $inv->feetypes }}
-                                    (#{{ $inv->invoiceID }})</option>
+                                    (#{{ $inv->invoiceID }})
+                                </option>
                             @endforeach
                         </select>
                     </div>

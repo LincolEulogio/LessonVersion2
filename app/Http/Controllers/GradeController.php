@@ -33,6 +33,12 @@ class GradeController extends Controller
         return redirect()->route('grade.index')->with('success', 'Grado creado correctamente.');
     }
 
+    public function show(string $id)
+    {
+        $grade = Grade::findOrFail($id);
+        return view('grade.show', compact('grade'));
+    }
+
     public function edit(string $id)
     {
         $grade = Grade::findOrFail($id);

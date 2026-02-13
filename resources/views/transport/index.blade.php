@@ -79,7 +79,7 @@
                                     <div class="flex justify-center">
                                         <span
                                             class="inline-flex items-center px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-black text-xs border border-emerald-100 dark:border-emerald-500/20 shadow-sm">
-                                            ${{ number_format($transport->cost, 2) }}
+                                            ${{ number_format((float) $transport->cost, 2) }}
                                         </span>
                                     </div>
                                 </td>
