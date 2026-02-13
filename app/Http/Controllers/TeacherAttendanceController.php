@@ -10,77 +10,137 @@ use Carbon\Carbon;
 
 class TeacherAttendanceController extends Controller
 {
-    public function index()
+    /**
+     * Display selection form or dashboard for teacher attendance.
+     */
+    public function index(Request $request)
     {
-        $teachers = Teacher::where('active', 1)->get();
+        $teachers = Teacher::where('active', 1)->orderBy('name')->get();
         return view('teacher_attendance.index', compact('teachers'));
     }
 
+    /**
+     * Show form for marking teacher attendance on a specific date.
+     */
     public function add(Request $request)
     {
-        $date = $request->get('date', date('d-m-Y'));
+        $dateInput = $request->get('date', date('d-m-Y'));
+        
         try {
-            $carbonDate = Carbon::createFromFormat('d-m-Y', $date);
+            $carbonDate = Carbon::createFromFormat('d-m-Y', $dateInput);
         } catch (\Exception $e) {
-            $date = date('d-m-Y');
-            $carbonDate = Carbon::createFromFormat('d-m-Y', $date);
+            $dateInput = date('d-m-Y');
+            $carbonDate = Carbon::createFromFormat('d-m-Y', $dateInput);
         }
         
-        $day = $carbonDate->day;
+        $dayNum = $carbonDate->day;
         $monthyear = $carbonDate->format('m-Y');
-        $aday = "a" . $day;
+        $aday = "a" . $dayNum;
 
-        $teachers = Teacher::where('active', 1)->get();
-        $attendances = Tattendance::where('monthyear', $monthyear)->get()->keyBy('teacherID');
+        $teachers = Teacher::where('active', 1)->orderBy('name')->get();
+        $schoolyearID = session('default_schoolyearID') ?? 1;
+        
+        $attendances = Tattendance::where('monthyear', $monthyear)
+            ->where('schoolyearID', $schoolyearID)
+            ->get()
+            ->keyBy('teacherID');
 
-        return view('teacher_attendance.add', compact('date', 'day', 'monthyear', 'aday', 'teachers', 'attendances'));
+        return view('teacher_attendance.add', compact('dateInput', 'dayNum', 'monthyear', 'aday', 'teachers', 'attendances'));
     }
 
+    /**
+     * Save/Update attendance status for a single teacher.
+     */
     public function save(Request $request)
     {
         $request->validate([
             'teacherID' => 'required|exists:teachers,teacherID',
-            'date' => 'required|date_format:d-m-Y',
-            'status' => 'required|in:P,A,L',
+            'date' => 'required|string',
+            'status' => 'required|in:P,A,L,N', // P: Presente, A: Ausente, L: Tarde, N: Ninguno/Limpiar
+        ], [
+            'teacherID.required' => 'El ID del docente es obligatorio.',
+            'teacherID.exists' => 'El docente seleccionado no existe.',
+            'date.required' => 'La fecha es obligatoria.',
+            'status.required' => 'El estado de asistencia es obligatorio.',
+            'status.in' => 'El estado seleccionado no es válido.',
         ]);
 
-        $carbonDate = Carbon::createFromFormat('d-m-Y', $request->date);
-        $day = $carbonDate->day;
+        try {
+            $carbonDate = Carbon::createFromFormat('d-m-Y', $request->date);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => 'El formato de fecha no es válido (d-m-Y).'
+            ], 400);
+        }
+
+        $dayNum = $carbonDate->day;
         $monthyear = $carbonDate->format('m-Y');
-        $aday = "a" . $day;
+        $aday = "a" . $dayNum;
+        $schoolyearID = session('default_schoolyearID') ?? 1;
+        
+        // Si el estado es 'N', limpiamos el registro (ponemos null)
+        $statusValue = ($request->status === 'N') ? null : $request->status;
 
         $attendance = Tattendance::firstOrCreate([
             'teacherID' => $request->teacherID,
             'monthyear' => $monthyear,
-            'schoolyearID' => 1,
+            'schoolyearID' => $schoolyearID,
         ], [
-            'usertypeID' => 2,
+            'usertypeID' => 2, // Tipo Docente
             'create_date' => now(),
             'modify_date' => now(),
             'create_userID' => Auth::id(),
             'create_usertypeID' => Auth::user()->usertypeID ?? 1,
+            'create_username' => Auth::user()->username,
+            'create_usertype' => Auth::user()->usertype->usertype ?? 'Admin',
         ]);
 
-        $attendance->$aday = $request->status;
+        $attendance->$aday = $statusValue;
         $attendance->modify_date = now();
         $attendance->save();
 
         if ($request->ajax()) {
-            return response()->json(['success' => true]);
+            return response()->json([
+                'success' => true,
+                'message' => 'Asistencia registrada correctamente.'
+            ]);
         }
 
-        return back()->with('success', 'Asistencia de docente guardada.');
+        return back()->with('success', 'Asistencia de docente actualizada correctamente.');
     }
 
+    /**
+     * Show monthly attendance report for a specific teacher.
+     */
     public function show($id, Request $request)
     {
         $teacher = Teacher::findOrFail($id);
-        $monthyear = $request->get('monthyear', date('m-Y'));
+        $monthyearInput = $request->get('monthyear', date('m-Y'));
+        
+        // Validar formato monthyear si es provisto
+        if ($request->has('monthyear')) {
+            try {
+                Carbon::createFromFormat('m-Y', $monthyearInput);
+            } catch (\Exception $e) {
+                $monthyearInput = date('m-Y');
+            }
+        }
+
+        $schoolyearID = session('default_schoolyearID') ?? 1;
         
         $attendances = Tattendance::where('teacherID', $id)
-            ->where('monthyear', $monthyear)
+            ->where('monthyear', $monthyearInput)
+            ->where('schoolyearID', $schoolyearID)
             ->get();
 
-        return view('teacher_attendance.show', compact('teacher', 'attendances', 'monthyear'));
+        try {
+            $date = Carbon::createFromFormat('m-Y', $monthyearInput);
+            $daysInMonth = $date->daysInMonth;
+        } catch (\Exception $e) {
+            $daysInMonth = 31;
+        }
+
+        return view('teacher_attendance.show', compact('teacher', 'attendances', 'monthyearInput', 'daysInMonth'));
     }
 }

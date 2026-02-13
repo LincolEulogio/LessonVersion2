@@ -28,7 +28,7 @@
         ];
     @endphp
 
-    <div class="py-10 px-4 sm:px-6 lg:px-8 w-full max-w-7xl mx-auto">
+    <div class="py-10 px-4 sm:px-6 lg:px-8 w-full mx-auto">
         <!-- Dashboard Header -->
         <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div class="space-y-2">

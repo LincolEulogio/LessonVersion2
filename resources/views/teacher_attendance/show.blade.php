@@ -1,128 +1,229 @@
 <x-app-layout>
-    <div class="py-10 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
-        <!-- Profile & Month Selector -->
-        <div class="flex flex-col md:flex-row items-center justify-between gap-8 mb-10">
-            <div class="flex items-center gap-6 text-center md:text-left">
-                <div class="w-24 h-24 rounded-[2rem] bg-white dark:bg-slate-800 shadow-2xl p-1">
-                    <img src="{{ asset($teacher->photo ? 'storage/images/' . $teacher->photo : 'uploads/images/default.png') }}"
-                        class="w-full h-full object-cover rounded-[1.8rem]">
-                </div>
-                <div>
-                    <h1 class="text-3xl font-black text-slate-900 dark:text-white tracking-tight uppercase">
-                        {{ $teacher->name }}</h1>
-                    <div class="flex flex-wrap items-center gap-3 mt-2 justify-center md:justify-start">
-                        <span
-                            class="px-3 py-1 bg-indigo-100 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-lg text-[10px] font-black uppercase tracking-widest">{{ $teacher->designation }}</span>
-                        <span class="text-slate-400 font-mono text-xs uppercase tracking-widest font-black">DNI:
-                            {{ $teacher->dni }}</span>
-                    </div>
-                </div>
+    <div class="py-10 px-4 sm:px-6 lg:px-8 w-full max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <div class="space-y-1">
+                <nav class="flex items-center gap-3 text-slate-400 mb-2">
+                    <a href="{{ route('tattendance.index') }}" class="hover:text-emerald-500 transition-colors">
+                        <i class="ti ti-user-check text-lg"></i>
+                    </a>
+                    <i class="ti ti-chevron-right text-xs"></i>
+                    <span
+                        class="text-xs font-black uppercase tracking-[0.2em] text-emerald-500">{{ __('Reporte de Asistencia') }}</span>
+                </nav>
+                <h1
+                    class="text-4xl font-black text-slate-900 dark:text-white tracking-tight uppercase italic underline decoration-emerald-500/30 decoration-8 underline-offset-8">
+                    {{ __('Registro de Personal') }}
+                </h1>
             </div>
 
-            <form action="{{ route('tattendance.show', $teacher->teacherID) }}" method="GET"
-                class="flex items-center gap-4 bg-white dark:bg-slate-800/50 p-3 rounded-3xl border border-slate-200 dark:border-slate-700/50 shadow-sm backdrop-blur-xl">
-                <input type="month" name="monthyear_raw"
-                    value="{{ Carbon\Carbon::createFromFormat('m-Y', $monthyear)->format('Y-m') }}"
-                    onchange="let parts = this.value.split('-'); this.nextElementSibling.value = parts[1] + '-' + parts[0]; this.form.submit()"
-                    class="bg-transparent border-none text-slate-700 dark:text-white font-black text-sm uppercase tracking-widest focus:ring-0">
-                <input type="hidden" name="monthyear" value="{{ $monthyear }}">
-                <div class="w-px h-8 bg-slate-200 dark:bg-slate-700"></div>
-                <button type="submit"
-                    class="px-6 py-2 bg-indigo-600 text-white text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-indigo-500 transition-all">Filtrar</button>
+            <!-- Month Filter -->
+            <form action="{{ route('tattendance.show', $teacher->teacherID) }}" method="GET" id="monthForm">
+                <div class="relative group/select">
+                    <i
+                        class="ti ti-calendar-month absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within/select:text-emerald-500 transition-colors z-10"></i>
+                    <input type="month" name="monthyear_picker" id="monthyear_picker"
+                        value="{{ \Carbon\Carbon::createFromFormat('m-Y', $monthyearInput)->format('Y-m') }}"
+                        onchange="updateMonth(this.value)"
+                        class="w-full pl-14 pr-6 py-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/50 rounded-2xl text-slate-700 dark:text-slate-200 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all outline-none font-black text-xs uppercase tracking-widest shadow-sm">
+                    <input type="hidden" name="monthyear" id="monthyear" value="{{ $monthyearInput }}">
+                </div>
             </form>
         </div>
 
-        <!-- Monthly Grid View -->
-        <div
-            class="bg-white dark:bg-slate-800/20 border border-slate-200 dark:border-slate-700/50 rounded-[3rem] overflow-hidden shadow-xl backdrop-blur-xl">
-            <div class="p-8 border-b border-slate-100 dark:border-slate-700/50 flex items-center justify-between">
-                <h3 class="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em]">Calendario Mensual:
-                    {{ $monthyear }}</h3>
-                <div class="flex items-center gap-4">
-                    <div class="flex items-center gap-2">
-                        <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
-                        <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">P</span>
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Sidebar: Teacher Profile -->
+            <div class="lg:col-span-1 space-y-8">
+                <div
+                    class="bg-white dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 backdrop-blur-xl rounded-[40px] p-8 shadow-sm text-center relative overflow-hidden group">
+                    <div
+                        class="absolute -right-16 -top-16 w-32 h-32 bg-emerald-500/5 rounded-full blur-3xl group-hover:bg-emerald-500/10 transition-colors">
                     </div>
-                    <div class="flex items-center gap-2">
-                        <span class="w-3 h-3 rounded-full bg-rose-500"></span>
-                        <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">F</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <span class="w-3 h-3 rounded-full bg-amber-500"></span>
-                        <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">T</span>
-                    </div>
-                </div>
-            </div>
 
-            <div class="p-8 grid grid-cols-7 sm:grid-cols-7 md:grid-cols-7 lg:grid-cols-7 gap-4">
-                @php
-                    $attendance = $attendances->first();
-                    $daysInMonth = Carbon\Carbon::createFromFormat('m-Y', $monthyear)->daysInMonth;
-                    $stats = ['P' => 0, 'A' => 0, 'L' => 0];
-                @endphp
-
-                @for ($d = 1; $d <= $daysInMonth; $d++)
-                    @php
-                        $dayCol = 'a' . $d;
-                        $status = $attendance ? $attendance->$dayCol : null;
-                        if ($status) {
-                            $stats[$status]++;
-                        }
-
-                        $bgColor = 'bg-slate-50 dark:bg-slate-900/50 text-slate-300 dark:text-slate-700';
-                        $icon = 'ti ti-circle-dotted';
-                        if ($status == 'P') {
-                            $bgColor = 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20';
-                            $icon = 'ti ti-check';
-                        }
-                        if ($status == 'A') {
-                            $bgColor = 'bg-rose-500 text-white shadow-lg shadow-rose-500/20';
-                            $icon = 'ti ti-x';
-                        }
-                        if ($status == 'L') {
-                            $bgColor = 'bg-amber-500 text-white shadow-lg shadow-amber-500/20';
-                            $icon = 'ti ti-clock-pause';
-                        }
-                    @endphp
-                    <div class="flex flex-col items-center gap-2">
+                    <div class="relative space-y-6">
                         <div
-                            class="w-full aspect-square rounded-2xl {{ $bgColor }} flex items-center justify-center transition-all hover:scale-105 group relative">
-                            <i class="{{ $icon }} text-xl"></i>
-                            <div
-                                class="absolute -top-1 -right-1 w-6 h-6 rounded-lg bg-white dark:bg-slate-800 text-slate-400 dark:text-slate-500 flex items-center justify-center text-[9px] font-black shadow-sm group-hover:bg-indigo-600 group-hover:text-white transition-colors border border-slate-100 dark:border-slate-700">
-                                {{ $d }}
+                            class="w-32 h-32 mx-auto bg-slate-100 dark:bg-slate-900 rounded-[40px] border-4 border-white dark:border-slate-800 shadow-2xl overflow-hidden rotate-3 group-hover:rotate-0 transition-all duration-500">
+                            @if ($teacher->photo)
+                                <img src="{{ asset('uploads/images/' . $teacher->photo) }}"
+                                    class="w-full h-full object-cover">
+                            @else
+                                <div class="w-full h-full flex items-center justify-center text-slate-300">
+                                    <i class="ti ti-user-star text-6xl"></i>
+                                </div>
+                            @endif
+                        </div>
+
+                        <div>
+                            <h2
+                                class="text-2xl font-black text-slate-900 dark:text-white tracking-tighter uppercase italic">
+                                {{ $teacher->name }}</h2>
+                            <p class="text-emerald-500 text-[10px] font-black tracking-[0.2em] uppercase mt-1">
+                                {{ $teacher->designation }}</p>
+                        </div>
+
+                        <div class="space-y-4 pt-6 border-t border-slate-100 dark:border-slate-700/50 text-left">
+                            <div class="flex items-center justify-between">
+                                <span
+                                    class="text-[10px] font-black text-slate-400 uppercase tracking-widest">{{ __('Código') }}</span>
+                                <span
+                                    class="text-xs font-bold text-slate-700 dark:text-slate-200">T-{{ str_pad($teacher->teacherID, 3, '0', STR_PAD_LEFT) }}</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span
+                                    class="text-[10px] font-black text-slate-400 uppercase tracking-widest">{{ __('Email') }}</span>
+                                <span
+                                    class="text-[10px] font-bold text-slate-400 lowercase truncate max-w-[150px]">{{ $teacher->email }}</span>
                             </div>
                         </div>
                     </div>
-                @endfor
+                </div>
+
+                <!-- Stats Summary -->
+                <div
+                    class="bg-slate-900 border border-slate-800 rounded-[40px] p-8 space-y-8 shadow-2xl text-white italic uppercase font-black">
+                    <h3 class="text-[10px] tracking-[0.2em] text-slate-500">{{ __('Resumen Mensual') }}</h3>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div
+                            class="p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl flex flex-col items-center">
+                            <span class="text-2xl text-emerald-500">
+                                @php
+                                    $presentCount = 0;
+                                    foreach ($attendances as $att) {
+                                        for ($i = 1; $i <= $daysInMonth; $i++) {
+                                            $d = "a$i";
+                                            if ($att->$d == 'P') {
+                                                $presentCount++;
+                                            }
+                                        }
+                                    }
+                                @endphp
+                                {{ $presentCount }}
+                            </span>
+                            <span class="text-[8px] text-emerald-500/60 tracking-widest">{{ __('Presentes') }}</span>
+                        </div>
+                        <div
+                            class="p-4 bg-rose-500/10 border border-rose-500/20 rounded-2xl flex flex-col items-center">
+                            <span class="text-2xl text-rose-500">
+                                @php
+                                    $absentCount = 0;
+                                    foreach ($attendances as $att) {
+                                        for ($i = 1; $i <= $daysInMonth; $i++) {
+                                            $d = "a$i";
+                                            if ($att->$d == 'A') {
+                                                $absentCount++;
+                                            }
+                                        }
+                                    }
+                                @endphp
+                                {{ $absentCount }}
+                            </span>
+                            <span class="text-[8px] text-rose-500/60 tracking-widest">{{ __('Ausentes') }}</span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <!-- Stats Summary -->
-            <div
-                class="bg-slate-50 dark:bg-slate-900/40 p-10 border-t border-slate-100 dark:border-slate-700/50 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-                <div class="space-y-1">
-                    <span
-                        class="block text-4xl font-black text-emerald-600 dark:text-emerald-400">{{ $stats['P'] }}</span>
-                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Días Presente</span>
-                </div>
-                <div class="space-y-1">
-                    <span class="block text-4xl font-black text-rose-600 dark:text-rose-400">{{ $stats['A'] }}</span>
-                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Faltas Totales</span>
-                </div>
-                <div class="space-y-1">
-                    <span
-                        class="block text-4xl font-black text-amber-600 dark:text-amber-400">{{ $stats['L'] }}</span>
-                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Tardanzas</span>
+            <!-- Content Area: Calendar Grid -->
+            <div class="lg:col-span-3">
+                <div
+                    class="bg-white dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 backdrop-blur-xl rounded-[40px] shadow-sm overflow-hidden p-8 md:p-12 h-full">
+                    <div class="flex items-center justify-between mb-10">
+                        <h3 class="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight italic">
+                            {{ __('Calendario de Personal') }}
+                            <span
+                                class="block text-[10px] text-slate-400 font-bold tracking-[0.2em] mt-1">{{ __('Mes seleccionado: :month', ['month' => $monthyearInput]) }}</span>
+                        </h3>
+                        <div class="flex items-center gap-6">
+                            <div class="flex items-center gap-2">
+                                <div class="w-3 h-3 bg-emerald-500 rounded-full"></div>
+                                <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">P</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="w-3 h-3 bg-amber-500 rounded-full"></div>
+                                <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">T</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="w-3 h-3 bg-rose-500 rounded-full"></div>
+                                <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">A</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-8">
+                        @forelse($attendances as $att)
+                            <div class="grid grid-cols-7 sm:grid-cols-10 md:grid-cols-16 gap-3">
+                                @for ($i = 1; $i <= $daysInMonth; $i++)
+                                    @php
+                                        $d = "a$i";
+                                        $status = $att->$d;
+                                        $color = 'bg-slate-50 dark:bg-slate-900/50 text-slate-300';
+                                        if ($status == 'P') {
+                                            $color = 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20';
+                                        }
+                                        if ($status == 'L') {
+                                            $color = 'bg-amber-500 text-white shadow-lg shadow-amber-500/20';
+                                        }
+                                        if ($status == 'A') {
+                                            $color = 'bg-rose-500 text-white shadow-lg shadow-rose-500/20';
+                                        }
+                                    @endphp
+                                    <div class="aspect-square {{ $color }} rounded-2xl flex items-center justify-center text-xs font-black transition-all hover:scale-110 shadow-sm border border-black/5"
+                                        title="{{ __('Día') . ' ' . $i }}">
+                                        {{ $i }}
+                                    </div>
+                                @endfor
+                            </div>
+                        @empty
+                            <div class="py-24 text-center">
+                                <div
+                                    class="w-20 h-20 mx-auto bg-slate-50 dark:bg-slate-900/50 rounded-full flex items-center justify-center text-slate-200 mb-6">
+                                    <i class="ti ti-calendar-off text-5xl"></i>
+                                </div>
+                                <p class="text-slate-400 font-black uppercase tracking-[0.2em] italic">
+                                    {{ __('Sin registros para este mes') }}</p>
+                            </div>
+                        @endforelse
+                    </div>
+
+                    <!-- Audit Footer -->
+                    @if ($attendances->isNotEmpty())
+                        <div
+                            class="mt-20 pt-8 border-t border-slate-100 dark:border-slate-700/50 flex flex-col md:flex-row justify-between items-center gap-6">
+                            <div class="flex items-center gap-4">
+                                <div
+                                    class="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
+                                    <i class="ti ti-history text-slate-400"></i>
+                                </div>
+                                <div class="flex flex-col">
+                                    <span
+                                        class="text-[9px] font-black text-slate-400 uppercase tracking-widest">{{ __('Última Modificación') }}</span>
+                                    <span
+                                        class="text-[10px] font-bold text-slate-600 dark:text-slate-300 uppercase">{{ $attendances->first()->modify_date ?? $attendances->first()->updated_at }}</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span
+                                    class="text-[9px] font-black text-slate-400 uppercase tracking-widest">{{ __('Gestionado por:') }}</span>
+                                <span
+                                    class="px-3 py-1 bg-slate-900 dark:bg-white dark:text-slate-900 text-white rounded-lg text-[9px] font-black uppercase tracking-widest">
+                                    {{ $attendances->first()->create_username ?? 'Sistema' }}
+                                </span>
+                            </div>
+                        </div>
+                    @endif
                 </div>
             </div>
-        </div>
-
-        <div class="mt-8 flex justify-center">
-            <a href="{{ route('tattendance.index') }}"
-                class="px-8 py-3 bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700/50 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:text-indigo-500 transition-all flex items-center gap-3">
-                <i class="ti ti-arrow-back text-lg"></i>
-                Regresar al Listado
-            </a>
         </div>
     </div>
+
+    @push('scripts')
+        <script>
+            function updateMonth(val) {
+                const [year, month] = val.split('-');
+                document.getElementById('monthyear').value = `${month}-${year}`;
+                document.getElementById('monthForm').submit();
+            }
+        </script>
+    @endpush
 </x-app-layout>
