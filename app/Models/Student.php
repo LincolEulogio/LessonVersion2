@@ -19,7 +19,7 @@ class Student extends Authenticatable
         'hostel', 'transport', 'create_date', 'modify_date', 
         'create_userID', 'create_username', 'create_usertype', 
         'active', 'username', 'password', 'usertypeID', 'photo',
-        'createschoolyearID', 'schoolyearID'
+        'createschoolyearID', 'schoolyearID', 'parentID'
     ];
 
     protected $hidden = [

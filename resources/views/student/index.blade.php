@@ -21,10 +21,25 @@
         <!-- Filter Card -->
         <div
             class="mb-8 p-6 rounded-2xl bg-white dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 shadow-sm dark:shadow-none backdrop-blur-sm">
-            <form action="{{ route('student.index') }}" method="GET" class="flex flex-col md:flex-row items-end gap-6">
-                <div class="flex-1 w-full">
+            <form id="filter-form" action="{{ route('student.index') }}" method="GET"
+                class="grid grid-cols-1 md:grid-cols-12 items-end gap-6">
+                <!-- Search Filter -->
+                <div class="md:col-span-4 w-full">
+                    <label for="search"
+                        class="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wider">{{ __('Búsqueda Rápida') }}</label>
+                    <div class="relative group">
+                        <i
+                            class="ti ti-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors"></i>
+                        <input type="text" name="search" id="search" value="{{ $search }}"
+                            placeholder="{{ __('Nombre, usuario, DNI o Roll...') }}"
+                            class="w-full pl-11 pr-4 py-2.5 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all">
+                    </div>
+                </div>
+
+                <!-- Classes Filter -->
+                <div class="md:col-span-3 w-full">
                     <label for="classesID"
-                        class="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wider">{{ __('Filtrar por Grado/Clase') }}</label>
+                        class="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wider">{{ __('Clase / Grado') }}</label>
                     <select name="classesID" id="classesID"
                         class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all cursor-pointer">
                         <option value="">{{ __('Todas las Clases') }}</option>
@@ -36,11 +51,30 @@
                         @endforeach
                     </select>
                 </div>
-                <button type="submit"
-                    class="w-full md:w-auto px-6 py-2.5 bg-white dark:bg-slate-700 hover:bg-slate-50 dark:hover:bg-slate-600 text-slate-700 dark:text-white rounded-xl font-bold transition-all border border-slate-200 dark:border-slate-600/50 flex items-center justify-center gap-2">
-                    <i class="ti ti-filter"></i>
-                    {{ __('Filtrar') }}
-                </button>
+
+                <!-- Status Filter -->
+                <div class="md:col-span-3 w-full">
+                    <label for="active"
+                        class="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wider">{{ __('Estado') }}</label>
+                    <select name="active" id="active"
+                        class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all cursor-pointer">
+                        <option value="">{{ __('Todos los Estados') }}</option>
+                        <option value="1" {{ $active === '1' ? 'selected' : '' }}>{{ __('Activos') }}</option>
+                        <option value="0" {{ $active === '0' ? 'selected' : '' }}>{{ __('Inactivos') }}</option>
+                    </select>
+                </div>
+
+                <!-- Actions -->
+                <div class="md:col-span-2 flex items-center gap-3">
+                    @if ($search || $classesID || ($active !== null && $active !== ''))
+                        <a href="{{ route('student.index') }}"
+                            class="flex-1 px-4 py-2.5 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white rounded-xl font-bold transition-all border border-red-500/20 flex items-center justify-center gap-2"
+                            title="{{ __('Limpiar Filtros') }}">
+                            <i class="ti ti-rotate"></i>
+                            <span class="md:hidden lg:inline">{{ __('Limpiar') }}</span>
+                        </a>
+                    @endif
+                </div>
             </form>
         </div>
 
@@ -55,6 +89,7 @@
                             <th class="px-6 py-4">#</th>
                             <th class="px-6 py-4">{{ __('Foto') }}</th>
                             <th class="px-6 py-4">{{ __('Estudiante') }}</th>
+                            <th class="px-6 py-4 text-center">{{ __('Roll #') }}</th>
                             <th class="px-6 py-4">{{ __('Clase / Sección') }}</th>
                             <th class="px-6 py-4 text-center">{{ __('Estado') }}</th>
                             <th class="px-6 py-4 text-right pr-10">{{ __('Acciones') }}</th>
@@ -73,9 +108,14 @@
                                     <div class="flex flex-col">
                                         <span
                                             class="font-bold text-slate-800 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{{ $student->name }}</span>
-                                        <span
-                                            class="text-xs text-slate-500">{{ $student->email ?? __('Sin email') }}</span>
+                                        <span class="text-xs text-slate-500">{{ $student->username }}</span>
                                     </div>
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    <span
+                                        class="text-xs font-mono font-bold text-indigo-500 bg-indigo-500/10 px-2 py-1 rounded-lg">
+                                        {{ $student->roll ?? 'N/A' }}
+                                    </span>
                                 </td>
                                 <td class="px-6 py-4 text-slate-600 dark:text-slate-300 text-sm">
                                     <div class="flex items-center gap-2">
@@ -107,11 +147,18 @@
                                             title="{{ __('Editar') }}">
                                             <i class="ti ti-edit text-lg"></i>
                                         </a>
-                                        <button
+                                        <button type="button"
+                                            onclick="confirmDelete('{{ $student->studentID }}', '{{ $student->name }}')"
                                             class="p-2 bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white rounded-lg transition-all"
                                             title="{{ __('Eliminar') }}">
                                             <i class="ti ti-trash text-lg"></i>
                                         </button>
+                                        <form id="delete-form-{{ $student->studentID }}"
+                                            action="{{ route('student.destroy', $student->studentID) }}"
+                                            method="POST" style="display: none;">
+                                            @csrf
+                                            @method('DELETE')
+                                        </form>
                                     </div>
                                 </td>
                             </tr>
@@ -131,10 +178,73 @@
             </div>
             @if ($students->hasPages())
                 <div
-                    class="px-6 py-4 border-t border-slate-100 dark:border-slate-700/50 bg-slate-50 dark:bg-slate-900/20">
-                    {{ $students->links() }}
+                    class="px-6 py-4 border-t border-slate-100 dark:border-slate-700/50 bg-slate-50 dark:bg-slate-900/20 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div class="text-sm text-slate-500 dark:text-slate-400 font-medium">
+                        {{ __('Mostrando') }}
+                        <span class="text-slate-900 dark:text-white font-bold">{{ $students->firstItem() }}</span>
+                        {{ __('a') }}
+                        <span class="text-slate-900 dark:text-white font-bold">{{ $students->lastItem() }}</span>
+                        {{ __('de') }}
+                        <span class="text-slate-900 dark:text-white font-bold">{{ $students->total() }}</span>
+                        {{ __('registros') }}
+                    </div>
+                    <div class="student-pagination">
+                        {{ $students->links() }}
+                    </div>
                 </div>
             @endif
         </div>
     </div>
+    @push('scripts')
+        <script>
+            // Automatic Filtering Logic
+            document.addEventListener('DOMContentLoaded', function() {
+                const filterForm = document.getElementById('filter-form');
+                if (!filterForm) return;
+
+                const searchInput = filterForm.querySelector('#search');
+                const selects = filterForm.querySelectorAll('select');
+                let debounceTimer;
+
+                // Auto-submit for selects
+                selects.forEach(select => {
+                    select.addEventListener('change', () => filterForm.submit());
+                });
+
+                // Debounced auto-submit for search
+                if (searchInput) {
+                    searchInput.addEventListener('input', () => {
+                        clearTimeout(debounceTimer);
+                        debounceTimer = setTimeout(() => {
+                            filterForm.submit();
+                        }, 800); // Wait 800ms after last keystroke
+                    });
+
+                    // Put cursor at the end of input
+                    const val = searchInput.value;
+                    searchInput.value = '';
+                    searchInput.value = val;
+                }
+            });
+
+            function confirmDelete(id, name) {
+                Swal.fire({
+                    title: '¿Estás seguro?',
+                    text: `Estás a punto de eliminar al estudiante "${name}". Esta acción no se puede deshacer.`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#4f46e5',
+                    cancelButtonColor: '#ef4444',
+                    confirmButtonText: 'Sí, eliminar',
+                    cancelButtonText: 'Cancelar',
+                    background: document.documentElement.classList.contains('dark') ? '#1e293b' : '#fff',
+                    color: document.documentElement.classList.contains('dark') ? '#f1f5f9' : '#1e293b',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById(`delete-form-${id}`).submit();
+                    }
+                });
+            }
+        </script>
+    @endpush
 </x-app-layout>
