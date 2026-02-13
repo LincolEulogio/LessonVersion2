@@ -1,228 +1,272 @@
 <x-app-layout>
-    <div class="py-12 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
-        <!-- Header & Context -->
+    <div class="py-10 px-4 sm:px-6 lg:px-8 w-full max-w-7xl mx-auto">
+        <!-- Header -->
         <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div class="space-y-1">
-                <nav
-                    class="flex items-center gap-2 text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-4">
-                    <a href="{{ route('attendance.index') }}"
-                        class="hover:text-rose-400 transition-colors uppercase tracking-widest font-bold text-[10px]">Asistencia</a>
+                <nav class="flex items-center gap-3 text-slate-400 mb-2">
+                    <a href="{{ route('attendance.index') }}" class="hover:text-emerald-500 transition-colors">
+                        <i class="ti ti-calendar-check text-lg"></i>
+                    </a>
                     <i class="ti ti-chevron-right text-xs"></i>
-                    <span class="text-rose-400 uppercase tracking-widest font-bold text-[10px]">Toma de Lista</span>
+                    <span class="text-xs font-black uppercase tracking-[0.2em]">{{ __('Asistencia') }}</span>
+                    <i class="ti ti-chevron-right text-xs"></i>
+                    <span
+                        class="text-xs font-black uppercase tracking-[0.2em] text-emerald-500">{{ __('Toma de Datos') }}</span>
                 </nav>
-                <h1 class="text-4xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-4">
-                    {{ $classes->classes }}
-                    <span class="text-slate-200 dark:text-slate-700 font-light text-2xl">/</span>
-                    <span class="text-rose-600 dark:text-rose-400">{{ $section->section }}</span>
+                <h1
+                    class="text-4xl font-black text-slate-900 dark:text-white tracking-tight uppercase italic underline decoration-emerald-500/30 decoration-8 underline-offset-8">
+                    {{ __('Control de Asistencia') }}
                 </h1>
-                <p class="text-slate-500 dark:text-slate-400 font-medium flex items-center gap-2 mt-2">
-                    <i class="ti ti-calendar-event text-rose-500/50"></i>
-                    Registro del día: <span
-                        class="text-slate-700 dark:text-slate-200 font-bold underline decoration-rose-500/30 underline-offset-4">{{ $date }}</span>
-                </p>
-            </div>
-
-            <div class="flex flex-wrap items-center gap-4">
-                <div
-                    class="px-5 py-3 rounded-2xl bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 flex items-center gap-5 shadow-sm dark:shadow-inner">
-                    <div class="flex flex-col">
-                        <span class="text-[9px] font-black text-slate-500 uppercase tracking-widest">Presentes</span>
-                        <span id="stat-p"
-                            class="text-emerald-600 dark:text-emerald-400 font-mono font-bold leading-none mt-1">0</span>
-                    </div>
-                    <div class="w-px h-8 bg-slate-100 dark:bg-slate-700/50"></div>
-                    <div class="flex flex-col">
-                        <span class="text-[9px] font-black text-slate-500 uppercase tracking-widest">Ausentes</span>
-                        <span id="stat-a"
-                            class="text-rose-600 dark:text-rose-400 font-mono font-bold leading-none mt-1">0</span>
-                    </div>
-                    <div class="w-px h-8 bg-slate-100 dark:bg-slate-700/50"></div>
-                    <div class="flex flex-col">
-                        <span class="text-[9px] font-black text-slate-500 uppercase tracking-widest">Tardanza</span>
-                        <span id="stat-l"
-                            class="text-amber-600 dark:text-amber-400 font-mono font-bold leading-none mt-1">0</span>
-                    </div>
+                <div class="flex flex-wrap items-center gap-4 mt-6">
+                    <span
+                        class="px-4 py-2 bg-emerald-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-emerald-600/20">
+                        {{ $dateInput }}
+                    </span>
+                    <span
+                        class="px-4 py-2 bg-slate-900 dark:bg-white dark:text-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-xl">
+                        {{ $class->classes }} — {{ $section->section }}
+                    </span>
+                    @if ($attendance_type == 'subject')
+                        <span
+                            class="px-4 py-2 bg-indigo-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-indigo-600/20">
+                            {{ __('MATERIA:') }} {{ $subjects->where('subjectID', $subjectID)->first()->subject ?? '' }}
+                        </span>
+                    @endif
                 </div>
             </div>
         </div>
 
-        @if ($attendance_type == 'subject')
-            <div class="mb-8 p-6 rounded-3xl bg-indigo-500/5 border border-indigo-500/10 backdrop-blur-xl">
-                <form action="{{ route('attendance.add') }}" method="GET" class="flex flex-wrap items-center gap-6">
-                    <input type="hidden" name="classesID" value="{{ $classes->classesID }}">
-                    <input type="hidden" name="sectionID" value="{{ $section->sectionID }}">
-                    <input type="hidden" name="date" value="{{ $date }}">
+        <!-- Toolbar -->
+        <div class="mb-6 flex justify-end gap-3">
+            <button onclick="markAll('P')"
+                class="px-6 py-3 bg-emerald-100 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-2xl text-[10px] font-black uppercase tracking-widest border border-emerald-200 dark:border-emerald-500/20 hover:bg-emerald-600 hover:text-white transition-all">
+                {{ __('Presente Todos') }}
+            </button>
+            <button onclick="markAll('A')"
+                class="px-6 py-3 bg-rose-100 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 rounded-2xl text-[10px] font-black uppercase tracking-widest border border-rose-200 dark:border-rose-500/20 hover:bg-rose-600 hover:text-white transition-all">
+                {{ __('Ausente Todos') }}
+            </button>
+        </div>
 
-                    <div class="flex-1 min-w-[250px]">
-                        <label
-                            class="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-2 block ml-1">Materia
-                            Académica</label>
-                        <select name="subjectID" onchange="this.form.submit()"
-                            class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-indigo-500/20 rounded-2xl px-5 py-3 text-slate-700 dark:text-white focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none">
-                            <option value="">Seleccione Materia...</option>
-                            @foreach ($subjects as $subject)
-                                <option value="{{ $subject->subjectID }}"
-                                    {{ $subjectID == $subject->subjectID ? 'selected' : '' }}>
-                                    {{ $subject->subject }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="flex items-center gap-3 mt-6">
-                        <i class="ti ti-info-circle text-indigo-400 text-xl"></i>
-                        <p class="text-xs text-slate-400 max-w-[200px]">El sistema está configurado para asistencia por
-                            materia.</p>
-                    </div>
-                </form>
-            </div>
-        @endif
-
-        @if ($attendance_type == 'subject' && !$subjectID)
-            <div
-                class="py-20 text-center rounded-3xl border-4 border-dashed border-slate-200 dark:border-slate-800/50 bg-slate-50 dark:bg-slate-900/20">
-                <div
-                    class="w-20 h-20 rounded-full bg-indigo-500/10 flex items-center justify-center text-indigo-400 mx-auto mb-6">
-                    <i class="ti ti-books text-4xl"></i>
-                </div>
-                <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-2">Materia No Seleccionada</h3>
-                <p class="text-slate-500 max-w-sm mx-auto">Por favor, seleccione una materia académica para habilitar el
-                    registro de asistencia.</p>
-            </div>
-        @else
-            <!-- Student List Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                @foreach ($students as $student)
-                    @php
-                        $current_status = $attendances->get($student->studentID)->$aday ?? null;
-                    @endphp
-                    <div class="student-row group p-5 rounded-3xl bg-white dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 shadow-sm dark:shadow-none backdrop-blur-sm transition-all hover:bg-slate-50 dark:hover:bg-slate-800/50"
-                        data-student-id="{{ $student->studentID }}">
-                        <div class="flex items-center gap-4 mb-5">
-                            <div
-                                class="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-slate-700 overflow-hidden ring-4 ring-slate-100 dark:ring-slate-800/50">
-                                <img src="{{ asset($student->photo ? 'storage/images/' . $student->photo : 'uploads/images/default.png') }}"
-                                    class="w-full h-full object-cover">
-                            </div>
-                            <div class="flex-1 overflow-hidden">
-                                <h4 class="text-slate-800 dark:text-slate-200 font-bold truncate tracking-wide text-sm">
-                                    {{ $student->name }}</h4>
-                                <span class="text-[10px] text-slate-500 font-black uppercase tracking-widest">Nº Orden:
-                                    {{ $loop->iteration }}</span>
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-3 gap-2">
-                            <button onclick="saveAttendance({{ $student->studentID }}, 'P', this)"
-                                class="status-btn p-3 rounded-2xl flex flex-col items-center gap-1 transition-all {{ $current_status == 'P' ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-100 dark:bg-slate-900/50 text-slate-500 dark:text-slate-600 hover:text-emerald-600 dark:hover:text-emerald-400' }}"
-                                data-status="P">
-                                <i class="ti ti-check text-xl"></i>
-                                <span class="text-[8px] font-black uppercase tracking-widest">Asiste</span>
-                            </button>
-
-                            <button onclick="saveAttendance({{ $student->studentID }}, 'A', this)"
-                                class="status-btn p-3 rounded-2xl flex flex-col items-center gap-1 transition-all {{ $current_status == 'A' ? 'bg-rose-500 text-white shadow-lg shadow-rose-500/20' : 'bg-slate-100 dark:bg-slate-900/50 text-slate-500 dark:text-slate-600 hover:text-rose-600 dark:hover:text-rose-400' }}"
-                                data-status="A">
-                                <i class="ti ti-x text-xl"></i>
-                                <span class="text-[8px] font-black uppercase tracking-widest">Falta</span>
-                            </button>
-
-                            <button onclick="saveAttendance({{ $student->studentID }}, 'L', this)"
-                                class="status-btn p-3 rounded-2xl flex flex-col items-center gap-1 transition-all {{ $current_status == 'L' ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/20' : 'bg-slate-100 dark:bg-slate-900/50 text-slate-500 dark:text-slate-600 hover:text-amber-600 dark:hover:text-amber-400' }}"
-                                data-status="L">
-                                <i class="ti ti-clock-pause text-xl"></i>
-                                <span class="text-[8px] font-black uppercase tracking-widest">Tarde</span>
-                            </button>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-        @endif
-
-        <!-- Global Save Info -->
+        <!-- Attendance List -->
         <div
-            class="mt-12 p-6 rounded-3xl bg-emerald-500/5 border border-emerald-500/10 flex items-center justify-between">
-            <div class="flex items-center gap-4 text-emerald-400">
-                <i class="ti ti-shield-check text-3xl"></i>
-                <p class="text-sm font-medium">Los cambios se guardan automáticamente mediante sincronización segura.
-                </p>
+            class="bg-white dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 backdrop-blur-xl rounded-[40px] shadow-sm overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full border-collapse">
+                    <thead>
+                        <tr
+                            class="bg-slate-50/50 dark:bg-slate-900/50 border-b border-slate-100 dark:border-slate-700/50">
+                            <th class="px-10 py-6 text-left">
+                                <span
+                                    class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ __('Orden') }}</span>
+                            </th>
+                            <th class="px-6 py-6 text-left">
+                                <span
+                                    class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ __('Estudiante') }}</span>
+                            </th>
+                            <th class="px-6 py-6 text-center">
+                                <span
+                                    class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ __('Acción de Asistencia') }}</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 dark:divide-slate-700/50">
+                        @forelse($students as $student)
+                            @php
+                                $currentStatus = $attendances[$student->studentID]->$aday ?? 'N';
+                            @endphp
+                            <tr
+                                class="group hover:bg-slate-50/50 dark:hover:bg-slate-900/30 transition-all duration-300">
+                                <td class="px-10 py-6">
+                                    <span
+                                        class="text-xs font-black text-slate-400 group-hover:text-emerald-500 transition-colors">#{{ str_pad($student->roll, 3, '0', STR_PAD_LEFT) }}</span>
+                                </td>
+                                <td class="px-6 py-6">
+                                    <div class="flex items-center gap-4">
+                                        <div
+                                            class="w-12 h-12 bg-slate-100 dark:bg-slate-900 rounded-2xl flex items-center justify-center border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden group-hover:scale-110 group-hover:rotate-3 transition-transform">
+                                            @if ($student->photo)
+                                                <img src="{{ asset('uploads/images/' . $student->photo) }}"
+                                                    class="w-full h-full object-cover">
+                                            @else
+                                                <i class="ti ti-user text-2xl text-slate-400"></i>
+                                            @endif
+                                        </div>
+                                        <div class="flex flex-col">
+                                            <span
+                                                class="font-black text-slate-700 dark:text-slate-200 uppercase tracking-tight">{{ $student->name }}</span>
+                                            <span
+                                                class="text-[10px] font-bold text-slate-400 uppercase tracking-widest italic">{{ __('DNI:') }}
+                                                {{ $student->dni }}</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-6">
+                                    <div
+                                        class="flex items-center justify-center gap-3 bg-slate-50 dark:bg-slate-900/50 w-max mx-auto p-2 rounded-2xl border border-slate-200/50 dark:border-slate-700/50 shadow-inner">
+                                        <!-- Present (P) -->
+                                        <button type="button"
+                                            onclick="saveAttendance('{{ $student->studentID }}', 'P')"
+                                            id="btn-P-{{ $student->studentID }}"
+                                            class="attendance-btn w-12 h-12 rounded-xl flex items-center justify-center transition-all hover:scale-110 active:scale-90 {{ $currentStatus == 'P' ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-500/30 ring-4 ring-emerald-500/10' : 'bg-white dark:bg-slate-800 text-slate-400 hover:bg-emerald-50 dark:hover:bg-emerald-500/10' }}"
+                                            title="{{ __('Presente') }}">
+                                            <i class="ti ti-check text-2xl"></i>
+                                        </button>
+
+                                        <!-- Late (L) -->
+                                        <button type="button"
+                                            onclick="saveAttendance('{{ $student->studentID }}', 'L')"
+                                            id="btn-L-{{ $student->studentID }}"
+                                            class="attendance-btn w-12 h-12 rounded-xl flex items-center justify-center transition-all hover:scale-110 active:scale-90 {{ $currentStatus == 'L' ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/30 ring-4 ring-amber-500/10' : 'bg-white dark:bg-slate-800 text-slate-400 hover:bg-amber-50 dark:hover:bg-amber-500/10' }}"
+                                            title="{{ __('Tarde') }}">
+                                            <i class="ti ti-clock text-2xl"></i>
+                                        </button>
+
+                                        <!-- Absent (A) -->
+                                        <button type="button"
+                                            onclick="saveAttendance('{{ $student->studentID }}', 'A')"
+                                            id="btn-A-{{ $student->studentID }}"
+                                            class="attendance-btn w-12 h-12 rounded-xl flex items-center justify-center transition-all hover:scale-110 active:scale-90 {{ $currentStatus == 'A' ? 'bg-rose-600 text-white shadow-lg shadow-rose-500/30 ring-4 ring-rose-500/10' : 'bg-white dark:bg-slate-800 text-slate-400 hover:bg-rose-50 dark:hover:bg-rose-500/10' }}"
+                                            title="{{ __('Ausente') }}">
+                                            <i class="ti ti-x text-2xl"></i>
+                                        </button>
+
+                                        <!-- Clear (N) -->
+                                        <button type="button"
+                                            onclick="saveAttendance('{{ $student->studentID }}', 'N')"
+                                            class="w-8 h-12 text-slate-300 hover:text-rose-400 transition-colors uppercase text-[8px] font-black tracking-tighter"
+                                            title="{{ __('Limpiar') }}">
+                                            {{ __('BORRAR') }}
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="3" class="px-10 py-24 text-center">
+                                    <div class="flex flex-col items-center justify-center space-y-4">
+                                        <div
+                                            class="w-24 h-24 bg-slate-50 dark:bg-slate-900/50 rounded-full flex items-center justify-center text-slate-200">
+                                            <i class="ti ti-users-off text-6xl"></i>
+                                        </div>
+                                        <p class="text-slate-400 font-black uppercase tracking-widest">
+                                            {{ __('No hay estudiantes en este grupo') }}</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
-            <a href="{{ route('attendance.index') }}"
-                class="px-8 py-3 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700/50 rounded-2xl font-black uppercase tracking-widest text-[10px] transition-all">
-                Finalizar Sesión
-            </a>
         </div>
     </div>
 
-    <script>
-        function saveAttendance(studentID, status, btn) {
-            const card = btn.closest('.student-row');
-            const btns = card.querySelectorAll('.status-btn');
-
-            // Visual feedback
-            const originalColors = {
-                P: 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20',
-                A: 'bg-rose-500 text-white shadow-lg shadow-rose-500/20',
-                L: 'bg-amber-500 text-white shadow-lg shadow-amber-500/20'
+    @push('scripts')
+        <script>
+            const attendanceData = {
+                classesID: "{{ $class->classesID }}",
+                sectionID: "{{ $section->sectionID }}",
+                subjectID: "{{ $subjectID }}",
+                date: "{{ $dateInput }}",
+                _token: "{{ csrf_token() }}"
             };
 
-            const idleColors = {
-                P: 'bg-slate-100 dark:bg-slate-900/50 text-slate-500 dark:text-slate-600 hover:text-emerald-600 dark:hover:text-emerald-400',
-                A: 'bg-slate-100 dark:bg-slate-900/50 text-slate-500 dark:text-slate-600 hover:text-rose-600 dark:hover:text-rose-400',
-                L: 'bg-slate-100 dark:bg-slate-900/50 text-slate-500 dark:text-slate-600 hover:text-amber-600 dark:hover:text-amber-400'
-            };
+            function saveAttendance(studentID, status) {
+                const btns = document.querySelectorAll(`#btn-P-${studentID}, #btn-L-${studentID}, #btn-A-${studentID}`);
 
-            // Loading state
-            btn.classList.add('animate-pulse');
-
-            fetch("{{ route('attendance.save') }}", {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: JSON.stringify({
-                        studentID: studentID,
-                        classesID: '{{ $classes->classesID }}',
-                        sectionID: '{{ $section->sectionID }}',
-                        date: '{{ $date }}',
-                        subjectID: '{{ $subjectID }}',
-                        status: status
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    btn.classList.remove('animate-pulse');
-                    if (data.success) {
-                        // Update buttons
-                        btns.forEach(b => {
-                            const s = b.getAttribute('data-status');
-                            b.className =
-                                `status-btn p-3 rounded-2xl flex flex-col items-center gap-1 transition-all ${idleColors[s]}`;
-                        });
-                        btn.className =
-                            `status-btn p-3 rounded-2xl flex flex-col items-center gap-1 transition-all ${originalColors[status]}`;
-                        updateStats();
-                    } else {
-                        alert('Error al guardar asistencia.');
-                    }
-                })
-                .catch(error => {
-                    btn.classList.remove('animate-pulse');
-                    console.error('Error:', error);
-                    alert('Fallo de conexión.');
+                // Temporary UI update
+                btns.forEach(btn => {
+                    btn.classList.remove('bg-emerald-600', 'bg-amber-500', 'bg-rose-600', 'text-white', 'shadow-lg',
+                        'ring-4');
+                    btn.classList.add('bg-white', 'dark:bg-slate-800', 'text-slate-400');
                 });
-        }
 
-        function updateStats() {
-            const p = document.querySelectorAll('.status-btn.bg-emerald-500').length;
-            const a = document.querySelectorAll('.status-btn.bg-rose-500').length;
-            const l = document.querySelectorAll('.status-btn.bg-amber-500').length;
+                if (status !== 'N') {
+                    const activeBtn = document.getElementById(`btn-${status}-${studentID}`);
+                    let colorClass = 'bg-emerald-600';
+                    let shadowClass = 'shadow-emerald-500/30';
+                    let ringClass = 'ring-emerald-500/10';
 
-            document.getElementById('stat-p').innerText = p;
-            document.getElementById('stat-a').innerText = a;
-            document.getElementById('stat-l').innerText = l;
-        }
+                    if (status === 'L') {
+                        colorClass = 'bg-amber-500';
+                        shadowClass = 'shadow-amber-500/30';
+                        ringClass = 'ring-amber-500/10';
+                    }
+                    if (status === 'A') {
+                        colorClass = 'bg-rose-600';
+                        shadowClass = 'shadow-rose-500/30';
+                        ringClass = 'ring-rose-500/10';
+                    }
 
-        document.addEventListener('DOMContentLoaded', updateStats);
-    </script>
+                    activeBtn.classList.remove('bg-white', 'dark:bg-slate-800', 'text-slate-400');
+                    activeBtn.classList.add(colorClass, 'text-white', 'shadow-lg', shadowClass, 'ring-4', ringClass);
+                }
+
+                // Persistence
+                fetch("{{ route('attendance.save') }}", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": attendanceData._token
+                        },
+                        body: JSON.stringify({
+                            studentID: studentID,
+                            classesID: attendanceData.classesID,
+                            sectionID: attendanceData.sectionID,
+                            subjectID: attendanceData.subjectID,
+                            date: attendanceData.date,
+                            status: status
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (!data.success) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'No se pudo guardar la asistencia.',
+                                background: document.documentElement.classList.contains('dark') ? '#0f172a' :
+                                    '#fff',
+                                color: document.documentElement.classList.contains('dark') ? '#f1f5f9' : '#1e293b',
+                            });
+                        }
+                    })
+                    .catch(err => console.error(err));
+            }
+
+            async function markAll(status) {
+                const students = @json($students->pluck('studentID'));
+                const colorName = status === 'P' ? 'ESMERALDA (Presente)' : 'ROSA (Ausente)';
+
+                const result = await Swal.fire({
+                    title: '¿MARCAR TODOS?',
+                    text: `Se marcará a todo el salón en color ${colorName}.`,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'SÍ, MARCAR TODOS',
+                    cancelButtonText: 'CANCELAR',
+                    confirmButtonColor: status === 'P' ? '#10b981' : '#e11d48',
+                    background: document.documentElement.classList.contains('dark') ? '#0f172a' : '#fff',
+                    color: document.documentElement.classList.contains('dark') ? '#f1f5f9' : '#1e293b',
+                    borderRadius: '40px',
+                });
+
+                if (result.isConfirmed) {
+                    // Sequential or Promise.all - for better UX, let's do Promise.all but show UI immediately
+                    students.forEach(id => saveAttendance(id, status));
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'LISTO',
+                        text: 'Asistencia actualizada para todo el grupo.',
+                        timer: 1500,
+                        showConfirmButton: false,
+                        background: document.documentElement.classList.contains('dark') ? '#0f172a' : '#fff',
+                        color: document.documentElement.classList.contains('dark') ? '#f1f5f9' : '#1e293b',
+                        borderRadius: '40px',
+                    });
+                }
+            }
+        </script>
+    @endpush
 </x-app-layout>

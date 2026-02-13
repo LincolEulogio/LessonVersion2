@@ -16,57 +16,68 @@ use Carbon\Carbon;
 class AttendanceController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of the resource for class/section/date selection.
      */
     public function index(Request $request)
     {
-        $classes = Classes::all();
         $classesID = $request->get('classesID');
+        $classes = Classes::orderBy('classes_numeric')->get();
         
         $sections = [];
         if ($classesID) {
             $sections = Section::where('classesID', $classesID)->get();
         }
 
-        return view('attendance.index', compact('classes', 'classesID', 'sections'));
+        $attendance_type = Setting::where('fieldname', 'attendance')->first()->value ?? 'daily';
+
+        return view('attendance.index', compact('classes', 'classesID', 'sections', 'attendance_type'));
     }
 
     /**
-     * Show the form for taking attendance.
+     * Show the form for marking attendance.
      */
     public function add(Request $request)
     {
         $classesID = $request->get('classesID');
         $sectionID = $request->get('sectionID');
-        $date = $request->get('date', date('d-m-Y'));
+        $dateInput = $request->get('date', date('d-m-Y'));
         $subjectID = $request->get('subjectID');
 
         if (!$classesID || !$sectionID) {
-            return redirect()->route('attendance.index')->with('error', 'Seleccione clase y sección.');
+            return redirect()->route('attendance.index')->with('error', 'Por favor, selecciona clase y sección.');
         }
 
-        $classes = Classes::findOrFail($classesID);
+        $class = Classes::findOrFail($classesID);
         $section = Section::findOrFail($sectionID);
         
         $attendance_type = Setting::where('fieldname', 'attendance')->first()->value ?? 'daily';
         
         $subjects = [];
         if ($attendance_type == 'subject') {
-            $subjects = Subject::where('classesID', $classesID)->get();
-            if (!$subjectID && count($subjects) > 0) {
-                // If no subject selected but required, we might need a selection step
-                // For now, let's assume one is needed.
+            $subjects = Subject::where('classesID', $classesID)->orderBy('subject')->get();
+            if (!$subjectID) {
+                // If subject-wise but no subject selected, go back to index with params
+                // Or we can show the subject selection in index.
+                // For now, let's assume index handles selection.
             }
         }
 
-        $carbonDate = Carbon::createFromFormat('d-m-Y', $date);
-        $day = $carbonDate->day;
+        try {
+            $carbonDate = Carbon::createFromFormat('d-m-Y', $dateInput);
+        } catch (\Exception $e) {
+            $carbonDate = now();
+        }
+
+        $dayNum = $carbonDate->day;
         $monthyear = $carbonDate->format('m-Y');
-        $aday = "a" . $day;
+        $aday = "a" . $dayNum;
 
         $students = Student::where('classesID', $classesID)
             ->where('sectionID', $sectionID)
+            ->orderBy('roll')
             ->get();
+
+        $schoolyearID = session('default_schoolyearID') ?? 1;
 
         $attendances = [];
         if ($attendance_type == 'subject' && $subjectID) {
@@ -74,44 +85,54 @@ class AttendanceController extends Controller
                 ->where('sectionID', $sectionID)
                 ->where('subjectID', $subjectID)
                 ->where('monthyear', $monthyear)
+                ->where('schoolyearID', $schoolyearID)
                 ->get()
                 ->keyBy('studentID');
         } else {
             $attendances = Attendance::where('classesID', $classesID)
                 ->where('sectionID', $sectionID)
                 ->where('monthyear', $monthyear)
+                ->where('schoolyearID', $schoolyearID)
                 ->get()
                 ->keyBy('studentID');
         }
 
         return view('attendance.add', compact(
-            'classes', 'section', 'date', 'day', 'monthyear', 'aday', 
+            'class', 'section', 'dateInput', 'dayNum', 'monthyear', 'aday', 
             'students', 'attendances', 'attendance_type', 'subjects', 'subjectID'
         ));
     }
 
     /**
-     * Store or update attendance for a single student via AJAX or form.
+     * Save attendance status for a student.
      */
     public function save(Request $request)
     {
         $request->validate([
-            'studentID' => 'required|exists:students,studentID',
-            'classesID' => 'required|exists:classes,classesID',
-            'sectionID' => 'required|exists:sections,sectionID',
-            'date' => 'required|date_format:d-m-Y',
-            'status' => 'required|in:P,A,L', // Present, Absent, Late
+            'studentID' => 'required|integer',
+            'classesID' => 'required|integer',
+            'sectionID' => 'required|integer',
+            'date' => 'required|string',
+            'status' => 'required|in:P,A,L,N', // Present, Absent, Late, None
         ]);
 
-        $carbonDate = Carbon::createFromFormat('d-m-Y', $request->date);
-        $day = $carbonDate->day;
+        try {
+            $carbonDate = Carbon::createFromFormat('d-m-Y', $request->date);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Fecha inválida'], 400);
+        }
+
+        $dayNum = $carbonDate->day;
         $monthyear = $carbonDate->format('m-Y');
-        $aday = "a" . $day;
+        $aday = "a" . $dayNum;
+        $schoolyearID = session('default_schoolyearID') ?? 1;
         
         $attendance_type = Setting::where('fieldname', 'attendance')->first()->value ?? 'daily';
         
+        $status = $request->status == 'N' ? null : $request->status;
+
         if ($attendance_type == 'subject') {
-            $request->validate(['subjectID' => 'required|exists:subject,subjectID']);
+            $request->validate(['subjectID' => 'required|integer']);
             
             $attendance = SubjectAttendance::firstOrCreate([
                 'studentID' => $request->studentID,
@@ -119,10 +140,12 @@ class AttendanceController extends Controller
                 'sectionID' => $request->sectionID,
                 'subjectID' => $request->subjectID,
                 'monthyear' => $monthyear,
-                'schoolyearID' => 1, // Default or session based
+                'schoolyearID' => $schoolyearID,
             ], [
                 'userID' => Auth::id(),
-                'usertype' => Auth::user()->usertypeID ?? 'Admin',
+                'usertype' => Auth::user()->usertype->usertype ?? 'Admin',
+                'create_username' => Auth::user()->username,
+                'create_usertype' => Auth::user()->usertype->usertype ?? 'Admin',
             ]);
         } else {
             $attendance = Attendance::firstOrCreate([
@@ -130,45 +153,57 @@ class AttendanceController extends Controller
                 'classesID' => $request->classesID,
                 'sectionID' => $request->sectionID,
                 'monthyear' => $monthyear,
-                'schoolyearID' => 1,
+                'schoolyearID' => $schoolyearID,
             ], [
                 'userID' => Auth::id(),
-                'usertype' => Auth::user()->usertypeID ?? 'Admin',
+                'usertype' => Auth::user()->usertype->usertype ?? 'Admin',
+                'create_username' => Auth::user()->username,
+                'create_usertype' => Auth::user()->usertype->usertype ?? 'Admin',
             ]);
         }
 
-        $attendance->$aday = $request->status;
+        $attendance->$aday = $status;
         $attendance->save();
 
         if ($request->ajax()) {
             return response()->json(['success' => true]);
         }
 
-        return back()->with('success', 'Asistencia guardada.');
+        return back()->with('success', 'Asistencia actualizada correctamente.');
     }
 
     /**
-     * Display the specified resource.
+     * Display student's monthly attendance summary.
      */
-    public function show(string $id, Request $request)
+    public function show($id, Request $request)
     {
         $student = Student::with(['classes', 'section'])->findOrFail($id);
-        $monthyear = $request->get('monthyear', date('m-Y'));
+        $monthyearInput = $request->get('monthyear', date('m-Y'));
+        $schoolyearID = session('default_schoolyearID') ?? 1;
         
         $attendance_type = Setting::where('fieldname', 'attendance')->first()->value ?? 'daily';
         
-        $attendances = [];
         if ($attendance_type == 'subject') {
             $attendances = SubjectAttendance::where('studentID', $id)
-                ->where('monthyear', $monthyear)
+                ->where('monthyear', $monthyearInput)
+                ->where('schoolyearID', $schoolyearID)
                 ->with('subject')
                 ->get();
         } else {
             $attendances = Attendance::where('studentID', $id)
-                ->where('monthyear', $monthyear)
+                ->where('monthyear', $monthyearInput)
+                ->where('schoolyearID', $schoolyearID)
                 ->get();
         }
 
-        return view('attendance.show', compact('student', 'attendances', 'monthyear', 'attendance_type'));
+        // Generate list of all days in that month for the view
+        try {
+            $date = Carbon::createFromFormat('m-Y', $monthyearInput);
+            $daysInMonth = $date->daysInMonth;
+        } catch (\Exception $e) {
+            $daysInMonth = 31;
+        }
+
+        return view('attendance.show', compact('student', 'attendances', 'monthyearInput', 'attendance_type', 'daysInMonth'));
     }
 }
