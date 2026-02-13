@@ -1,183 +1,263 @@
 <x-app-layout>
     <div class="py-12 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
         <!-- Header Section -->
-        <div class="mb-10 flex items-center gap-4">
-            <a href="{{ route('user.index') }}"
-                class="w-12 h-12 rounded-2xl bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-all shadow-sm flex items-center justify-center group">
-                <i class="ti ti-arrow-left text-2xl group-hover:-translate-x-1 transition-transform"></i>
-            </a>
-            <div>
-                <h1 class="text-3xl font-black text-slate-900 dark:text-white tracking-tight">Editar Usuario</h1>
-                <p class="text-slate-500 dark:text-slate-400 text-sm font-medium mt-1">Actualiza los datos del personal o
-                    modifica sus credenciales de acceso</p>
+        <div class="mb-10 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <a href="{{ route('user.index') }}"
+                    class="w-12 h-12 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-400 hover:text-emerald-600 transition-all shadow-sm flex items-center justify-center group">
+                    <i class="ti ti-arrow-left text-2xl group-hover:-translate-x-1 transition-transform"></i>
+                </a>
+                <div>
+                    <h1 class="text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+                        {{ __('Editar Usuario') }}</h1>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm font-medium mt-1 uppercase tracking-tighter">
+                        Actualizando perfil de: <span
+                            class="text-emerald-600 font-bold dark:text-emerald-400">{{ $user->name }}</span></p>
+                </div>
             </div>
         </div>
-
-        @if ($errors->any())
-            <div class="mb-8 p-6 bg-rose-500/10 border border-rose-500/20 rounded-3xl">
-                <div class="flex items-center gap-3 text-rose-600 dark:text-rose-400 mb-4">
-                    <i class="ti ti-alert-circle text-2xl"></i>
-                    <h5 class="font-black uppercase text-xs tracking-widest">Se encontraron errores</h5>
-                </div>
-                <ul class="space-y-1">
-                    @foreach ($errors->all() as $error)
-                        <li class="text-xs font-bold text-rose-500/80">• {{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
 
         <form action="{{ route('user.update', $user->userID) }}" method="POST" enctype="multipart/form-data"
             class="space-y-8">
             @csrf
             @method('PUT')
 
+            <!-- Main Form Card -->
             <div
-                class="bg-white dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 backdrop-blur-xl rounded-[40px] p-10 shadow-sm overflow-hidden relative">
-                <div class="absolute -top-12 -right-12 w-64 h-64 bg-slate-500/5 rounded-full blur-3xl"></div>
+                class="bg-white dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 backdrop-blur-xl rounded-[40px] p-8 md:p-12 shadow-sm overflow-hidden relative">
 
-                <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-10 relative">Información
-                    Personal</h4>
+                <!-- Section 1: Personal Information -->
+                <div class="mb-12">
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-8">
+                        <i class="ti ti-user-circle text-emerald-500 dark:text-emerald-400 text-xl"></i>
+                        {{ __('Información Personal') }}
+                    </h3>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 relative">
-                    <div class="space-y-2">
-                        <x-form.label for="name">Nombre Completo</x-form.label>
-                        <x-form.input name="name" id="name" required value="{{ old('name', $user->name) }}" />
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                        <!-- Full Name -->
+                        <div class="space-y-2">
+                            <label for="name" class="text-sm font-medium text-slate-600 dark:text-slate-400">
+                                {{ __('Nombre Completo') }} <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" name="name" id="name" value="{{ old('name', $user->name) }}"
+                                oninput="this.value = this.value.replace(/[0-9]/g, '')"
+                                class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all">
+                            <x-input-error :messages="$errors->get('name')" class="mt-1" />
+                        </div>
+
+                        <!-- DNI -->
+                        <div class="space-y-2">
+                            <label for="dni" class="text-sm font-medium text-slate-600 dark:text-slate-400">
+                                {{ __('DNI / Documento Identidad') }} <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" name="dni" id="dni" value="{{ old('dni', $user->dni) }}"
+                                maxlength="8" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all">
+                            <x-input-error :messages="$errors->get('dni')" class="mt-1" />
+                        </div>
+
+                        <!-- Date of Birth -->
+                        <div class="space-y-2">
+                            <label for="dob" class="text-sm font-medium text-slate-600 dark:text-slate-400">
+                                {{ __('Fecha de Nacimiento') }} <span class="text-red-500">*</span>
+                            </label>
+                            <input type="date" name="dob" id="dob" value="{{ old('dob', $user->dob) }}"
+                                class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all">
+                            <x-input-error :messages="$errors->get('dob')" class="mt-1" />
+                        </div>
+
+                        <!-- Gender -->
+                        <div class="space-y-2">
+                            <label for="sex" class="text-sm font-medium text-slate-600 dark:text-slate-400">
+                                {{ __('Género') }} <span class="text-red-500">*</span>
+                            </label>
+                            <select name="sex" id="sex"
+                                class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all">
+                                <option value="">{{ __('Seleccionar') }}</option>
+                                <option value="Masculino"
+                                    {{ old('sex', $user->sex) == 'Masculino' ? 'selected' : '' }}>
+                                    Masculino</option>
+                                <option value="Femenino" {{ old('sex', $user->sex) == 'Femenino' ? 'selected' : '' }}>
+                                    Femenino
+                                </option>
+                            </select>
+                            <x-input-error :messages="$errors->get('sex')" class="mt-1" />
+                        </div>
                     </div>
-                    <div class="space-y-2">
-                        <x-form.label for="dni">DNI / CI</x-form.label>
-                        <x-form.input name="dni" id="dni" required value="{{ old('dni', $user->dni) }}" />
-                    </div>
-                    <div class="space-y-2">
-                        <x-form.label for="dob">Fecha De Nacimiento</x-form.label>
-                        <x-form.input type="date" name="dob" id="dob" required
-                            value="{{ old('dob', $user->dob) }}" />
-                    </div>
-                    <div class="space-y-2">
-                        <x-form.label for="sex">Género</x-form.label>
-                        <select name="sex" id="sex"
-                            class="w-full px-4 py-3.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm font-bold text-slate-700 dark:text-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none">
-                            <option value="Masculino" {{ old('sex', $user->sex) == 'Masculino' ? 'selected' : '' }}>
-                                Masculino</option>
-                            <option value="Femenino" {{ old('sex', $user->sex) == 'Femenino' ? 'selected' : '' }}>
-                                Femenino</option>
-                            <option value="Otro" {{ old('sex', $user->sex) == 'Otro' ? 'selected' : '' }}>Otro
-                            </option>
-                        </select>
-                    </div>
-                    <div class="space-y-2">
-                        <x-form.label for="jod">Día De Ingreso</x-form.label>
-                        <x-form.input type="date" name="jod" id="jod" required
-                            value="{{ old('jod', $user->jod) }}" />
-                    </div>
-                    <div class="space-y-2">
-                        <x-form.label for="phone">Teléfono</x-form.label>
-                        <x-form.input name="phone" id="phone" value="{{ old('phone', $user->phone) }}" />
-                    </div>
-                    <div class="md:col-span-2 space-y-2">
-                        <x-form.label for="address">Dirección</x-form.label>
-                        <x-form.input name="address" id="address" value="{{ old('address', $user->address) }}" />
-                    </div>
-                    <div class="space-y-2">
-                        <x-form.label for="photo">Foto</x-form.label>
-                        <div class="flex items-center gap-4">
-                            @if ($user->photo && $user->photo != 'default.png')
-                                <div class="w-12 h-12 rounded-xl border border-slate-200 overflow-hidden shrink-0">
-                                    <img src="{{ asset('storage/images/' . $user->photo) }}"
+                </div>
+
+                <!-- Section 2: Contact & Professional Info -->
+                <div class="mb-12 pt-8 border-t border-slate-100 dark:border-slate-700/50">
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-8">
+                        <i class="ti ti-briefcase text-emerald-500 dark:text-emerald-400 text-xl"></i>
+                        {{ __('Información de Contacto y Rol') }}
+                    </h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Joining Date -->
+                        <div class="space-y-2">
+                            <label for="jod" class="text-sm font-medium text-slate-600 dark:text-slate-400">
+                                {{ __('Fecha de Ingreso') }} <span class="text-red-500">*</span>
+                            </label>
+                            <input type="date" name="jod" id="jod" value="{{ old('jod', $user->jod) }}"
+                                class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all">
+                            <x-input-error :messages="$errors->get('jod')" class="mt-1" />
+                        </div>
+
+                        <!-- User Type / Role -->
+                        <div class="space-y-2">
+                            <label for="usertypeID" class="text-sm font-medium text-slate-600 dark:text-slate-400">
+                                {{ __('Rol del Sistema') }} <span class="text-red-500">*</span>
+                            </label>
+                            <select name="usertypeID" id="usertypeID"
+                                class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all">
+                                <option value="">{{ __('Seleccionar Rol') }}</option>
+                                @foreach ($usertypes as $type)
+                                    <option value="{{ $type->usertypeID }}"
+                                        {{ old('usertypeID', $user->usertypeID) == $type->usertypeID ? 'selected' : '' }}>
+                                        {{ $type->usertype }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <x-input-error :messages="$errors->get('usertypeID')" class="mt-1" />
+                        </div>
+
+                        <!-- Phone -->
+                        <div class="space-y-2">
+                            <label for="phone" class="text-sm font-medium text-slate-600 dark:text-slate-400">
+                                {{ __('Teléfono Móvil') }} <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" name="phone" id="phone"
+                                value="{{ old('phone', $user->phone) }}" maxlength="9"
+                                oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all">
+                            <x-input-error :messages="$errors->get('phone')" class="mt-1" />
+                        </div>
+
+                        <!-- Email -->
+                        <div class="md:col-span-2 space-y-2">
+                            <label for="email" class="text-sm font-medium text-slate-600 dark:text-slate-400">
+                                {{ __('Correo Electrónico') }} <span class="text-red-500">*</span>
+                            </label>
+                            <input type="email" name="email" id="email"
+                                value="{{ old('email', $user->email) }}"
+                                class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all">
+                            <x-input-error :messages="$errors->get('email')" class="mt-1" />
+                        </div>
+
+                        <!-- Photo Upload with Preview -->
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-slate-600 dark:text-slate-400">
+                                {{ __('Fotografía') }}
+                            </label>
+                            <div class="flex items-center gap-4">
+                                <div
+                                    class="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 flex items-center justify-center overflow-hidden shrink-0">
+                                    <img id="preview"
+                                        src="{{ asset($user->photo && $user->photo != 'default.png' ? 'storage/images/' . $user->photo : 'uploads/images/default.png') }}"
                                         class="w-full h-full object-cover">
                                 </div>
-                            @endif
-                            <div class="relative group flex-1">
-                                <input type="file" name="photo" id="photo" class="hidden"
-                                    onchange="updateFileName(this)">
                                 <label for="photo"
-                                    class="flex items-center justify-between w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl cursor-pointer hover:border-indigo-500 transition-colors">
-                                    <span
-                                        class="text-xs font-bold text-slate-400 group-hover:text-indigo-500 transition-colors"
-                                        id="file-name">Cambiar foto</span>
-                                    <i class="ti ti-upload text-slate-400 group-hover:text-indigo-500"></i>
+                                    class="flex-1 px-4 py-2 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl text-xs font-bold text-slate-500 cursor-pointer hover:border-emerald-500 transition-all flex items-center justify-center gap-2">
+                                    <i class="ti ti-upload text-base"></i>
+                                    {{ __('Cambiar Foto') }}
                                 </label>
+                                <input type="file" name="photo" id="photo" class="hidden" accept="image/*"
+                                    onchange="previewImage(this)">
                             </div>
+                            <x-input-error :messages="$errors->get('photo')" class="mt-1" />
+                        </div>
+
+                        <!-- Address -->
+                        <div class="md:col-span-3 space-y-2">
+                            <label for="address" class="text-sm font-medium text-slate-600 dark:text-slate-400">
+                                {{ __('Dirección Domiciliaria') }} <span class="text-red-500">*</span>
+                            </label>
+                            <textarea name="address" id="address" rows="2"
+                                class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all">{{ old('address', $user->address) }}</textarea>
+                            <x-input-error :messages="$errors->get('address')" class="mt-1" />
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div
-                class="bg-white dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 backdrop-blur-xl rounded-[40px] p-10 shadow-sm relative overflow-hidden">
-                <div class="absolute -bottom-12 -left-12 w-64 h-64 bg-indigo-500/5 rounded-full blur-3xl"></div>
+                <!-- Section 3: Credentials -->
+                <div class="pt-8 border-t border-slate-100 dark:border-slate-700/50">
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-8">
+                        <i class="ti ti-shield-lock text-emerald-500 dark:text-emerald-400 text-xl"></i>
+                        {{ __('Credenciales de Acceso') }}
+                    </h3>
 
-                <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-10 relative">Credenciales
-                    de Acceso</h4>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 relative">
-                    <div class="space-y-2 lg:col-span-2">
-                        <x-form.label for="usertypeID">Rol de Usuarios</x-form.label>
-                        <select name="usertypeID" id="usertypeID" required
-                            class="w-full px-4 py-3.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm font-bold text-slate-700 dark:text-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none">
-                            <option value="">Seleccionar Rol</option>
-                            @foreach ($usertypes as $role)
-                                <option value="{{ $role->usertypeID }}"
-                                    {{ old('usertypeID', $user->usertypeID) == $role->usertypeID ? 'selected' : '' }}>
-                                    {{ $role->usertype }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="space-y-2">
-                        <x-form.label for="email">Email</x-form.label>
-                        <x-form.input type="email" name="email" id="email" required
-                            value="{{ old('email', $user->email) }}" />
-                    </div>
-                    <div class="space-y-2">
-                        <x-form.label for="username">Nombre De Usuario</x-form.label>
-                        <x-form.input name="username" id="username" required
-                            value="{{ old('username', $user->username) }}" />
-                    </div>
-                    <div class="space-y-2 lg:col-start-4">
-                        <x-form.label for="password">Contraseña (opcional)</x-form.label>
-                        <div class="relative group">
-                            <x-form.input type="password" name="password" id="password" />
-                            <button type="button" onclick="togglePassword()"
-                                class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-500">
-                                <i class="ti ti-eye text-lg" id="eye-icon"></i>
-                            </button>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <!-- Username -->
+                        <div class="space-y-2">
+                            <label for="username" class="text-sm font-medium text-slate-600 dark:text-slate-400">
+                                {{ __('Nombre de Usuario') }} <span class="text-red-500">*</span>
+                            </label>
+                            <div class="relative group">
+                                <i
+                                    class="ti ti-at absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-emerald-500 transition-colors"></i>
+                                <input type="text" name="username" id="username"
+                                    value="{{ old('username', $user->username) }}"
+                                    class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl pl-11 pr-4 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all">
+                            </div>
+                            <x-input-error :messages="$errors->get('username')" class="mt-1" />
                         </div>
-                        <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest pl-1">Dejar en blanco
-                            para mantener la actual</p>
+
+                        <!-- Password -->
+                        <div class="space-y-2">
+                            <label for="password" class="text-sm font-medium text-slate-600 dark:text-slate-400">
+                                {{ __('Cambiar Contraseña') }} <span
+                                    class="text-xs text-slate-400 italic font-normal">({{ __('Opcional') }})</span>
+                            </label>
+                            <div class="relative group">
+                                <i
+                                    class="ti ti-lock absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-emerald-500 transition-colors"></i>
+                                <input type="password" name="password" id="password"
+                                    placeholder="{{ __('Dejar en blanco para mantener actual') }}"
+                                    class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl pl-11 pr-12 py-2.5 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all">
+                                <button type="button" onclick="togglePassword()"
+                                    class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-emerald-500 transition-colors">
+                                    <i id="eye-icon" class="ti ti-eye text-xl"></i>
+                                </button>
+                            </div>
+                            <x-input-error :messages="$errors->get('password')" class="mt-1" />
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="flex justify-end pt-4">
-                <button type="submit"
-                    class="px-12 py-5 rounded-3xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black text-xs uppercase tracking-[0.2em] transition-all shadow-2xl hover:scale-105 active:scale-95">
-                    Actualizar Usuario
-                </button>
+                <!-- Submit Button -->
+                <div class="mt-12 flex justify-end">
+                    <button type="submit"
+                        class="w-full px-12 py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3">
+                        <i class="ti ti-device-floppy text-xl"></i>
+                        {{ __('Actualizar Usuario') }}
+                    </button>
+                </div>
             </div>
         </form>
-    </div>
 
-    <script>
-        function updateFileName(input) {
-            const label = document.getElementById('file-name');
-            if (input.files && input.files[0]) {
-                label.innerText = input.files[0].name;
-            } else {
-                label.innerText = 'Seleccionar archivo';
+        <script>
+            function previewImage(input) {
+                const preview = document.getElementById('preview');
+                if (input.files && input.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        preview.src = e.target.result;
+                    }
+                    reader.readAsDataURL(input.files[0]);
+                }
             }
-        }
 
-        function togglePassword() {
-            const input = document.getElementById('password');
-            const icon = document.getElementById('eye-icon');
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.classList.replace('ti-eye', 'ti-eye-off');
-            } else {
-                input.type = 'password';
-                icon.classList.replace('ti-eye-off', 'ti-eye');
+            function togglePassword() {
+                const passwordInput = document.getElementById('password');
+                const eyeIcon = document.getElementById('eye-icon');
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    eyeIcon.classList.replace('ti-eye', 'ti-eye-off');
+                } else {
+                    passwordInput.type = 'password';
+                    eyeIcon.classList.replace('ti-eye-off', 'ti-eye');
+                }
             }
-        }
-    </script>
+        </script>
 </x-app-layout>

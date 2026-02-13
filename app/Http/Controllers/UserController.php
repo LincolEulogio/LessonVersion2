@@ -11,10 +11,36 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::paginate(20);
-        return view('user.index', compact('users'));
+        $search = $request->input('search');
+        $active = $request->input('active');
+        $usertypeID = $request->input('usertypeID');
+
+        $query = User::query();
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('dni', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('phone', 'like', "%{$search}%")
+                    ->orWhere('username', 'like', "%{$search}%");
+            });
+        }
+
+        if ($active !== null && $active !== '') {
+            $query->where('active', $active);
+        }
+
+        if ($usertypeID) {
+            $query->where('usertypeID', $usertypeID);
+        }
+
+        $users = $query->paginate(10)->withQueryString();
+        $usertypes = Usertype::all();
+
+        return view('user.index', compact('users', 'search', 'active', 'usertypes', 'usertypeID'));
     }
 
     public function create()
@@ -25,19 +51,42 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'dni' => 'required|string|max:60|unique:users,dni',
-            'name' => 'required|string|max:60',
+        $validated = $request->validate([
+            'name' => 'required|string|max:60|regex:/^[\pL\s\-]+$/u',
             'dob' => 'required|date',
             'sex' => 'required|string|max:10',
             'email' => 'required|email|max:40|unique:users,email',
-            'phone' => 'nullable|string|max:20',
-            'address' => 'nullable|string',
+            'phone' => 'required|numeric|digits_between:7,9',
+            'address' => 'required|string|max:200',
             'jod' => 'required|date',
-            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'usertypeID' => 'required|exists:usertypes,usertypeID',
-            'username' => 'required|string|min:4|max:40|unique:users,username',
-            'password' => 'required|string|min:4',
+            'username' => 'required|string|min:8|max:40|unique:users,username',
+            'password' => 'required|string|min:8|max:40',
+            'dni' => 'required|numeric|digits:8|unique:users,dni',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ], [
+            'name.required' => 'El nombre es obligatorio.',
+            'name.regex' => 'El nombre no debe contener números.',
+            'dob.required' => 'La fecha de nacimiento es obligatoria.',
+            'sex.required' => 'El género es obligatorio.',
+            'email.required' => 'El correo electrónico es obligatorio.',
+            'email.email' => 'Ingrese un formato de correo válido (@).',
+            'email.unique' => 'Este correo ya está registrado.',
+            'phone.required' => 'El teléfono es obligatorio.',
+            'phone.numeric' => 'El teléfono debe contener solo números.',
+            'phone.digits_between' => 'El teléfono debe tener entre 7 y 9 dígitos.',
+            'address.required' => 'La dirección es obligatoria.',
+            'jod.required' => 'La fecha de ingreso es obligatoria.',
+            'usertypeID.required' => 'El tipo de usuario es obligatorio.',
+            'username.required' => 'El usuario es obligatorio.',
+            'username.min' => 'El usuario debe tener al menos 8 caracteres.',
+            'username.unique' => 'Este usuario ya existe.',
+            'password.required' => 'La contraseña es obligatoria.',
+            'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
+            'dni.required' => 'El DNI es obligatorio.',
+            'dni.numeric' => 'El DNI debe contener solo números.',
+            'dni.digits' => 'El DNI debe tener exactamente 8 dígitos.',
+            'dni.unique' => 'Este DNI ya está registrado.',
         ]);
 
         $data = $request->all();
@@ -52,6 +101,8 @@ class UserController extends Controller
         if ($request->hasFile('photo')) {
             $path = $request->file('photo')->store('images', 'public');
             $data['photo'] = basename($path);
+        } else {
+            $data['photo'] = 'default.png';
         }
 
         User::create($data);
@@ -76,19 +127,39 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
 
-        $request->validate([
-            'dni' => 'required|string|max:60|unique:users,dni,' . $id . ',userID',
-            'name' => 'required|string|max:60',
+        $validated = $request->validate([
+            'name' => 'required|string|max:60|regex:/^[\pL\s\-]+$/u',
             'dob' => 'required|date',
             'sex' => 'required|string|max:10',
-            'email' => 'required|email|max:40|unique:users,email,' . $id . ',userID',
-            'phone' => 'nullable|string|max:20',
-            'address' => 'nullable|string',
+            'email' => 'required|email|max:40|unique:users,email,'.$id.',userID',
+            'phone' => 'required|numeric|digits_between:7,9',
+            'address' => 'required|string|max:200',
             'jod' => 'required|date',
-            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'usertypeID' => 'required|exists:usertypes,usertypeID',
-            'username' => 'required|string|min:4|max:40|unique:users,username,' . $id . ',userID',
-            'password' => 'nullable|string|min:4',
+            'username' => 'required|string|min:8|max:40|unique:users,username,'.$id.',userID',
+            'dni' => 'required|numeric|digits:8|unique:users,dni,'.$id.',userID',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ], [
+            'name.required' => 'El nombre es obligatorio.',
+            'name.regex' => 'El nombre no debe contener números.',
+            'dob.required' => 'La fecha de nacimiento es obligatoria.',
+            'sex.required' => 'El género es obligatorio.',
+            'email.required' => 'El correo electrónico es obligatorio.',
+            'email.email' => 'Ingrese un formato de correo válido (@).',
+            'email.unique' => 'Este correo ya está registrado.',
+            'phone.required' => 'El teléfono es obligatorio.',
+            'phone.numeric' => 'El teléfono debe contener solo números.',
+            'phone.digits_between' => 'El teléfono debe tener entre 7 y 9 dígitos.',
+            'address.required' => 'La dirección es obligatoria.',
+            'jod.required' => 'La fecha de ingreso es obligatoria.',
+            'usertypeID.required' => 'El tipo de usuario es obligatorio.',
+            'username.required' => 'El usuario es obligatorio.',
+            'username.min' => 'El usuario debe tener al menos 8 caracteres.',
+            'username.unique' => 'Este usuario ya existe.',
+            'dni.required' => 'El DNI es obligatorio.',
+            'dni.numeric' => 'El DNI debe contener solo números.',
+            'dni.digits' => 'El DNI debe tener exactamente 8 dígitos.',
+            'dni.unique' => 'Este DNI ya está registrado.',
         ]);
 
         $data = $request->all();
