@@ -104,12 +104,17 @@
                                                 {{ __('Desglose de Calificaciones') }}</p>
                                         </div>
                                     </div>
-                                    <div class="flex items-center gap-4">
+                                    <div class="flex items-center gap-6">
                                         <div class="text-right">
                                             <span
-                                                class="block text-3xl font-black text-emerald-500 italic tracking-tighter leading-none">{{ $mark->mark }}</span>
+                                                class="block text-3xl font-black {{ $mark->mark >= 11 ? 'text-emerald-500' : 'text-rose-500' }} italic tracking-tighter leading-none">{{ round($mark->mark) }}</span>
                                             <span
-                                                class="text-[9px] text-slate-400 font-black uppercase tracking-widest">{{ __('Puntaje Total') }}</span>
+                                                class="text-[9px] text-slate-400 font-black uppercase tracking-widest">{{ __('Promedio Final') }}</span>
+                                        </div>
+                                        <div
+                                            class="px-4 py-2 rounded-xl {{ $mark->mark >= 11 ? 'bg-emerald-500/10 text-emerald-500' : 'bg-rose-500/10 text-rose-500' }} border {{ $mark->mark >= 11 ? 'border-emerald-500/20' : 'border-rose-500/20' }}">
+                                            <span
+                                                class="text-[10px] font-black uppercase tracking-widest">{{ $mark->mark >= 11 ? __('APROBADO') : __('DESAPROBADO') }}</span>
                                         </div>
                                     </div>
                                 </div>

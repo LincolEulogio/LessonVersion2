@@ -119,7 +119,7 @@
             </form>
         </div>
 
-        @if (isset($students) && count($students) > 0)
+        @if (isset($students) && is_iterable($students) && count($students) > 0)
             <div
                 class="overflow-hidden bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 rounded-[3rem] shadow-sm">
                 <div class="overflow-x-auto">
@@ -132,7 +132,7 @@
                                     #</th>
                                 <th class="p-8 min-w-[300px] border-b border-r border-slate-100 dark:border-slate-800">
                                     {{ __('Estudiante') }}</th>
-                                @foreach ($mark_percentages as $percentage)
+                                @forelse ($mark_percentages ?? [] as $percentage)
                                     <th
                                         class="p-6 text-center border-b border-r border-slate-100 dark:border-slate-800 min-w-[150px]">
                                         <div class="flex flex-col items-center">
@@ -141,7 +141,16 @@
                                                 class="text-[9px] text-emerald-500 mt-1">({{ $percentage->markpercentage_numeric }}%)</span>
                                         </div>
                                     </th>
-                                @endforeach
+                                @empty
+                                @endforelse
+                                <th
+                                    class="p-6 text-center border-b border-slate-100 dark:border-slate-800 min-w-[150px] bg-slate-50/80 dark:bg-slate-900/80">
+                                    <div class="flex flex-col items-center">
+                                        <span>{{ __('Promedio Final') }}</span>
+                                        <span
+                                            class="text-[9px] text-slate-400 mt-1 uppercase">{{ __('Estado') }}</span>
+                                    </div>
+                                </th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100 dark:divide-slate-800/50">
@@ -182,7 +191,8 @@
                                                 <input type="number" data-student="{{ $student->studentID }}"
                                                     data-percentage="{{ $percentage->markpercentageID }}"
                                                     value="{{ $student->mark_relations->get($percentage->markpercentageID) }}"
-                                                    min="0" max="{{ $percentage->markpercentage_numeric }}"
+                                                    min="0" max="20"
+                                                    oninput="if(this.value.length > 2) this.value = this.value.slice(0, 2); if(this.value > 20) this.value = 20;"
                                                     class="mark-input w-24 text-center bg-slate-100 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl py-3 text-slate-900 dark:text-white font-black italic focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition-all placeholder-slate-300 dark:placeholder-slate-700 no-spinner"
                                                     placeholder="-">
                                                 <span
@@ -191,6 +201,31 @@
                                             </div>
                                         </td>
                                     @endforeach
+                                    <td
+                                        class="p-6 border-r border-slate-100 dark:border-slate-800 bg-slate-50/30 dark:bg-slate-900/20 shadow-inner">
+                                        <div class="flex flex-col items-center gap-1">
+                                            @php
+                                                $sum = $student->mark_relations->sum();
+                                                $count = is_countable($mark_percentages ?? null)
+                                                    ? count($mark_percentages)
+                                                    : 1;
+                                                $count = $count ?: 1;
+                                                $average = $sum / $count;
+                                                $roundedAverage = round($average);
+                                                $status = $roundedAverage >= 11 ? __('APROBADO') : __('DESAPROBADO');
+                                                $statusClass =
+                                                    $roundedAverage >= 11 ? 'text-emerald-500' : 'text-rose-500';
+                                            @endphp
+                                            <span
+                                                class="total-mark-{{ $student->studentID }} text-lg font-black italic text-slate-700 dark:text-white">
+                                                {{ $roundedAverage }}
+                                            </span>
+                                            <span
+                                                class="status-mark-{{ $student->studentID }} text-[9px] font-black uppercase tracking-[0.2em] {{ $statusClass }}">
+                                                {{ $status }}
+                                            </span>
+                                        </div>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -351,6 +386,41 @@
                         btn.classList.remove('opacity-80', 'cursor-not-allowed');
                     });
             }
+
+            // Real-time Total & Status calculation
+            document.querySelectorAll('.mark-input').forEach(input => {
+                input.addEventListener('input', () => {
+                    const studentId = input.dataset.student;
+                    const studentInputs = document.querySelectorAll(`.mark-input[data-student="${studentId}"]`);
+                    const count =
+                        {{ is_array($mark_percentages) || $mark_percentages instanceof \Countable ? count($mark_percentages) : 0 }} ||
+                        1;
+                    let sum = 0;
+
+                    studentInputs.forEach(si => {
+                        sum += parseFloat(si.value || 0);
+                    });
+
+                    const average = sum / count;
+                    const roundedAverage = Math.round(average);
+                    const totalDisplay = document.querySelector(`.total-mark-${studentId}`);
+                    const statusDisplay = document.querySelector(`.status-mark-${studentId}`);
+
+                    if (totalDisplay && statusDisplay) {
+                        totalDisplay.textContent = roundedAverage;
+
+                        if (roundedAverage >= 11) {
+                            statusDisplay.textContent = "{{ __('APROBADO') }}";
+                            statusDisplay.classList.remove('text-rose-500');
+                            statusDisplay.classList.add('text-emerald-500');
+                        } else {
+                            statusDisplay.textContent = "{{ __('DESAPROBADO') }}";
+                            statusDisplay.classList.remove('text-emerald-500');
+                            statusDisplay.classList.add('text-rose-500');
+                        }
+                    }
+                });
+            });
         </script>
     @endpush
 

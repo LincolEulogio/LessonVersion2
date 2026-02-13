@@ -44,7 +44,8 @@ class MarkController extends Controller
             $sections = $classesID ? Section::where('classesID', $classesID)->get() : collect();
             $subjects = $classesID ? Subject::where('classesID', $classesID)->get() : collect();
 
-            return view('mark.add', compact('classes', 'exams', 'sections', 'subjects', 'classesID', 'sectionID', 'subjectID', 'examID'));
+            $mark_percentages = Markpercentage::all();
+            return view('mark.add', compact('classes', 'exams', 'sections', 'subjects', 'classesID', 'sectionID', 'subjectID', 'examID', 'mark_percentages'));
         }
 
         // Fetch Data for Grading Interface
@@ -85,7 +86,7 @@ class MarkController extends Controller
             'subjectID' => 'required',
             'inputs' => 'required|array',
             'inputs.*.mark' => 'required|string',
-            'inputs.*.value' => 'nullable|numeric|min:0',
+            'inputs.*.value' => 'nullable|numeric|min:0|max:20',
         ]);
 
         if ($validator->fails()) {
@@ -96,7 +97,8 @@ class MarkController extends Controller
             ], 422);
         }
 
-        $mark_percentages = Markpercentage::all()->keyBy('markpercentageID');
+        $mark_percentages = Markpercentage::all() ?: collect();
+        $mark_percentages_keyed = $mark_percentages->keyBy('markpercentageID');
         $year = date('Y');
         $schoolyearID = 1; // Default
         
@@ -107,10 +109,9 @@ class MarkController extends Controller
             $studentID = $parts[1];
             $value = $input['value'];
 
-            $percentage = $mark_percentages->get($markpercentageID);
-            if ($percentage && $value > $percentage->markpercentage_numeric) {
+            if ($value > 20) {
                 $input_errors[$input['mark']] = [
-                    __('El valor no puede superar :max', ['max' => $percentage->markpercentage_numeric])
+                    __('El valor no puede superar 20')
                 ];
             }
         }
@@ -156,9 +157,12 @@ class MarkController extends Controller
                     ]
                 );
                 
-                // Recalculate total mark if necessary
-                $total = Markrelation::where('markID', $mark->markID)->sum('mark');
-                $mark->update(['mark' => $total]);
+                // Recalculate total mark as average
+                $sum = Markrelation::where('markID', $mark->markID)->sum('mark');
+                $count = $mark_percentages->count() ?: 1;
+                $average = $sum / $count;
+                $roundedAverage = round($average);
+                $mark->update(['mark' => $roundedAverage]);
             }
             DB::commit();
             return response()->json([
