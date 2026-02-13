@@ -137,12 +137,13 @@
                                 <td class="px-6 py-4 text-right pr-6">
                                     <div
                                         class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                        <a href="{{ route('student.show', $student->studentID) }}"
-                                            class="p-2 bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white rounded-lg transition-all"
-                                            title="{{ __('Ver Perfil') }}">
-                                            <i class="ti ti-eye text-lg"></i>
+                                        <a href="{{ route('mark.show', $student->studentID) }}"
+                                            class="p-2 bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500 hover:text-white rounded-lg transition-all"
+                                            title="{{ __('Calificaciones') }}">
+                                            <i class="ti ti-chart-bar text-lg"></i>
                                         </a>
-                                        <a href="{{ route('student.edit', $student->studentID) }}"
+                                        <a href="{{ route('student.show', $student->studentID) }}" <a
+                                            href="{{ route('student.edit', $student->studentID) }}"
                                             class="p-2 bg-amber-500/10 text-amber-500 hover:bg-amber-500 hover:text-white rounded-lg transition-all"
                                             title="{{ __('Editar') }}">
                                             <i class="ti ti-edit text-lg"></i>
@@ -154,8 +155,8 @@
                                             <i class="ti ti-trash text-lg"></i>
                                         </button>
                                         <form id="delete-form-{{ $student->studentID }}"
-                                            action="{{ route('student.destroy', $student->studentID) }}"
-                                            method="POST" style="display: none;">
+                                            action="{{ route('student.destroy', $student->studentID) }}" method="POST"
+                                            style="display: none;">
                                             @csrf
                                             @method('DELETE')
                                         </form>

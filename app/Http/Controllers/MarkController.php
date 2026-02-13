@@ -79,27 +79,59 @@ class MarkController extends Controller
 
     public function save(Request $request)
     {
-        $request->validate([
+        $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
             'examID' => 'required',
             'classesID' => 'required',
             'subjectID' => 'required',
-            'inputs' => 'required|array'
+            'inputs' => 'required|array',
+            'inputs.*.mark' => 'required|string',
+            'inputs.*.value' => 'nullable|numeric|min:0',
         ]);
 
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => __('Error de validación global.'),
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $mark_percentages = Markpercentage::all()->keyBy('markpercentageID');
         $year = date('Y');
-        $schoolyearID = 1; // Default for now
+        $schoolyearID = 1; // Default
         
+        $input_errors = [];
+        foreach ($request->inputs as $index => $input) {
+            $parts = explode('-', $input['mark']);
+            $markpercentageID = $parts[0];
+            $studentID = $parts[1];
+            $value = $input['value'];
+
+            $percentage = $mark_percentages->get($markpercentageID);
+            if ($percentage && $value > $percentage->markpercentage_numeric) {
+                $input_errors[$input['mark']] = [
+                    __('El valor no puede superar :max', ['max' => $percentage->markpercentage_numeric])
+                ];
+            }
+        }
+
+        if (!empty($input_errors)) {
+            return response()->json([
+                'success' => false,
+                'message' => __('Hay errores en las calificaciones ingresadas.'),
+                'errors' => $input_errors
+            ], 422);
+        }
+
         DB::beginTransaction();
         try {
             foreach ($request->inputs as $input) {
-                // $input format: ['mark' => 'markpercentageID-studentID', 'value' => 'score']
                 $parts = explode('-', $input['mark']);
                 $markpercentageID = $parts[0];
                 $studentID = $parts[1];
                 $value = $input['value'];
 
-                // Find or Create Mark Record
-                $mark = Mark::firstOrCreate(
+                $mark = Mark::updateOrCreate(
                     [
                         'examID' => $request->examID,
                         'classesID' => $request->classesID,
@@ -109,27 +141,48 @@ class MarkController extends Controller
                         'year' => $year
                     ],
                     [
-                        'sectionID' => $request->sectionID, // Assuming sectionID is passed or retrieved
-                        'mark' => '', // Total mark can be calculated later
+                        'sectionID' => $request->sectionID,
+                        'mark' => 0, // Calculated mark can be updated later or if needed
                     ]
                 );
 
-                // Update/Insert Mark Relation
                 Markrelation::updateOrCreate(
                     [
                         'markID' => $mark->markID,
                         'markpercentageID' => $markpercentageID
                     ],
                     [
-                        'mark' => $value
+                        'mark' => $value ?? 0
                     ]
                 );
+                
+                // Recalculate total mark if necessary
+                $total = Markrelation::where('markID', $mark->markID)->sum('mark');
+                $mark->update(['mark' => $total]);
             }
             DB::commit();
-            return response()->json(['success' => true, 'message' => 'Notas guardadas correctamente.']);
+            return response()->json([
+                'success' => true, 
+                'message' => __('¡Calificaciones guardadas con éxito!')
+            ]);
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['success' => false, 'message' => 'Error al guardar notas: ' . $e->getMessage()], 500);
+            return response()->json([
+                'success' => false, 
+                'message' => __('Error al guardar: ') . $e->getMessage()
+            ], 500);
         }
+    }
+
+    public function show($id)
+    {
+        $student = Student::with(['classes', 'section'])->findOrFail($id);
+        $exams = Exam::all();
+        $marks = Mark::where('studentID', $id)
+            ->with(['exam', 'subject', 'relations.percentage'])
+            ->get()
+            ->groupBy('examID');
+
+        return view('mark.show', compact('student', 'exams', 'marks'));
     }
 }

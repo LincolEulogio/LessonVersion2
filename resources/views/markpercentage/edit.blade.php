@@ -1,48 +1,87 @@
 <x-app-layout>
-    <div class="py-10 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
-        <div class="mb-10 text-center">
-            <h1 class="text-4xl font-black text-slate-900 dark:text-white tracking-tighter">Editar Porcentaje</h1>
-            <p class="text-slate-500 dark:text-slate-400 mt-2 font-medium">Actualiza los detalles de la categoría
-                {{ $markpercentage->markpercentage }}.</p>
+    <div class="py-10 px-4 sm:px-6 lg:px-8 max-w-3xl mx-auto">
+        <!-- Header Section -->
+        <div class="mb-12">
+            <!-- Breadcrumbs -->
+            <nav class="flex items-center gap-3 text-slate-400 mb-8 text-[10px] font-black uppercase tracking-[0.2em]">
+                <a href="{{ route('dashboard') }}"
+                    class="hover:text-emerald-500 transition-colors flex items-center gap-2">
+                    <i class="ti ti-smart-home text-sm"></i>
+                    {{ __('Dashboard') }}
+                </a>
+                <i class="ti ti-chevron-right text-[8px]"></i>
+                <a href="{{ route('markpercentage.index') }}" class="hover:text-emerald-500 transition-colors">
+                    {{ __('Porcentajes') }}
+                </a>
+                <i class="ti ti-chevron-right text-[8px]"></i>
+                <span class="text-emerald-500">{{ __('Editar') }}</span>
+            </nav>
+
+            <div class="space-y-4">
+                <h1
+                    class="text-4xl md:text-5xl font-black text-slate-900 dark:text-white uppercase italic tracking-tighter leading-none">
+                    {{ __('Editar Tipo de') }} <span class="text-emerald-500 relative inline-block">
+                        {{ __('Evaluación') }}
+                        <span class="absolute -bottom-2 left-0 w-full h-3 bg-emerald-500/20 rounded-full"></span>
+                    </span>
+                </h1>
+            </div>
         </div>
 
         <div
-            class="bg-white dark:bg-slate-800 shadow-2xl rounded-[3rem] border border-slate-200 dark:border-slate-700/50 overflow-hidden">
+            class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 backdrop-blur-xl rounded-[3rem] p-10 shadow-sm">
             <form action="{{ route('markpercentage.update', $markpercentage->markpercentageID) }}" method="POST"
-                class="p-12 space-y-10">
-                @csrf @method('PUT')
+                class="space-y-8">
+                @csrf
+                @method('PUT')
 
-                <div class="space-y-3">
-                    <label
-                        class="block text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] pl-1">Nombre
-                        de la Categoría</label>
-                    <input type="text" name="markpercentage" value="{{ $markpercentage->markpercentage }}" required
-                        maxlength="60"
-                        class="w-full bg-slate-50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-700/50 rounded-2xl text-slate-700 dark:text-slate-200 focus:ring-4 focus:ring-indigo-500/10 py-4 px-5 font-bold transition-all">
-                </div>
-
-                <div class="space-y-3">
-                    <label
-                        class="block text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] pl-1">Valor
-                        Porcentual (%)</label>
+                <div class="space-y-4">
+                    <label for="markpercentage"
+                        class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">
+                        {{ __('Nombre del Tipo') }}
+                    </label>
                     <div class="relative">
-                        <input type="number" step="0.01" name="markpercentage_numeric"
-                            value="{{ $markpercentage->markpercentage_numeric }}" required
-                            class="w-full bg-slate-50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-700/50 rounded-2xl text-slate-700 dark:text-slate-200 focus:ring-4 focus:ring-indigo-500/10 py-4 px-5 font-bold transition-all">
-                        <span
-                            class="absolute right-6 top-1/2 -translate-y-1/2 text-2xl font-black text-slate-300">%</span>
+                        <i class="ti ti-tag absolute left-5 top-1/2 -translate-y-1/2 text-emerald-500 z-10 text-xl"></i>
+                        <input type="text" name="markpercentage" id="markpercentage"
+                            value="{{ old('markpercentage', $markpercentage->markpercentage) }}"
+                            placeholder="Ej: Examen Final, Deberes..."
+                            class="w-full pl-14 pr-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-2xl text-slate-700 dark:text-slate-200 font-bold focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all outline-none">
                     </div>
+                    @error('markpercentage')
+                        <p class="text-[10px] text-rose-500 font-bold uppercase tracking-widest ml-1">{{ $message }}
+                        </p>
+                    @enderror
                 </div>
 
-                <div class="flex items-center justify-between pt-10 border-t border-slate-100 dark:border-slate-700/30">
-                    <a href="{{ route('markpercentage.index') }}"
-                        class="px-8 py-4 text-xs font-black text-slate-400 hover:text-slate-900 dark:hover:text-white uppercase tracking-[0.2em] transition-all flex items-center gap-2">
-                        <i class="ti ti-chevron-left text-lg"></i> Cancelar
-                    </a>
+                <div class="space-y-4">
+                    <label for="markpercentage_numeric"
+                        class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">
+                        {{ __('Valor Porcentual (%)') }}
+                    </label>
+                    <div class="relative">
+                        <i
+                            class="ti ti-percentage absolute left-5 top-1/2 -translate-y-1/2 text-emerald-500 z-10 text-xl"></i>
+                        <input type="number" name="markpercentage_numeric" id="markpercentage_numeric"
+                            value="{{ old('markpercentage_numeric', $markpercentage->markpercentage_numeric) }}"
+                            placeholder="0 - 100"
+                            class="w-full pl-14 pr-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-2xl text-slate-700 dark:text-slate-200 font-bold focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all outline-none">
+                    </div>
+                    @error('markpercentage_numeric')
+                        <p class="text-[10px] text-rose-500 font-bold uppercase tracking-widest ml-1">{{ $message }}
+                        </p>
+                    @enderror
+                </div>
+
+                <div class="pt-4 flex items-center gap-4">
                     <button type="submit"
-                        class="px-16 py-5 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-3xl shadow-xl transition-all hover:scale-[1.02] active:scale-[0.98]">
-                        Actualizar Cambios
+                        class="px-10 py-5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-[2rem] shadow-2xl shadow-emerald-500/30 font-black text-[10px] uppercase tracking-widest transition-all hover:scale-105 active:scale-95 flex items-center gap-3">
+                        <i class="ti ti-device-floppy text-xl"></i>
+                        {{ __('Actualizar Registro') }}
                     </button>
+                    <a href="{{ route('markpercentage.index') }}"
+                        class="px-10 py-5 bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 rounded-[2rem] font-black text-[10px] uppercase tracking-widest hover:bg-slate-200 dark:hover:bg-slate-800 transition-all">
+                        {{ __('Cancelar') }}
+                    </a>
                 </div>
             </form>
         </div>

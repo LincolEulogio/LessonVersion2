@@ -12,4 +12,9 @@ class Markrelation extends Model
     protected $fillable = [
         'markID', 'markpercentageID', 'mark'
     ];
+
+    public function percentage()
+    {
+        return $this->belongsTo(Markpercentage::class, 'markpercentageID', 'markpercentageID');
+    }
 }

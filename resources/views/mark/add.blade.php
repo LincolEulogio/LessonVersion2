@@ -1,136 +1,194 @@
 <x-app-layout>
-    <div class="py-12 px-4 sm:px-6 lg:px-8 max-w-[95%] mx-auto">
-        <!-- Header & Filters -->
-        <h1 class="text-3xl font-black text-slate-900 dark:text-white tracking-tight mb-8 flex items-center gap-3">
-            <span
-                class="w-10 h-10 rounded-xl bg-white dark:bg-orange-500/10 flex items-center justify-center text-orange-600 dark:text-orange-400 border border-slate-200 dark:border-orange-500/20 shadow-sm dark:shadow-none">
-                <i class="ti ti-checklist text-xl"></i>
-            </span>
-            Registro de Notas
-        </h1>
+    <div class="py-10 px-4 sm:px-6 lg:px-8 max-w-[95%] mx-auto">
+        <!-- Header Section -->
+        <div class="mb-12">
+            <!-- Breadcrumbs -->
+            <nav class="flex items-center gap-3 text-slate-400 mb-8 text-[10px] font-black uppercase tracking-[0.2em]">
+                <a href="{{ route('dashboard') }}"
+                    class="hover:text-emerald-500 transition-colors flex items-center gap-2">
+                    <i class="ti ti-smart-home text-sm"></i>
+                    {{ __('Dashboard') }}
+                </a>
+                <i class="ti ti-chevron-right text-[8px]"></i>
+                <a href="{{ route('mark.index') }}" class="hover:text-emerald-500 transition-colors">
+                    {{ __('Calificaciones') }}
+                </a>
+                <i class="ti ti-chevron-right text-[8px]"></i>
+                <span class="text-emerald-500">{{ __('Registro Detallado') }}</span>
+            </nav>
 
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-8">
+                <div class="space-y-4">
+                    <h1
+                        class="text-4xl md:text-5xl font-black text-slate-900 dark:text-white uppercase italic tracking-tighter leading-none">
+                        {{ __('Ingreso de') }} <span class="text-emerald-500 relative inline-block">
+                            {{ __('Notas') }}
+                            <span class="absolute -bottom-2 left-0 w-full h-3 bg-emerald-500/20 rounded-full"></span>
+                        </span>
+                    </h1>
+                    <div class="flex items-center gap-3">
+                        <div class="w-3 h-3 rounded-full bg-emerald-500/30 flex items-center justify-center">
+                            <div class="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+                        </div>
+                        <p class="text-[10px] font-black text-slate-400 dark:text-slate-500 tracking-[0.3em] uppercase">
+                            {{ __('Filtre por clase, sección, materia y examen para registrar calificaciones') }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Card -->
         <div
-            class="mb-8 p-6 rounded-3xl bg-white dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 shadow-sm dark:shadow-none backdrop-blur-xl">
-            <form action="{{ route('mark.add') }}" method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
-                <div class="space-y-2">
+            class="mb-12 p-8 rounded-[3rem] bg-white dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 shadow-sm backdrop-blur-xl">
+            <form action="{{ route('mark.add') }}" method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="space-y-3">
                     <label
-                        class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">Clase</label>
-                    <select name="classesID" onchange="this.form.submit()"
-                        class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/10 transition-all outline-none cursor-pointer">
-                        <option value="">Seleccionar Clase...</option>
-                        @foreach ($classes as $class)
-                            <option value="{{ $class->classesID }}"
-                                {{ $classesID == $class->classesID ? 'selected' : '' }}>
-                                {{ $class->classes }}
-                            </option>
-                        @endforeach
-                    </select>
+                        class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{{ __('Clase') }}</label>
+                    <div class="relative">
+                        <i
+                            class="ti ti-school absolute left-4 top-1/2 -translate-y-1/2 text-emerald-500 pointer-events-none"></i>
+                        <select name="classesID" onchange="this.form.submit()"
+                            class="w-full pl-12 pr-4 py-3.5 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-2xl text-slate-700 dark:text-slate-200 font-bold focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all outline-none appearance-none cursor-pointer">
+                            <option value="">{{ __('Seleccionar...') }}</option>
+                            @foreach ($classes as $class)
+                                <option value="{{ $class->classesID }}"
+                                    {{ $classesID == $class->classesID ? 'selected' : '' }}>
+                                    {{ $class->classes }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
 
-                <div class="space-y-2">
+                <div class="space-y-3">
                     <label
-                        class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">Sección</label>
-                    <select name="sectionID" onchange="this.form.submit()"
-                        class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/10 transition-all outline-none cursor-pointer">
-                        <option value="">Seleccionar Sección...</option>
-                        @foreach ($sections as $section)
-                            <option value="{{ $section->sectionID }}"
-                                {{ $sectionID == $section->sectionID ? 'selected' : '' }}>
-                                {{ $section->section }}
-                            </option>
-                        @endforeach
-                    </select>
+                        class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{{ __('Sección') }}</label>
+                    <div class="relative">
+                        <i
+                            class="ti ti-section absolute left-4 top-1/2 -translate-y-1/2 text-emerald-500 pointer-events-none"></i>
+                        <select name="sectionID" onchange="this.form.submit()"
+                            class="w-full pl-12 pr-4 py-3.5 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-2xl text-slate-700 dark:text-slate-200 font-bold focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all outline-none appearance-none cursor-pointer">
+                            <option value="">{{ __('Seleccionar...') }}</option>
+                            @foreach ($sections as $section)
+                                <option value="{{ $section->sectionID }}"
+                                    {{ $sectionID == $section->sectionID ? 'selected' : '' }}>
+                                    {{ $section->section }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
 
-                <div class="space-y-2">
+                <div class="space-y-3">
                     <label
-                        class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">Materia</label>
-                    <select name="subjectID" onchange="this.form.submit()"
-                        class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/10 transition-all outline-none cursor-pointer">
-                        <option value="">Seleccionar Materia...</option>
-                        @foreach ($subjects as $subject)
-                            <option value="{{ $subject->subjectID }}"
-                                {{ $subjectID == $subject->subjectID ? 'selected' : '' }}>
-                                {{ $subject->subject }}
-                            </option>
-                        @endforeach
-                    </select>
+                        class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{{ __('Materia') }}</label>
+                    <div class="relative">
+                        <i
+                            class="ti ti-notebook absolute left-4 top-1/2 -translate-y-1/2 text-emerald-500 pointer-events-none"></i>
+                        <select name="subjectID" onchange="this.form.submit()"
+                            class="w-full pl-12 pr-4 py-3.5 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-2xl text-slate-700 dark:text-slate-200 font-bold focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all outline-none appearance-none cursor-pointer">
+                            <option value="">{{ __('Seleccionar...') }}</option>
+                            @foreach ($subjects as $subject)
+                                <option value="{{ $subject->subjectID }}"
+                                    {{ $subjectID == $subject->subjectID ? 'selected' : '' }}>
+                                    {{ $subject->subject }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
 
-                <div class="space-y-2">
+                <div class="space-y-3">
                     <label
-                        class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">Examen</label>
-                    <select name="examID" onchange="this.form.submit()"
-                        class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-700 dark:text-slate-200 focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/10 transition-all outline-none cursor-pointer">
-                        <option value="">Seleccionar Examen...</option>
-                        @foreach ($exams as $exam)
-                            <option value="{{ $exam->examID }}" {{ $examID == $exam->examID ? 'selected' : '' }}>
-                                {{ $exam->exam }}
-                            </option>
-                        @endforeach
-                    </select>
+                        class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{{ __('Examen') }}</label>
+                    <div class="relative">
+                        <i
+                            class="ti ti-file-certificate absolute left-4 top-1/2 -translate-y-1/2 text-emerald-500 pointer-events-none"></i>
+                        <select name="examID" onchange="this.form.submit()"
+                            class="w-full pl-12 pr-4 py-3.5 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-2xl text-slate-700 dark:text-slate-200 font-bold focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all outline-none appearance-none cursor-pointer">
+                            <option value="">{{ __('Seleccionar...') }}</option>
+                            @foreach ($exams as $exam)
+                                <option value="{{ $exam->examID }}" {{ $examID == $exam->examID ? 'selected' : '' }}>
+                                    {{ $exam->exam }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
             </form>
         </div>
 
         @if (isset($students) && count($students) > 0)
             <div
-                class="rounded-3xl bg-white dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 shadow-sm dark:shadow-none backdrop-blur-xl overflow-hidden">
+                class="overflow-hidden bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 rounded-[3rem] shadow-sm">
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr
-                                class="bg-slate-50 dark:bg-slate-900/50 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+                                class="bg-slate-50/50 dark:bg-slate-900/50 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
                                 <th
-                                    class="p-6 min-w-[50px] text-center border-b border-r border-slate-100 dark:border-slate-700/50">
+                                    class="p-8 min-w-[80px] text-center border-b border-r border-slate-100 dark:border-slate-800">
                                     #</th>
-                                <th
-                                    class="p-6 min-w-[250px] border-b border-r border-slate-100 dark:border-slate-700/50">
-                                    Estudiante</th>
+                                <th class="p-8 min-w-[300px] border-b border-r border-slate-100 dark:border-slate-800">
+                                    {{ __('Estudiante') }}</th>
                                 @foreach ($mark_percentages as $percentage)
                                     <th
-                                        class="p-4 text-center border-b border-r border-slate-100 dark:border-slate-700/50 min-w-[120px]">
-                                        {{ $percentage->markpercentage }}
-                                        <span
-                                            class="block text-[9px] text-orange-600 dark:text-orange-400 mt-1">({{ $percentage->markpercentage_numeric }}%)</span>
+                                        class="p-6 text-center border-b border-r border-slate-100 dark:border-slate-800 min-w-[150px]">
+                                        <div class="flex flex-col items-center">
+                                            <span>{{ $percentage->markpercentage }}</span>
+                                            <span
+                                                class="text-[9px] text-emerald-500 mt-1">({{ $percentage->markpercentage_numeric }}%)</span>
+                                        </div>
                                     </th>
                                 @endforeach
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-slate-100 dark:divide-slate-700/30">
+                        <tbody class="divide-y divide-slate-100 dark:divide-slate-800/50">
                             @foreach ($students as $index => $student)
-                                <tr class="group hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors">
+                                <tr class="group hover:bg-emerald-500/[0.02] transition-colors relative">
                                     <td
-                                        class="p-6 text-center text-slate-400 dark:text-slate-500 font-bold border-r border-slate-100 dark:border-slate-700/30">
-                                        {{ $index + 1 }}
+                                        class="p-8 text-center text-slate-400 font-black italic border-r border-slate-100 dark:border-slate-800">
+                                        {{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}
                                     </td>
-                                    <td class="p-6 border-r border-slate-100 dark:border-slate-700/30">
-                                        <div class="flex items-center gap-4">
+                                    <td class="p-8 border-r border-slate-100 dark:border-slate-800">
+                                        <div class="flex items-center gap-6">
                                             <div
-                                                class="w-10 h-10 rounded-full bg-slate-50 dark:bg-slate-700 overflow-hidden ring-2 ring-slate-100 dark:ring-slate-600">
+                                                class="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-slate-900 overflow-hidden ring-4 ring-slate-100 dark:ring-slate-800/50 transition-all group-hover:scale-105 group-hover:ring-emerald-500/20">
                                                 <img src="{{ asset($student->photo ? 'storage/images/' . $student->photo : 'uploads/images/default.png') }}"
                                                     class="w-full h-full object-cover">
                                             </div>
                                             <div>
                                                 <div
-                                                    class="text-sm font-bold text-slate-700 dark:text-white group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
-                                                    {{ $student->name }}</div>
-                                                <div
-                                                    class="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider">
-                                                    ID:
-                                                    {{ $student->studentID }}</div>
+                                                    class="text-sm font-black text-slate-700 dark:text-white uppercase italic tracking-tight group-hover:text-emerald-500 transition-colors">
+                                                    {{ $student->name }}
+                                                </div>
+                                                <div class="flex items-center gap-3 mt-1.5">
+                                                    <span
+                                                        class="text-[9px] font-black text-slate-400 uppercase tracking-widest bg-slate-100 dark:bg-slate-900/50 px-2 py-0.5 rounded-full">
+                                                        ROLL: {{ $student->roll }}
+                                                    </span>
+                                                    <span
+                                                        class="text-[9px] font-black text-slate-400 uppercase tracking-widest">
+                                                        ID: {{ $student->studentID }}
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
                                     </td>
                                     @foreach ($mark_percentages as $percentage)
-                                        <td class="p-3 border-r border-slate-100 dark:border-slate-700/30 text-center">
-                                            <input type="number" name="mark_value"
-                                                data-student="{{ $student->studentID }}"
-                                                data-percentage="{{ $percentage->markpercentageID }}"
-                                                value="{{ $student->mark_relations->get($percentage->markpercentageID) }}"
-                                                min="0" max="{{ $percentage->markpercentage_numeric }}"
-                                                class="mark-input w-20 text-center bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-lg py-2 text-slate-700 dark:text-slate-200 font-bold focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 outline-none transition-all placeholder-slate-300 dark:placeholder-slate-600"
-                                                placeholder="-">
+                                        <td class="p-6 border-r border-slate-100 dark:border-slate-800 group/cell">
+                                            <div class="flex flex-col items-center gap-2">
+                                                <input type="number" data-student="{{ $student->studentID }}"
+                                                    data-percentage="{{ $percentage->markpercentageID }}"
+                                                    value="{{ $student->mark_relations->get($percentage->markpercentageID) }}"
+                                                    min="0" max="{{ $percentage->markpercentage_numeric }}"
+                                                    class="mark-input w-24 text-center bg-slate-100 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl py-3 text-slate-900 dark:text-white font-black italic focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition-all placeholder-slate-300 dark:placeholder-slate-700 no-spinner"
+                                                    placeholder="-">
+                                                <span
+                                                    class="text-[9px] text-rose-500 font-bold hidden error-{{ $percentage->markpercentageID }}-{{ $student->studentID }}">
+                                                </span>
+                                            </div>
                                         </td>
                                     @endforeach
                                 </tr>
@@ -140,24 +198,30 @@
                 </div>
             </div>
 
-            <div class="fixed bottom-8 right-8 z-50">
+            <!-- Floating Action Button -->
+            <div class="fixed bottom-10 right-10 z-50">
                 <button type="button" onclick="saveMarks()" id="saveBtn"
-                    class="px-8 py-4 bg-orange-600 hover:bg-orange-500 text-white rounded-2xl shadow-lg shadow-orange-600/30 font-black text-xs uppercase tracking-widest transition-all hover:scale-105 active:scale-95 flex items-center gap-3">
+                    class="group px-10 py-5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-[2rem] shadow-2xl shadow-emerald-600/30 font-black text-[11px] uppercase tracking-[0.2em] transition-all hover:scale-105 active:scale-95 flex items-center gap-4 overflow-hidden relative">
+                    <div
+                        class="absolute inset-0 bg-linear-to-r from-white/0 via-white/10 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000">
+                    </div>
                     <i class="ti ti-device-floppy text-xl"></i>
-                    Guardar Notas
+                    <span>{{ __('Guardar Calificaciones') }}</span>
                 </button>
             </div>
         @elseif(request('classesID'))
             <div
-                class="mt-8 p-12 text-center rounded-3xl border-4 border-dashed border-slate-100 dark:border-slate-800/50 bg-slate-50/50 dark:bg-slate-900/20 shadow-sm dark:shadow-none">
+                class="mt-12 py-32 text-center rounded-[4rem] border-4 border-dashed border-slate-100 dark:border-slate-800/30 bg-slate-50/30 dark:bg-slate-900/10">
                 <div
-                    class="w-24 h-24 rounded-full bg-white dark:bg-slate-800 flex items-center justify-center text-slate-300 dark:text-slate-600 mx-auto mb-6 shadow-inner">
-                    <i class="ti ti-users-off text-4xl"></i>
+                    class="w-32 h-32 bg-white dark:bg-slate-800 rounded-[3rem] flex items-center justify-center text-slate-200 dark:text-slate-700 mx-auto mb-8 shadow-inner">
+                    <i class="ti ti-users text-6xl"></i>
                 </div>
-                <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">No se encontraron estudiantes</h3>
-                <p class="text-slate-400 dark:text-slate-500 max-w-sm mx-auto">Asegúrese de haber seleccionado todos los
-                    filtros
-                    correctamente o añada estudiantes a esta sección.</p>
+                <h3 class="text-2xl font-black text-slate-800 dark:text-white uppercase tracking-tighter mb-3">
+                    {{ __('Aún no se han encontrado estudiantes') }}</h3>
+                <p
+                    class="text-[11px] font-black text-slate-400 uppercase tracking-widest max-w-sm mx-auto leading-relaxed">
+                    {{ __('Seleccione los filtros superiores para cargar la lista de estudiantes y registrar sus notas.') }}
+                </p>
             </div>
         @endif
     </div>
@@ -166,15 +230,18 @@
         <script>
             function saveMarks() {
                 const btn = document.getElementById('saveBtn');
-                const originalText = btn.innerHTML;
+                const btnIcon = btn.querySelector('i');
+                const btnText = btn.querySelector('span');
+                const originalText = btnText.textContent;
+                const originalIcon = btnIcon.className;
+
                 const inputs = document.querySelectorAll('.mark-input');
                 const data = [];
 
+                // Clear previous error messages
+                document.querySelectorAll('[class^="text-[9px] text-rose-500"]').forEach(el => el.classList.add('hidden'));
+
                 inputs.forEach(input => {
-                    // If value is empty, we might skip it or send it as null depending on requirements.
-                    // Sending only filled or '0' values to avoid clearing data unintentionally, 
-                    // OR send everything properly if we want to support clearing grades.
-                    // Here we send everything to ensure sync.
                     if (input.value !== '') {
                         data.push({
                             mark: input.dataset.percentage + '-' + input.dataset.student,
@@ -184,19 +251,28 @@
                 });
 
                 if (data.length === 0) {
-                    alert('No hay calificaciones para guardar.');
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Sin datos',
+                        text: 'No ha ingresado ninguna calificación para guardar.',
+                        confirmButtonColor: '#10b981',
+                        background: document.documentElement.classList.contains('dark') ? '#1e293b' : '#fff',
+                        color: document.documentElement.classList.contains('dark') ? '#fff' : '#1e293b'
+                    });
                     return;
                 }
 
                 btn.disabled = true;
-                btn.innerHTML = '<i class="ti ti-loader animate-spin text-xl"></i> Guardando...';
-                btn.classList.add('opacity-75');
+                btnText.textContent = "{{ __('Guardando...') }}";
+                btnIcon.className = 'ti ti-loader animate-spin text-xl';
+                btn.classList.add('opacity-80', 'cursor-not-allowed');
 
                 fetch("{{ route('mark.save') }}", {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'X-Requested-With': 'XMLHttpRequest'
                         },
                         body: JSON.stringify({
                             examID: '{{ $examID }}',
@@ -209,28 +285,84 @@
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            btn.innerHTML = '<i class="ti ti-check text-xl"></i> ¡Guardado!';
-                            btn.classList.remove('bg-orange-600', 'hover:bg-orange-500');
-                            btn.classList.add('bg-emerald-600', 'hover:bg-emerald-500');
+                            btnText.textContent = "{{ __('¡Completado!') }}";
+                            btnIcon.className = 'ti ti-check text-xl';
+                            btn.classList.replace('bg-emerald-600', 'bg-blue-600');
+
+                            Swal.fire({
+                                icon: 'success',
+                                title: '¡Perfecto!',
+                                text: data.message,
+                                confirmButtonColor: '#10b981',
+                                background: document.documentElement.classList.contains('dark') ? '#1e293b' :
+                                    '#fff',
+                                color: document.documentElement.classList.contains('dark') ? '#fff' : '#1e293b'
+                            });
+
                             setTimeout(() => {
-                                btn.innerHTML = originalText;
+                                btnText.textContent = originalText;
+                                btnIcon.className = originalIcon;
                                 btn.disabled = false;
-                                btn.classList.remove('opacity-75', 'bg-emerald-600', 'hover:bg-emerald-500');
-                                btn.classList.add('bg-orange-600', 'hover:bg-orange-500');
-                            }, 2000);
+                                btn.classList.remove('opacity-80', 'cursor-not-allowed');
+                                btn.classList.replace('bg-blue-600', 'bg-emerald-600');
+                            }, 3000);
                         } else {
-                            alert('Error: ' + data.message);
+                            if (data.errors) {
+                                // Handled backend errors
+                                Object.keys(data.errors).forEach(key => {
+                                    // Parse key if it maps to specific inputs or general module
+                                    const errorDiv = document.querySelector(`.error-${key}`);
+                                    if (errorDiv) {
+                                        errorDiv.textContent = data.errors[key][0];
+                                        errorDiv.classList.remove('hidden');
+                                    }
+                                });
+                            }
+
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: data.message || 'Ocurrió un error inesperado.',
+                                confirmButtonColor: '#10b981',
+                                background: document.documentElement.classList.contains('dark') ? '#1e293b' :
+                                    '#fff',
+                                color: document.documentElement.classList.contains('dark') ? '#fff' : '#1e293b'
+                            });
+
                             btn.disabled = false;
-                            btn.innerHTML = originalText;
+                            btnText.textContent = originalText;
+                            btnIcon.className = originalIcon;
+                            btn.classList.remove('opacity-80', 'cursor-not-allowed');
                         }
                     })
                     .catch(error => {
                         console.error('Error:', error);
-                        alert('Ocurrió un error al guardar.');
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error de Red',
+                            text: 'No se pudo conectar con el servidor.',
+                            confirmButtonColor: '#10b981',
+                            background: document.documentElement.classList.contains('dark') ? '#1e293b' : '#fff',
+                            color: document.documentElement.classList.contains('dark') ? '#fff' : '#1e293b'
+                        });
                         btn.disabled = false;
-                        btn.innerHTML = originalText;
+                        btnText.textContent = originalText;
+                        btnIcon.className = originalIcon;
+                        btn.classList.remove('opacity-80', 'cursor-not-allowed');
                     });
             }
         </script>
     @endpush
+
+    <style>
+        .no-spinner::-webkit-inner-spin-button,
+        .no-spinner::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .no-spinner {
+            -moz-appearance: textfield;
+        }
+    </style>
 </x-app-layout>

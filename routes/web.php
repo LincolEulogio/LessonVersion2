@@ -103,7 +103,10 @@ Route::middleware('auth:web,systemadmin,teacher')->group(function () {
     // Mark Module
     Route::get('mark', [MarkController::class, 'index'])->name('mark.index');
     Route::get('/mark/add', [MarkController::class, 'add'])->name('mark.add');
+    Route::get('/mark/create', [MarkController::class, 'add'])->name('mark.create');
+    Route::get('/mark/edit', [MarkController::class, 'add'])->name('mark.edit');
     Route::post('/mark/save', [MarkController::class, 'save'])->name('mark.save');
+    Route::get('/mark/show/{id}', [MarkController::class, 'show'])->name('mark.show');
     Route::resource('markpercentage', MarkpercentageController::class);
 
     // Promotion Module

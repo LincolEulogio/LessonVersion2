@@ -1,69 +1,115 @@
 <x-app-layout>
-    <div class="py-10 px-4 sm:px-6 lg:px-8 w-full mx-auto">
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-10">
-            <div>
-                <h1 class="text-4xl font-black text-slate-900 dark:text-white tracking-tighter flex items-center gap-3">
-                    <i class="ti ti-notebook text-indigo-500"></i>
-                    Porcentajes de Calificación
-                </h1>
-                <p class="text-slate-500 dark:text-slate-400 mt-2 font-medium">Configura los diferentes pesos y
-                    categorías para las evaluaciones.</p>
+    <div class="py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <!-- Header Section -->
+        <div class="mb-12">
+            <!-- Breadcrumbs -->
+            <nav class="flex items-center gap-3 text-slate-400 mb-8 text-[10px] font-black uppercase tracking-[0.2em]">
+                <a href="{{ route('dashboard') }}"
+                    class="hover:text-emerald-500 transition-colors flex items-center gap-2">
+                    <i class="ti ti-smart-home text-sm"></i>
+                    {{ __('Dashboard') }}
+                </a>
+                <i class="ti ti-chevron-right text-[8px]"></i>
+                <a href="{{ route('mark.index') }}" class="hover:text-emerald-500 transition-colors">
+                    {{ __('Calificaciones') }}
+                </a>
+                <i class="ti ti-chevron-right text-[8px]"></i>
+                <span class="text-emerald-500">{{ __('Porcentajes') }}</span>
+            </nav>
+
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-8">
+                <div class="space-y-4">
+                    <h1
+                        class="text-4xl md:text-5xl font-black text-slate-900 dark:text-white uppercase italic tracking-tighter leading-none">
+                        {{ __('Tipos de') }} <span class="text-emerald-500 relative inline-block">
+                            {{ __('Evaluación') }}
+                            <span class="absolute -bottom-2 left-0 w-full h-3 bg-emerald-500/20 rounded-full"></span>
+                        </span>
+                    </h1>
+                    <p class="text-[10px] font-black text-slate-400 dark:text-slate-500 tracking-[0.3em] uppercase">
+                        {{ __('Configure los pesos y porcentajes para cada tipo de nota') }}
+                    </p>
+                </div>
+
+                <a href="{{ route('markpercentage.create') }}"
+                    class="group px-8 py-5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-[2rem] shadow-2xl shadow-emerald-500/30 font-black text-[10px] uppercase tracking-widest transition-all hover:scale-105 active:scale-95 flex items-center gap-3 overflow-hidden relative">
+                    <div
+                        class="absolute inset-0 bg-linear-to-r from-white/0 via-white/10 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000">
+                    </div>
+                    <i class="ti ti-plus text-lg"></i>
+                    {{ __('Nuevo Tipo') }}
+                </a>
             </div>
-            <a href="{{ route('markpercentage.create') }}"
-                class="inline-flex items-center gap-3 px-8 py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-[2rem] transition-all transform hover:translate-y-[-2px] hover:shadow-2xl hover:shadow-indigo-500/30">
-                <i class="ti ti-plus text-xl"></i>
-                Nuevo Porcentaje
-            </a>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            @foreach ($markpercentages as $percentage)
+            @foreach ($markpercentages as $item)
                 <div
-                    class="group relative p-8 rounded-[3rem] bg-white dark:bg-slate-800/20 border border-slate-200 dark:border-slate-700/50 hover:border-indigo-500/50 transition-all duration-300 shadow-sm hover:shadow-xl">
-                    <div class="flex justify-between items-start mb-6">
+                    class="group p-8 rounded-[3rem] bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 shadow-sm transition-all hover:translate-y-[-8px] hover:shadow-2xl hover:shadow-emerald-500/10">
+                    <div class="flex justify-between items-start mb-8">
                         <div
-                            class="w-16 h-16 rounded-3xl bg-indigo-500/10 flex items-center justify-center text-indigo-500 group-hover:scale-110 transition-transform">
+                            class="w-16 h-16 rounded-3xl bg-emerald-500/10 flex items-center justify-center text-emerald-500 group-hover:scale-110 transition-transform">
                             <i class="ti ti-percentage text-3xl"></i>
                         </div>
-                        <div class="flex gap-2">
-                            <a href="{{ route('markpercentage.edit', $percentage->markpercentageID) }}"
-                                class="p-2.5 bg-slate-50 dark:bg-slate-900/50 rounded-xl text-slate-400 hover:text-indigo-500 transition-colors">
+                        <div class="flex items-center gap-2">
+                            <a href="{{ route('markpercentage.edit', $item->markpercentageID) }}"
+                                class="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-900/50 flex items-center justify-center text-slate-400 hover:bg-emerald-500 hover:text-white transition-all shadow-sm">
                                 <i class="ti ti-edit text-lg"></i>
                             </a>
-                            <form action="{{ route('markpercentage.destroy', $percentage->markpercentageID) }}"
-                                method="POST" class="inline" onsubmit="return confirm('¿Estás seguro?')">
-                                @csrf @method('DELETE')
-                                <button
-                                    class="p-2.5 bg-slate-50 dark:bg-slate-900/50 rounded-xl text-slate-400 hover:text-rose-500 transition-colors">
+                            <form action="{{ route('markpercentage.destroy', $item->markpercentageID) }}"
+                                method="POST" class="inline delete-form">
+                                @csrf
+                                @method('DELETE')
+                                <button type="button" onclick="confirmDelete(this)"
+                                    class="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-900/50 flex items-center justify-center text-slate-400 hover:bg-rose-500 hover:text-white transition-all shadow-sm">
                                     <i class="ti ti-trash text-lg"></i>
                                 </button>
                             </form>
                         </div>
                     </div>
 
-                    <div>
-                        <h3 class="text-xl font-black text-slate-800 dark:text-white uppercase tracking-tight">
-                            {{ $percentage->markpercentage }}</h3>
-                        <div class="mt-4 flex items-center gap-4">
-                            <div class="px-5 py-2 bg-indigo-500 text-white rounded-2xl font-black text-xl">
-                                {{ $percentage->markpercentage_numeric }}%
-                            </div>
-                            <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest italic">Peso
-                                Académico</span>
+                    <div class="space-y-4">
+                        <h3
+                            class="text-2xl font-black text-slate-800 dark:text-white uppercase italic tracking-tighter">
+                            {{ $item->markpercentage }}
+                        </h3>
+                        <div class="flex items-center justify-between">
+                            <span
+                                class="text-[10px] font-black text-slate-400 uppercase tracking-widest">{{ __('Peso sobre el total') }}</span>
+                            <span
+                                class="text-3xl font-black text-emerald-500 italic tracking-tighter">{{ $item->markpercentage_numeric }}%</span>
+                        </div>
+                        <div class="h-2 w-full bg-slate-100 dark:bg-slate-900 rounded-full overflow-hidden">
+                            <div class="h-full bg-emerald-500 rounded-full group-hover:animate-pulse transition-all duration-1000"
+                                style="width: {{ $item->markpercentage_numeric }}%"></div>
                         </div>
                     </div>
                 </div>
             @endforeach
         </div>
-
-        @if ($markpercentages->isEmpty())
-            <div
-                class="py-20 text-center rounded-[3rem] border-4 border-dashed border-slate-200 dark:border-slate-700/30 bg-slate-50/50 dark:bg-slate-800/10">
-                <i class="ti ti-percentage text-6xl text-slate-300 mb-4 block"></i>
-                <h3 class="text-xl font-bold text-slate-800 dark:text-white">Sin porcentajes configurados</h3>
-                <p class="text-slate-500 mt-2">Empieza creando categorías como 'Examen Final (40%)' o 'Tareas (20%)'.
-                </p>
-            </div>
-        @endif
     </div>
+
+    @push('scripts')
+        <script>
+            function confirmDelete(btn) {
+                const form = btn.closest('form');
+                Swal.fire({
+                    title: '¿Estás seguro?',
+                    text: "Esta acción eliminará este tipo de evaluación permanentemente.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#10b981',
+                    cancelButtonColor: '#f43f5e',
+                    confirmButtonText: 'Sí, eliminar',
+                    cancelButtonText: 'Cancelar',
+                    background: document.documentElement.classList.contains('dark') ? '#1e293b' : '#fff',
+                    color: document.documentElement.classList.contains('dark') ? '#fff' : '#1e293b'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            }
+        </script>
+    @endpush
 </x-app-layout>
