@@ -128,4 +128,10 @@ class TopicController extends Controller
         $subjects = Subject::where('classesID', $classID)->get();
         return response()->json($subjects);
     }
+
+    public function getSectionsByClass($classID)
+    {
+        $sections = \App\Models\Section::where('classesID', $classID)->get();
+        return response()->json($sections);
+    }
 }

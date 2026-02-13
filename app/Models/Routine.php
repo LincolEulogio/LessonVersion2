@@ -12,10 +12,10 @@ class Routine extends Model
     protected $fillable = [
         'classesID', 'sectionID', 'subjectID', 'teacherID', 'day', 'start_time', 
         'end_time', 'room', 'schoolyearID', 'create_date', 'modify_date',
-        'create_userID', 'create_usertypeID'
+        'create_userID', 'create_usertypeID', 'create_username', 'create_usertype'
     ];
 
-    public function classes()
+    public function class()
     {
         return $this->belongsTo(Classes::class, 'classesID', 'classesID');
     }
@@ -33,5 +33,10 @@ class Routine extends Model
     public function teacher()
     {
         return $this->belongsTo(Teacher::class, 'teacherID', 'teacherID');
+    }
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'create_userID', 'userID');
     }
 }

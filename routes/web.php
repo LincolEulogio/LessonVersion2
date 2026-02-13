@@ -132,6 +132,7 @@ Route::middleware('auth:web,systemadmin,teacher')->group(function () {
         return \App\Models\Section::where('classesID', $classID)->get();
     });
     Route::get('/api/topic/subjects/{classID}', [TopicController::class, 'getSubjectsByClass']);
+    Route::get('/api/topic/sections/{classID}', [TopicController::class, 'getSectionsByClass']);
 
     // Media
     Route::get('/media/index', [MediaController::class, 'index'])->name('media.index');
