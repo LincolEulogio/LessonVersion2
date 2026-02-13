@@ -1,87 +1,160 @@
 <x-app-layout>
-    <div class="py-8 px-4 sm:px-6 lg:px-8 max-w-3xl mx-auto">
-        <div class="mb-8">
-            <h1 class="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Nuevo Plan de Estudios</h1>
-            <p class="text-slate-500 dark:text-slate-400 mt-1">Sube el archivo de planificación para una clase
-                específica.</p>
+    <div class="py-10 px-4 sm:px-6 lg:px-8 w-full max-w-5xl mx-auto">
+        <!-- Breadcrumbs & Header -->
+        <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <div>
+                <nav class="flex items-center gap-3 text-slate-400 mb-3">
+                    <a href="{{ route('syllabus.index') }}" class="hover:text-emerald-500 transition-colors">
+                        <i class="ti ti-folder-open text-lg"></i>
+                    </a>
+                    <i class="ti ti-chevron-right text-xs"></i>
+                    <span class="text-xs font-black uppercase tracking-[0.2em]">{{ __('Plan De Estudios') }}</span>
+                    <i class="ti ti-chevron-right text-xs"></i>
+                    <span
+                        class="text-xs font-black uppercase tracking-[0.2em] text-emerald-500">{{ __('Nuevo') }}</span>
+                </nav>
+                <h1 class="text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+                    {{ __('Registrar Plan') }}
+                </h1>
+                <p class="text-slate-500 dark:text-slate-400 text-sm font-medium mt-1 uppercase tracking-tighter">
+                    {{ __('Sube materiales curriculares y asígnalos a una clase específica') }}
+                </p>
+            </div>
         </div>
 
+        <!-- Form Card -->
         <div
-            class="bg-white dark:bg-slate-800 shadow-xl rounded-3xl border border-slate-200 dark:border-slate-700/50 overflow-hidden">
-            <form action="{{ route('syllabus.store') }}" method="POST" enctype="multipart/form-data" class="p-8 space-y-6">
+            class="bg-white dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 backdrop-blur-xl rounded-[40px] shadow-sm dark:shadow-none overflow-hidden transition-all">
+            <form action="{{ route('syllabus.store') }}" method="POST" enctype="multipart/form-data"
+                class="p-8 md:p-12">
                 @csrf
 
-                <div class="space-y-2">
-                    <label
-                        class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest pl-1">Título</label>
-                    <input type="text" name="title" value="{{ old('title') }}" required
-                        class="w-full bg-slate-50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-700 rounded-2xl text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-rose-500 transition-all"
-                        placeholder="Ej: Plan Anual Matemáticas">
-                    @error('title')
-                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <div class="space-y-2">
-                    <label
-                        class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest pl-1">Clase</label>
-                    <select name="classesID" required
-                        class="w-full bg-slate-50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-700 rounded-2xl text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-rose-500 transition-all">
-                        <option value="">Selecciona una clase</option>
-                        @foreach ($classes as $class)
-                            <option value="{{ $class->classesID }}">{{ $class->classes }}</option>
-                        @endforeach
-                    </select>
-                    @error('classesID')
-                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <div class="space-y-2">
-                    <label
-                        class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest pl-1">Archivo
-                        de Planificación</label>
-                    <div
-                        class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-slate-200 dark:border-slate-700 border-dashed rounded-2xl hover:border-rose-500 transition-colors">
-                        <div class="space-y-1 text-center">
-                            <i class="ti ti-upload text-4xl text-slate-400 dark:text-slate-500"></i>
-                            <div class="flex text-sm text-slate-600 dark:text-slate-400">
-                                <label for="file"
-                                    class="relative cursor-pointer bg-transparent rounded-md font-medium text-rose-600 hover:text-rose-500 focus-within:outline-none">
-                                    <span>Subir un archivo</span>
-                                    <input id="file" name="file" type="file" class="sr-only">
-                                </label>
-                                <p class="pl-1">o arrastra y suelta</p>
+                <div class="space-y-12">
+                    <!-- Section: General Info -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                        <!-- Title -->
+                        <div class="space-y-3">
+                            <label for="title"
+                                class="text-sm font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">
+                                {{ __('Título del Plan') }} <span class="text-emerald-500">*</span>
+                            </label>
+                            <div class="relative group">
+                                <i
+                                    class="ti ti-file-text absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-emerald-500 transition-colors"></i>
+                                <input type="text" name="title" id="title" value="{{ old('title') }}"
+                                    placeholder="{{ __('Ej: Plan Matemáticas 2026') }}"
+                                    class="w-full pl-14 pr-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-2xl text-slate-700 dark:text-slate-200 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all outline-none font-medium">
                             </div>
-                            <p class="text-xs text-slate-500">PDF, DOC, PPT o ZIP hasta 10MB</p>
+                            <x-input-error :messages="$errors->get('title')" class="mt-1" />
+                        </div>
+
+                        <!-- Class Selection -->
+                        <div class="space-y-3">
+                            <label for="classesID"
+                                class="text-sm font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">
+                                {{ __('Clase Vinculada') }} <span class="text-emerald-500">*</span>
+                            </label>
+                            <div class="relative group">
+                                <i
+                                    class="ti ti-school absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-emerald-500 transition-colors z-10"></i>
+                                <select name="classesID" id="classesID"
+                                    class="w-full pl-14 pr-12 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-2xl text-slate-700 dark:text-slate-200 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all outline-none appearance-none cursor-pointer font-medium text-sm leading-relaxed">
+                                    <option value="" disabled {{ old('classesID') ? '' : 'selected' }}>
+                                        {{ __('Selecciona una clase') }}</option>
+                                    @foreach ($classes as $class)
+                                        <option value="{{ $class->classesID }}"
+                                            {{ old('classesID') == $class->classesID ? 'selected' : '' }}>
+                                            {{ $class->classes }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <i
+                                    class="ti ti-chevron-down absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-xs"></i>
+                            </div>
+                            <x-input-error :messages="$errors->get('classesID')" class="mt-1" />
+                        </div>
+
+                        <!-- File Upload -->
+                        <div class="space-y-3 md:col-span-2">
+                            <label
+                                class="text-sm font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">
+                                {{ __('Documento del Plan') }} <span class="text-emerald-500">*</span>
+                            </label>
+                            <div id="dropzone"
+                                class="relative group border-2 border-dashed border-slate-200 dark:border-slate-700/50 rounded-[30px] p-10 flex flex-col items-center justify-center gap-4 hover:border-emerald-500/50 hover:bg-emerald-50/10 transition-all cursor-pointer">
+                                <input type="file" name="file" id="file"
+                                    class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                                <div
+                                    class="w-20 h-20 bg-emerald-100 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-[25px] flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
+                                    <i class="ti ti-cloud-upload text-4xl"></i>
+                                </div>
+                                <div class="text-center">
+                                    <p
+                                        class="text-base font-black text-slate-700 dark:text-slate-200 uppercase tracking-tight">
+                                        {{ __('Haz clic para subir o arrastra') }}</p>
+                                    <p class="text-xs text-slate-400 font-bold mt-1 uppercase tracking-widest">PDF, DOC,
+                                        ZIP (MAX 10MB)</p>
+                                </div>
+                                <div id="file-preview"
+                                    class="hidden mt-4 px-4 py-2 bg-emerald-500 text-white rounded-xl text-xs font-black uppercase tracking-widest">
+                                    <i class="ti ti-file-check text-lg"></i>
+                                    <span id="file-name"></span>
+                                </div>
+                            </div>
+                            <x-input-error :messages="$errors->get('file')" class="mt-1" />
+                        </div>
+
+                        <!-- Description -->
+                        <div class="space-y-3 md:col-span-2">
+                            <label for="description"
+                                class="text-sm font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">
+                                {{ __('Descripción / Notas') }} <span class="text-emerald-500">*</span>
+                            </label>
+                            <div class="relative group">
+                                <i
+                                    class="ti ti-align-left absolute left-5 top-6 text-slate-400 group-focus-within:text-emerald-500 transition-colors"></i>
+                                <textarea name="description" id="description" rows="5"
+                                    placeholder="{{ __('Escribe una breve descripción del contenido de este plan de estudios...') }}"
+                                    class="w-full pl-14 pr-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-2xl text-slate-700 dark:text-slate-200 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all outline-none resize-none font-medium text-sm leading-relaxed">{{ old('description') }}</textarea>
+                            </div>
+                            <x-input-error :messages="$errors->get('description')" class="mt-1" />
                         </div>
                     </div>
-                    @error('file')
-                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                    @enderror
-                </div>
 
-                <div class="space-y-2">
-                    <label
-                        class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest pl-1">Notas
-                        Adicionales</label>
-                    <textarea name="description" rows="3"
-                        class="w-full bg-slate-50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-700 rounded-2xl text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-rose-500 transition-all"
-                        placeholder="Cualquier nota adicional...">{{ old('description') }}</textarea>
-                </div>
-
-                <div
-                    class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-700/50">
-                    <a href="{{ route('syllabus.index') }}"
-                        class="px-6 py-2.5 text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
-                        Cancelar
-                    </a>
-                    <button type="submit"
-                        class="px-8 py-2.5 bg-rose-600 hover:bg-rose-500 text-white font-semibold rounded-xl shadow-lg shadow-rose-500/20 transition-all">
-                        Guardar Plan
-                    </button>
+                    <!-- Actions -->
+                    <div
+                        class="pt-8 flex flex-col md:flex-row items-center justify-end gap-4 border-t border-slate-100 dark:border-slate-700/50">
+                        <a href="{{ route('syllabus.index') }}"
+                            class="w-full md:w-auto px-8 py-4 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 font-black text-xs uppercase tracking-widest transition-all text-center">
+                            {{ __('Cancelar') }}
+                        </a>
+                        <button type="submit"
+                            class="w-full px-12 py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3 shadow-lg shadow-emerald-600/20">
+                            <i class="ti ti-cloud-upload text-xl"></i>
+                            {{ __('Subir Plan') }}
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>
     </div>
+
+    @push('scripts')
+        <script>
+            document.getElementById('file').addEventListener('change', function(e) {
+                const fileName = e.target.files[0]?.name;
+                const preview = document.getElementById('file-preview');
+                const nameSpan = document.getElementById('file-name');
+
+                if (fileName) {
+                    nameSpan.textContent = fileName;
+                    preview.classList.remove('hidden');
+                    preview.classList.add('flex');
+                } else {
+                    preview.classList.add('hidden');
+                    preview.classList.remove('flex');
+                }
+            });
+        </script>
+    @endpush
 </x-app-layout>
