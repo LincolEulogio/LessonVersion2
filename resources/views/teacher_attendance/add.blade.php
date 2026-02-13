@@ -1,50 +1,77 @@
 <x-app-layout>
     <div class="py-10 px-4 sm:px-6 lg:px-8 w-full max-w-7xl mx-auto">
-        <!-- Header -->
-        <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <div class="space-y-1">
-                <nav class="flex items-center gap-3 text-slate-400 mb-2">
-                    <a href="{{ route('tattendance.index') }}" class="hover:text-emerald-500 transition-colors">
-                        <i class="ti ti-user-check text-lg"></i>
-                    </a>
-                    <i class="ti ti-chevron-right text-xs"></i>
-                    <span class="text-xs font-black uppercase tracking-[0.2em]">{{ __('Asistencia Docente') }}</span>
-                    <i class="ti ti-chevron-right text-xs"></i>
-                    <span
-                        class="text-xs font-black uppercase tracking-[0.2em] text-emerald-500">{{ __('Toma de Datos') }}</span>
-                </nav>
-                <h1
-                    class="text-4xl font-black text-slate-900 dark:text-white tracking-tight uppercase italic underline decoration-emerald-500/30 decoration-8 underline-offset-8 text-nowrap">
-                    {{ __('Control de Personal') }}
-                </h1>
-                <div class="flex flex-wrap items-center gap-4 mt-8">
-                    <div
-                        class="px-6 py-3 bg-emerald-600 text-white rounded-2xl flex items-center gap-3 shadow-xl shadow-emerald-600/20">
-                        <i class="ti ti-calendar text-lg opacity-70"></i>
-                        <span class="text-xs font-black uppercase tracking-[0.2em]">{{ $dateInput }}</span>
-                    </div>
-                </div>
-            </div>
+        <!-- Header Section -->
+        <div class="mb-12">
+            <!-- Breadcrumbs -->
+            <nav class="flex items-center gap-3 text-slate-400">
+                <a href="{{ route('tattendance.index') }}"
+                    class="hover:text-emerald-500 transition-colors flex items-center gap-2 group">
+                    <i class="ti ti-user-check text-xl"></i>
+                    <span class="text-[10px] font-black uppercase tracking-[0.2em]">{{ __('Asistencia Docente') }}</span>
+                </a>
+                <i class="ti ti-chevron-right text-[10px]"></i>
+                <span
+                    class="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-500/60">{{ __('Toma de Datos') }}</span>
+            </nav>
 
-            <!-- Stats Real-Time -->
-            <div
-                class="flex items-center gap-4 bg-white dark:bg-slate-800/50 p-3 rounded-[32px] border border-slate-200 dark:border-slate-700/50 shadow-sm backdrop-blur-xl">
-                <div class="px-6 py-2 flex flex-col items-center">
-                    <span id="stat-p" class="text-xl font-black text-emerald-600 leading-tight">0</span>
-                    <span
-                        class="text-[8px] font-black text-slate-400 uppercase tracking-widest">{{ __('Presentes') }}</span>
+            <!-- Title & Control Panel -->
+            <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-12">
+                <div class="space-y-4">
+                    <h1
+                        class="text-5xl font-black text-slate-900 dark:text-white tracking-tighter uppercase italic leading-none">
+                        {{ __('Control de') }} <span class="text-emerald-500 relative inline-block">
+                            {{ __('Docentes') }}
+                            <span class="absolute -bottom-2 left-0 w-full h-3 bg-emerald-500/20 rounded-full"></span>
+                        </span>
+                    </h1>
+                    <p class="text-slate-400 text-[10px] font-black uppercase tracking-[0.4em] flex items-center gap-3">
+                        <span class="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-ping"></span>
+                        {{ __('Registro de puntualidad docente en tiempo real') }}
+                    </p>
                 </div>
-                <div class="w-px h-8 bg-slate-100 dark:bg-slate-700"></div>
-                <div class="px-6 py-2 flex flex-col items-center">
-                    <span id="stat-a" class="text-xl font-black text-rose-600 leading-tight">0</span>
-                    <span
-                        class="text-[8px] font-black text-slate-400 uppercase tracking-widest">{{ __('Ausentes') }}</span>
-                </div>
-                <div class="w-px h-8 bg-slate-100 dark:bg-slate-700"></div>
-                <div class="px-6 py-2 flex flex-col items-center">
-                    <span id="stat-l" class="text-xl font-black text-amber-600 leading-tight">0</span>
-                    <span
-                        class="text-[8px] font-black text-slate-400 uppercase tracking-widest">{{ __('Tardanzas') }}</span>
+
+                <div class="relative">
+                    <!-- Glass Container for Controls -->
+                    <div
+                        class="bg-white/70 dark:bg-slate-900/40 backdrop-blur-2xl p-6 rounded-[3rem] border border-white dark:border-slate-800 shadow-2xl shadow-emerald-500/10 flex flex-col gap-4 min-w-[340px]">
+
+                        <!-- Date Selector -->
+                        <form action="{{ route('tattendance.add') }}" method="GET" id="dateForm">
+                            <div class="relative group">
+                                <i
+                                    class="ti ti-calendar-event absolute left-5 top-1/2 -translate-y-1/2 text-emerald-500 pointer-events-none transition-transform group-hover:scale-110 z-10 text-xl"></i>
+                                <input type="date" name="date" id="datePicker"
+                                    value="{{ \Illuminate\Support\Carbon::parse($dateInput)->format('Y-m-d') }}"
+                                    max="{{ date('Y-m-d') }}" onchange="this.form.submit()"
+                                    class="w-full pl-14 pr-8 py-4 bg-slate-50 dark:bg-slate-800/50 text-slate-900 dark:text-white rounded-[2rem] text-[11px] font-black uppercase tracking-widest shadow-inner border border-slate-100 dark:border-slate-700/50 focus:ring-4 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all cursor-pointer">
+                            </div>
+                        </form>
+
+                        <!-- Stats Bar -->
+                        <div
+                            class="flex items-center gap-2 bg-slate-950 dark:bg-white p-2 rounded-[2rem] shadow-xl shadow-slate-900/20">
+                            <div
+                                class="flex-1 px-4 py-2 flex flex-col items-center border-r border-slate-800 dark:border-slate-100/10">
+                                <span id="stat-p" class="text-2xl font-black text-emerald-500 leading-tight">0</span>
+                                <span
+                                    class="text-[7px] font-black text-slate-500 uppercase tracking-widest">{{ __('Presentes') }}</span>
+                            </div>
+                            <div
+                                class="flex-1 px-4 py-2 flex flex-col items-center border-r border-slate-800 dark:border-slate-100/10">
+                                <span id="stat-a" class="text-2xl font-black text-rose-500 leading-tight">0</span>
+                                <span
+                                    class="text-[7px] font-black text-slate-500 uppercase tracking-widest">{{ __('Ausentes') }}</span>
+                            </div>
+                            <div class="flex-1 px-4 py-2 flex flex-col items-center">
+                                <span id="stat-l" class="text-2xl font-black text-amber-500 leading-tight">0</span>
+                                <span
+                                    class="text-[7px] font-black text-slate-500 uppercase tracking-widest">{{ __('Tardanzas') }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Decorative -->
+                    <div class="absolute -top-4 -right-4 w-24 h-24 bg-emerald-500/10 blur-3xl rounded-full -z-10"></div>
                 </div>
             </div>
         </div>
@@ -54,6 +81,10 @@
             <button onclick="markAll('P')"
                 class="px-6 py-3 bg-emerald-100 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-2xl text-[10px] font-black uppercase tracking-widest border border-emerald-200 dark:border-emerald-500/20 hover:bg-emerald-600 hover:text-white transition-all shadow-sm">
                 {{ __('Presente Todos') }}
+            </button>
+            <button onclick="markAll('T')"
+                class="px-6 py-3 bg-orange-100 dark:bg-orange-500/10 text-orange-600 dark:text-orange-400 rounded-2xl text-[10px] font-black uppercase tracking-widest border border-orange-200 dark:border-orange-500/20 hover:bg-orange-600 hover:text-white transition-all shadow-sm">
+                {{ __('Tarde Todos') }}
             </button>
             <button onclick="markAll('A')"
                 class="px-6 py-3 bg-rose-100 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 rounded-2xl text-[10px] font-black uppercase tracking-widest border border-rose-200 dark:border-rose-500/20 hover:bg-rose-600 hover:text-white transition-all shadow-sm">
@@ -165,17 +196,87 @@
                 </table>
             </div>
         </div>
+
+        <!-- Actions Footer -->
+        <div
+            class="mt-12 p-8 md:p-10 rounded-[3rem] md:rounded-[4rem] bg-slate-900 dark:bg-slate-800/40 border border-slate-800 flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl relative overflow-hidden group">
+            <div
+                class="absolute inset-0 bg-linear-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+            </div>
+            <div class="flex items-center gap-6 relative z-10">
+                <div
+                    class="w-16 h-16 bg-emerald-500/10 rounded-[24px] flex items-center justify-center text-emerald-500 shadow-inner">
+                    <i class="ti ti-device-floppy text-4xl animate-pulse"></i>
+                </div>
+                <div class="space-y-1">
+                    <h3 class="text-xl font-black text-white uppercase tracking-tight italic">
+                        {{ __('Sincronización Activa') }}</h3>
+                    <p class="text-slate-500 text-[10px] font-black uppercase tracking-[0.2em]">
+                        {{ __('Los cambios se guardan automáticamente') }}</p>
+                </div>
+            </div>
+            <div class="flex flex-col sm:flex-row items-center gap-4 w-full md:w-auto relative z-10 text-nowrap">
+                <button onclick="window.location.href='{{ route('tattendance.index') }}'"
+                    class="w-full sm:w-auto px-10 py-5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-[2rem] font-black text-[11px] uppercase tracking-[0.2em] transition-all border border-slate-700 active:scale-95 text-nowrap">
+                    {{ __('Finalizar y Salir') }}
+                </button>
+                <button onclick="submitTeacherAttendance()" id="mainSaveBtn"
+                    class="w-full sm:w-auto px-12 py-5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-[2rem] font-black text-[11px] uppercase tracking-[0.2em] hover:scale-105 active:scale-95 transition-all shadow-xl shadow-emerald-500/20 text-nowrap">
+                    {{ __('Guardar Asistencia') }}
+                </button>
+            </div>
+        </div>
     </div>
 
+    @push('styles')
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+        <style>
+            .flatpickr-calendar {
+                background: #fff;
+                border-radius: 24px;
+                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+                border: 1px solid #f1f5f9;
+            }
+
+            .dark .flatpickr-calendar {
+                background: #0f172a;
+                border-color: #1e293b;
+                color: #fff;
+            }
+
+            .flatpickr-day.selected {
+                background: #10b981 !important;
+                border-color: #10b981 !important;
+            }
+        </style>
+    @endpush
+
     @push('scripts')
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+        <script src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script>
         <script>
             const teacherAttendanceConfig = {
                 date: "{{ $dateInput }}",
                 _token: "{{ csrf_token() }}"
             };
 
+            // Tracking state
+            const currentStatuses = {};
+            const originalStatuses = {};
+            @foreach ($teachers as $teacher)
+                @php $stat = $attendances[$teacher->teacherID]->$aday ?? 'N'; @endphp
+                currentStatuses[{{ $teacher->teacherID }}] = "{{ $stat }}";
+                originalStatuses[{{ $teacher->teacherID }}] = "{{ $stat }}";
+            @endforeach
+
             function saveTeacherAttendance(teacherID, status) {
+                // Map T (Tarde) to L (Late) if applicable for UI IDs
+                const uiStatus = status === 'T' ? 'L' : status;
                 const btns = document.querySelectorAll(`#btn-P-${teacherID}, #btn-L-${teacherID}, #btn-A-${teacherID}`);
+
+                // Track change
+                currentStatuses[teacherID] = uiStatus;
+                updateButtonText();
 
                 // UI Feedback
                 btns.forEach(btn => {
@@ -184,25 +285,27 @@
                     btn.classList.add('bg-white', 'dark:bg-slate-800', 'text-slate-400');
                 });
 
-                if (status !== 'N') {
-                    const activeBtn = document.getElementById(`btn-${status}-${teacherID}`);
+                if (uiStatus !== 'N') {
+                    const activeBtn = document.getElementById(`btn-${uiStatus}-${teacherID}`);
                     let colorClass = 'bg-emerald-600';
                     let shadowClass = 'shadow-emerald-500/30';
                     let ringClass = 'ring-emerald-500/10';
 
-                    if (status === 'L') {
+                    if (uiStatus === 'L') {
                         colorClass = 'bg-amber-500';
                         shadowClass = 'shadow-amber-500/30';
                         ringClass = 'ring-amber-500/10';
                     }
-                    if (status === 'A') {
+                    if (uiStatus === 'A') {
                         colorClass = 'bg-rose-600';
                         shadowClass = 'shadow-rose-500/30';
                         ringClass = 'ring-rose-500/10';
                     }
 
-                    activeBtn.classList.remove('bg-white', 'dark:bg-slate-800', 'text-slate-400');
-                    activeBtn.classList.add(colorClass, 'text-white', 'shadow-lg', shadowClass, 'ring-4', ringClass);
+                    if (activeBtn) {
+                        activeBtn.classList.remove('bg-white', 'dark:bg-slate-800', 'text-slate-400');
+                        activeBtn.classList.add(colorClass, 'text-white', 'shadow-lg', shadowClass, 'ring-4', ringClass);
+                    }
                 }
 
                 // Persistence
@@ -215,7 +318,7 @@
                         body: JSON.stringify({
                             teacherID: teacherID,
                             date: teacherAttendanceConfig.date,
-                            status: status
+                            status: uiStatus
                         })
                     })
                     .then(res => res.json())
@@ -236,18 +339,79 @@
                     .catch(err => console.error(err));
             }
 
+            function updateButtonText() {
+                const btn = document.getElementById('mainSaveBtn');
+                let changed = false;
+                for (let id in currentStatuses) {
+                    if (currentStatuses[id] !== originalStatuses[id]) {
+                        changed = true;
+                        break;
+                    }
+                }
+                btn.innerText = changed ? "{{ __('Actualizar Asistencia') }}" : "{{ __('Guardar Asistencia') }}";
+            }
+
+            function submitTeacherAttendance() {
+                const totalTeachers = Object.keys(currentStatuses).length;
+                let markedCount = 0;
+                for (let id in currentStatuses) {
+                    if (currentStatuses[id] !== 'N') markedCount++;
+                }
+
+                if (markedCount < totalTeachers) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Incompleto',
+                        text: `Faltan marcar ${totalTeachers - markedCount} personas. Por favor, completa todo el registro.`,
+                        background: document.documentElement.classList.contains('dark') ? '#0f172a' : '#fff',
+                        color: document.documentElement.classList.contains('dark') ? '#f1f5f9' : '#1e293b',
+                        confirmButtonColor: '#10b981',
+                        borderRadius: '40px',
+                    });
+                    return;
+                }
+
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Listo!',
+                    text: 'El registro de personal ha sido validado y guardado.',
+                    timer: 2000,
+                    showConfirmButton: false,
+                    background: document.documentElement.classList.contains('dark') ? '#0f172a' : '#fff',
+                    color: document.documentElement.classList.contains('dark') ? '#f1f5f9' : '#1e293b',
+                    borderRadius: '40px',
+                });
+
+                // Update original status after "save"
+                for (let id in currentStatuses) {
+                    originalStatuses[id] = currentStatuses[id];
+                }
+                updateButtonText();
+            }
+
             async function markAll(status) {
                 const teachers = @json($teachers->pluck('teacherID'));
-                const statusLabel = status === 'P' ? 'PRESENTES' : 'AUSENTES';
+                let colorName, confirmColor;
+
+                if (status === 'P') {
+                    colorName = '{{ __('ESMERALDA (Presente)') }}';
+                    confirmColor = '#10b981';
+                } else if (status === 'T') {
+                    colorName = '{{ __('NARANJA (Tarde)') }}';
+                    confirmColor = '#f59e0b';
+                } else {
+                    colorName = '{{ __('ROSA (Ausente)') }}';
+                    confirmColor = '#e11d48';
+                }
 
                 const result = await Swal.fire({
-                    title: '¿Confirmar Acción?',
-                    text: `Se marcará a todo el personal como ${statusLabel}.`,
+                    title: '{{ __('¿Confirmar Acción?') }}',
+                    text: `{{ __('Se marcará a todo el personal docente como') }} ${colorName}.`,
                     icon: 'question',
                     showCancelButton: true,
-                    confirmButtonText: 'SÍ, MARCAR TODOS',
-                    cancelButtonText: 'CANCELAR',
-                    confirmButtonColor: status === 'P' ? '#10b981' : '#e11d48',
+                    confirmButtonText: '{{ __('SÍ, MARCAR TODOS') }}',
+                    cancelButtonText: '{{ __('CANCELAR') }}',
+                    confirmButtonColor: confirmColor,
                     background: document.documentElement.classList.contains('dark') ? '#0f172a' : '#fff',
                     color: document.documentElement.classList.contains('dark') ? '#f1f5f9' : '#1e293b',
                     borderRadius: '40px',

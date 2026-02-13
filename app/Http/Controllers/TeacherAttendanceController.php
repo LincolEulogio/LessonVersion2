@@ -24,15 +24,21 @@ class TeacherAttendanceController extends Controller
      */
     public function add(Request $request)
     {
-        $dateInput = $request->get('date', date('d-m-Y'));
+        $request->validate([
+            'date' => 'required|string',
+        ], [
+            'date.required' => 'La fecha es obligatoria.',
+        ]);
+
+        $dateInput = $request->get('date');
         
         try {
-            $carbonDate = Carbon::createFromFormat('d-m-Y', $dateInput);
+            $carbonDate = \Illuminate\Support\Carbon::parse($dateInput);
         } catch (\Exception $e) {
-            $dateInput = date('d-m-Y');
-            $carbonDate = Carbon::createFromFormat('d-m-Y', $dateInput);
+            $carbonDate = \Illuminate\Support\Carbon::now();
         }
-        
+
+        $dateInput = $carbonDate->format('d-m-Y');
         $dayNum = $carbonDate->day;
         $monthyear = $carbonDate->format('m-Y');
         $aday = "a" . $dayNum;

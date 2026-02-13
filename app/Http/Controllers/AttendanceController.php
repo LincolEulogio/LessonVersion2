@@ -38,35 +38,45 @@ class AttendanceController extends Controller
      */
     public function add(Request $request)
     {
+        $attendance_type = Setting::where('fieldname', 'attendance')->first()->value ?? 'daily';
+        
+        $rules = [
+            'classesID' => 'required|integer',
+            'sectionID' => 'required|integer',
+            'date' => 'required|string',
+        ];
+
+        if ($attendance_type == 'subject') {
+            $rules['subjectID'] = 'required|integer';
+        }
+
+        $request->validate($rules, [
+            'classesID.required' => 'La clase es obligatoria.',
+            'sectionID.required' => 'La sección es obligatoria.',
+            'subjectID.required' => 'La materia es obligatoria.',
+            'date.required' => 'La fecha es obligatoria.',
+        ]);
+
         $classesID = $request->get('classesID');
         $sectionID = $request->get('sectionID');
-        $dateInput = $request->get('date', date('d-m-Y'));
+        $dateInput = $request->get('date');
         $subjectID = $request->get('subjectID');
-
-        if (!$classesID || !$sectionID) {
-            return redirect()->route('attendance.index')->with('error', 'Por favor, selecciona clase y sección.');
-        }
 
         $class = Classes::findOrFail($classesID);
         $section = Section::findOrFail($sectionID);
         
-        $attendance_type = Setting::where('fieldname', 'attendance')->first()->value ?? 'daily';
-        
         $subjects = [];
         if ($attendance_type == 'subject') {
             $subjects = Subject::where('classesID', $classesID)->orderBy('subject')->get();
-            if (!$subjectID) {
-                // If subject-wise but no subject selected, go back to index with params
-                // Or we can show the subject selection in index.
-                // For now, let's assume index handles selection.
-            }
         }
 
         try {
-            $carbonDate = Carbon::createFromFormat('d-m-Y', $dateInput);
+            $carbonDate = \Illuminate\Support\Carbon::parse($dateInput);
         } catch (\Exception $e) {
-            $carbonDate = now();
+            $carbonDate = \Illuminate\Support\Carbon::now();
         }
+        
+        $dateInput = $carbonDate->format('d-m-Y');
 
         $dayNum = $carbonDate->day;
         $monthyear = $carbonDate->format('m-Y');

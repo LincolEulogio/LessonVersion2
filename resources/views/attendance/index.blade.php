@@ -1,22 +1,29 @@
 <x-app-layout>
     <div class="py-10 px-4 sm:px-6 lg:px-8 w-full mx-auto">
-        <!-- Header -->
-        <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <div class="space-y-2">
-                <nav class="flex items-center gap-3 text-slate-400 mb-2">
-                    <i class="ti ti-smart-home text-lg"></i>
-                    <i class="ti ti-chevron-right text-xs"></i>
-                    <span class="text-xs font-black uppercase tracking-[0.2em]">{{ __('Gestión') }}</span>
-                    <i class="ti ti-chevron-right text-xs"></i>
-                    <span
-                        class="text-xs font-black uppercase tracking-[0.2em] text-emerald-500">{{ __('Asistencia Estudiante') }}</span>
-                </nav>
-                <h1 class="text-5xl font-black text-slate-900 dark:text-white tracking-tight">
-                    {{ __('Asistencia Estudiantil') }}
-                </h1>
-                <p class="text-slate-500 dark:text-slate-400 text-sm font-medium uppercase tracking-tighter">
-                    {{ __('Control diario y gestión de puntualidad por clase y sección') }}
-                </p>
+        <!-- Header Section -->
+        <div class="mb-12">
+            <nav class="flex items-center gap-3 text-slate-400 mb-6 font-black uppercase tracking-[0.2em] text-[10px]">
+                <i class="ti ti-calendar-check text-lg"></i>
+                <i class="ti ti-chevron-right text-[8px]"></i>
+                <span>{{ __('Gestión') }}</span>
+                <i class="ti ti-chevron-right text-[8px]"></i>
+                <span class="text-emerald-500/60">{{ __('Asistencia') }}</span>
+            </nav>
+
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div class="space-y-3">
+                    <h1
+                        class="text-6xl font-black text-slate-900 dark:text-white tracking-tighter uppercase italic leading-none">
+                        {{ __('Control de') }} <span class="text-emerald-500 relative inline-block">
+                            {{ __('Estudiantes') }}
+                            <span class="absolute -bottom-2 left-0 w-full h-3 bg-emerald-500/10 rounded-full"></span>
+                        </span>
+                    </h1>
+                    <p class="text-slate-400 text-xs font-bold uppercase tracking-[0.3em] flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
+                        {{ __('Gestión integral de puntualidad y asistencia') }}
+                    </p>
+                </div>
             </div>
         </div>
 
@@ -48,16 +55,20 @@
                                 <div class="relative group/select">
                                     <i
                                         class="ti ti-school absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within/select:text-emerald-500 transition-colors z-10"></i>
-                                    <select name="classesID" id="classesID" required
-                                        class="w-full pl-14 pr-12 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-2xl text-slate-700 dark:text-slate-200 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all outline-none appearance-none cursor-pointer font-bold text-sm">
+                                    <select name="classesID" id="classesID"
+                                        class="w-full pl-14 pr-12 py-4 bg-slate-50 dark:bg-slate-900/50 border {{ $errors->has('classesID') ? 'border-rose-500' : 'border-slate-200 dark:border-slate-700/50' }} rounded-2xl text-slate-700 dark:text-slate-200 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all outline-none appearance-none cursor-pointer font-bold text-sm">
                                         <option value="" disabled selected>{{ __('Seleccionar...') }}</option>
                                         @foreach ($classes as $class)
                                             <option value="{{ $class->classesID }}">{{ $class->classes }}</option>
                                         @endforeach
                                     </select>
-                                    <i
-                                        class="ti ti-chevron-down absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-xs"></i>
                                 </div>
+                                @error('classesID')
+                                    <p
+                                        class="text-[10px] font-black text-rose-500 uppercase tracking-widest ml-4 mt-1 italic animate-pulse">
+                                        {{ $message }}
+                                    </p>
+                                @enderror
                             </div>
 
                             <!-- Section Selection (Dynamic) -->
@@ -67,14 +78,18 @@
                                 <div class="relative group/select">
                                     <i
                                         class="ti ti-layout-grid absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within/select:text-emerald-500 transition-colors z-10"></i>
-                                    <select name="sectionID" id="sectionID" required
-                                        class="w-full pl-14 pr-12 py-4 bg-slate-100 dark:bg-slate-900/30 border border-slate-200 dark:border-slate-700/50 rounded-2xl text-slate-400 dark:text-slate-500 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all outline-none appearance-none cursor-not-allowed font-bold text-sm"
+                                    <select name="sectionID" id="sectionID"
+                                        class="w-full pl-14 pr-12 py-4 bg-slate-100 dark:bg-slate-900/30 border {{ $errors->has('sectionID') ? 'border-rose-500' : 'border-slate-200 dark:border-slate-700/50' }} rounded-2xl text-slate-400 dark:text-slate-500 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all outline-none appearance-none cursor-not-allowed font-bold text-sm"
                                         disabled>
                                         <option value="">{{ __('Primero elige clase') }}</option>
                                     </select>
-                                    <i
-                                        class="ti ti-chevron-down absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-xs"></i>
                                 </div>
+                                @error('sectionID')
+                                    <p
+                                        class="text-[10px] font-black text-rose-500 uppercase tracking-widest ml-4 mt-1 italic animate-pulse">
+                                        {{ $message }}
+                                    </p>
+                                @enderror
                             </div>
 
                             <!-- Date Picker -->
@@ -84,11 +99,18 @@
                                 <div class="relative group/select">
                                     <i
                                         class="ti ti-calendar-event absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within/select:text-emerald-500 transition-colors z-10"></i>
-                                    <input type="text" name="date" id="date" value="{{ date('d-m-Y') }}"
-                                        readonly
-                                        class="w-full pl-14 pr-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-2xl text-slate-700 dark:text-slate-200 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all outline-none font-bold text-sm cursor-pointer flatpickr">
+                                    <input type="date" name="date" id="date"
+                                        value="{{ old('date', date('Y-m-d')) }}" max="{{ date('Y-m-d') }}"
+                                        class="w-full pl-14 pr-6 py-4 bg-slate-50 dark:bg-slate-900/50 border {{ $errors->has('date') ? 'border-rose-500' : 'border-slate-200 dark:border-slate-700/50' }} rounded-2xl text-slate-700 dark:text-slate-200 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all outline-none font-bold text-sm cursor-pointer">
                                 </div>
+                                @error('date')
+                                    <p
+                                        class="text-[10px] font-black text-rose-500 uppercase tracking-widest ml-4 mt-1 italic animate-pulse">
+                                        {{ $message }}
+                                    </p>
+                                @enderror
                             </div>
+
 
                             <!-- Attendance Type Indicator & Optional Subject -->
                             <div class="space-y-3">
@@ -109,14 +131,20 @@
                                         <div class="relative group/select">
                                             <i
                                                 class="ti ti-book-2 absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within/select:text-emerald-500 transition-colors z-10"></i>
-                                            <select name="subjectID" id="subjectID" required
-                                                class="w-full pl-14 pr-12 py-4 bg-slate-100 dark:bg-slate-900/30 border border-slate-200 dark:border-slate-700/50 rounded-2xl text-slate-400 dark:text-slate-500 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all outline-none appearance-none cursor-not-allowed font-bold text-sm"
+                                            <select name="subjectID" id="subjectID"
+                                                class="w-full pl-14 pr-12 py-4 bg-slate-100 dark:bg-slate-900/30 border {{ $errors->has('subjectID') ? 'border-rose-500' : 'border-slate-200 dark:border-slate-700/50' }} rounded-2xl text-slate-400 dark:text-slate-500 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all outline-none appearance-none cursor-not-allowed font-bold text-sm"
                                                 disabled>
                                                 <option value="">{{ __('Primero elige sección') }}</option>
                                             </select>
                                             <i
                                                 class="ti ti-chevron-down absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-xs"></i>
                                         </div>
+                                        @error('subjectID')
+                                            <p
+                                                class="text-[10px] font-black text-rose-500 uppercase tracking-widest ml-4 mt-1 italic animate-pulse">
+                                                {{ $message }}
+                                            </p>
+                                        @enderror
                                     </div>
                                 @endif
                             </div>
@@ -160,13 +188,8 @@
 
     @push('scripts')
         <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+        <script src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script>
         <script>
-            flatpickr(".flatpickr", {
-                dateFormat: "d-m-Y",
-                locale: "es",
-                disableMobile: "true"
-            });
-
             const attendanceType = "{{ $attendance_type }}";
 
             document.getElementById('classesID').addEventListener('change', function() {
