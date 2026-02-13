@@ -13,7 +13,9 @@ class TopicController extends Controller
     public function index(Request $request)
     {
         $classesID = $request->get('classesID');
-        $classes = Classes::all();
+        $search = $request->get('search');
+        
+        $classes = Classes::orderBy('classes_numeric')->get();
         
         $query = Topic::with(['classes', 'subject']);
 
@@ -21,15 +23,22 @@ class TopicController extends Controller
             $query->where('classesID', $classesID);
         }
 
-        $topics = $query->get();
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        $topics = $query->latest()->paginate(10)->withQueryString();
             
-        return view('topic.index', compact('topics', 'classes', 'classesID'));
+        return view('topic.index', compact('topics', 'classes', 'classesID', 'search'));
     }
 
     public function create()
     {
-        $classes = Classes::all();
-        $subjects = Subject::all();
+        $classes = Classes::orderBy('classes_numeric')->get();
+        $subjects = Subject::orderBy('subject')->get();
         return view('topic.create', compact('classes', 'subjects'));
     }
 
@@ -39,7 +48,16 @@ class TopicController extends Controller
             'title' => 'required|string|max:128',
             'classesID' => 'required|exists:classes,classesID',
             'subjectID' => 'required|exists:subject,subjectID',
-            'description' => 'nullable|string',
+            'description' => 'required|string|max:500',
+        ], [
+            'title.required' => 'El título del tema es obligatorio.',
+            'title.max' => 'El título no debe exceder los 128 caracteres.',
+            'classesID.required' => 'Debe seleccionar una clase.',
+            'classesID.exists' => 'La clase seleccionada no es válida.',
+            'subjectID.required' => 'Debe seleccionar una materia.',
+            'subjectID.exists' => 'La materia seleccionada no es válida.',
+            'description.required' => 'La descripción del tema es obligatoria.',
+            'description.max' => 'La descripción no debe exceder los 500 caracteres.',
         ]);
 
         Topic::create([
@@ -51,14 +69,14 @@ class TopicController extends Controller
             'create_usertype' => Auth::user()->usertype->usertype ?? 'Admin',
         ]);
 
-        return redirect()->route('topic.index')->with('success', 'Tema creado exitosamente.');
+        return redirect()->route('topic.index')->with('success', 'Tema registrado exitosamente.');
     }
 
     public function edit($id)
     {
         $topic = Topic::findOrFail($id);
-        $classes = Classes::all();
-        $subjects = Subject::where('classesID', $topic->classesID)->get();
+        $classes = Classes::orderBy('classes_numeric')->get();
+        $subjects = Subject::where('classesID', $topic->classesID)->orderBy('subject')->get();
         return view('topic.edit', compact('topic', 'classes', 'subjects'));
     }
 
@@ -70,7 +88,16 @@ class TopicController extends Controller
             'title' => 'required|string|max:128',
             'classesID' => 'required|exists:classes,classesID',
             'subjectID' => 'required|exists:subject,subjectID',
-            'description' => 'nullable|string',
+            'description' => 'required|string|max:500',
+        ], [
+            'title.required' => 'El título del tema es obligatorio.',
+            'title.max' => 'El título no debe exceder los 128 caracteres.',
+            'classesID.required' => 'Debe seleccionar una clase.',
+            'classesID.exists' => 'La clase seleccionada no es válida.',
+            'subjectID.required' => 'Debe seleccionar una materia.',
+            'subjectID.exists' => 'La materia seleccionada no es válida.',
+            'description.required' => 'La descripción del tema es obligatoria.',
+            'description.max' => 'La descripción no debe exceder los 500 caracteres.',
         ]);
 
         $topic->update([
@@ -81,6 +108,12 @@ class TopicController extends Controller
         ]);
 
         return redirect()->route('topic.index')->with('success', 'Tema actualizado exitosamente.');
+    }
+
+    public function show($id)
+    {
+        $topic = Topic::with(['classes', 'subject'])->findOrFail($id);
+        return view('topic.show', compact('topic'));
     }
 
     public function destroy($id)

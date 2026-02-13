@@ -1,157 +1,196 @@
 <x-app-layout>
     <div class="py-8 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
-        <!-- Header -->
-        <div
-            class="mb-8 flex flex-col md:flex-row items-center justify-between gap-6 bg-white dark:bg-slate-800/20 p-8 rounded-3xl border border-slate-200 dark:border-slate-700/30 shadow-sm dark:shadow-none backdrop-blur-md">
-            <div class="flex items-center gap-6">
-                <div
-                    class="w-20 h-20 rounded-2xl bg-emerald-600/10 dark:bg-emerald-600/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400 text-3xl shadow-inner">
-                    <i class="ti ti-school"></i>
-                </div>
-                <div>
-                    <h1 class="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">{{ $class->classes }}
-                    </h1>
-                    <div class="mt-2 flex items-center gap-3">
-                        <span
-                            class="px-3 py-1 bg-emerald-600/10 dark:bg-emerald-600/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/10 dark:border-emerald-500/20 rounded-lg text-[10px] font-bold uppercase tracking-wider">
-                            ID Académico: {{ $class->classes_numeric }}
-                        </span>
-                        <span class="text-slate-200 dark:text-slate-500 font-mono text-xs italic opacity-50">•</span>
-                        <span class="text-slate-500 dark:text-slate-400 text-sm flex items-center gap-1.5">
-                            <i class="ti ti-history text-emerald-500/40"></i>
-                            Creado: {{ \Carbon\Carbon::parse($class->create_date)->format('d M, Y') }}
-                        </span>
-                    </div>
-                </div>
+        <!-- Breadcrumbs & Header -->
+        <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <div>
+                <nav class="flex items-center gap-3 text-slate-400 mb-3">
+                    <a href="{{ route('classes.index') }}" class="hover:text-emerald-500 transition-colors">
+                        <i class="ti ti-school text-lg"></i>
+                    </a>
+                    <i class="ti ti-chevron-right text-xs"></i>
+                    <span class="text-xs font-black uppercase tracking-[0.2em]">{{ __('Clases') }}</span>
+                    <i class="ti ti-chevron-right text-xs"></i>
+                    <span
+                        class="text-xs font-black uppercase tracking-[0.2em] text-emerald-500">{{ __('Detalles') }}</span>
+                </nav>
+                <h1 class="text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+                    {{ $class->classes }}</h1>
+                <p class="text-slate-500 dark:text-slate-400 text-sm font-medium mt-1 uppercase tracking-tighter">
+                    {{ __('Perfil Académico Completo del Nivel') }}</p>
             </div>
-            <div class="flex items-center gap-3 w-full md:w-auto">
+
+            <div class="flex items-center gap-3">
                 <a href="{{ route('classes.edit', $class->classesID) }}"
-                    class="flex-1 md:flex-none px-5 py-2.5 bg-amber-500/10 text-amber-500 hover:bg-amber-500 hover:text-white rounded-xl transition-all border border-amber-500/20 font-bold text-sm flex items-center justify-center gap-2">
-                    <i class="ti ti-edit"></i>
-                    Editar
+                    class="px-6 py-3 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-200 font-black text-xs uppercase tracking-widest transition-all hover:border-emerald-500 hover:text-emerald-500 flex items-center gap-2">
+                    <i class="ti ti-edit text-lg"></i> {{ __('Editar') }}
                 </a>
                 <a href="{{ route('classes.index') }}"
-                    class="flex-1 md:flex-none px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl transition-all border border-slate-700/50 font-bold text-sm flex items-center justify-center">
-                    Volver Listado
+                    class="px-6 py-3 rounded-2xl bg-slate-900 text-white font-black text-xs uppercase tracking-widest transition-all hover:bg-slate-800 flex items-center gap-2">
+                    <i class="ti ti-arrow-left text-lg"></i> {{ __('Volver') }}
                 </a>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <!-- Details Column -->
-            <div class="md:col-span-2 space-y-8">
-                <!-- Administrative Card -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+            <!-- Main Content Area -->
+            <div class="lg:col-span-8 space-y-10">
+                <!-- Class Identity Card -->
                 <div
-                    class="p-8 rounded-3xl bg-white dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 shadow-sm dark:shadow-none backdrop-blur-sm relative overflow-hidden group">
+                    class="bg-white dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 backdrop-blur-xl rounded-[40px] p-10 relative overflow-hidden group">
+                    <!-- Background Decoration -->
                     <div
-                        class="absolute top-0 right-0 p-8 text-emerald-500/5 -mr-4 -mt-4 transform group-hover:scale-110 transition-transform">
-                        <i class="ti ti-id-badge text-9xl"></i>
+                        class="absolute -top-24 -right-24 w-64 h-64 bg-emerald-500/5 rounded-full blur-3xl group-hover:bg-emerald-500/10 transition-all duration-700">
                     </div>
 
-                    <h2
-                        class="text-xl font-bold text-slate-900 dark:text-white mb-6 border-b border-slate-100 dark:border-slate-700/50 pb-4 flex items-center gap-3">
-                        <i class="ti ti-clipboard-list text-emerald-600 dark:text-emerald-400"></i>
-                        Detalles Administrativos
-                    </h2>
+                    <div class="relative z-10 flex flex-col md:flex-row gap-8 items-start">
+                        <div
+                            class="w-24 h-24 rounded-3xl bg-emerald-600/10 flex items-center justify-center text-emerald-600 text-4xl shadow-inner group-hover:scale-110 transition-transform duration-500">
+                            <i class="ti ti-school"></i>
+                        </div>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-8 gap-x-12 relative z-10">
-                        <div>
-                            <span
-                                class="block text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">Responsable
-                                Académico</span>
-                            <div class="mt-2 flex items-center gap-3">
-                                <div
-                                    class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-700/50 flex items-center justify-center text-slate-400">
-                                    <i class="ti ti-user-star text-lg"></i>
-                                </div>
+                        <div class="flex-1 space-y-4">
+                            <div class="flex flex-wrap gap-3">
                                 <span
-                                    class="text-slate-700 dark:text-slate-200 font-bold">{{ $class->teacher_name ?? 'No asignado' }}</span>
+                                    class="px-4 py-1.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 rounded-xl text-[10px] font-black uppercase tracking-widest">
+                                    {{ __('Nivel Escolar') }}
+                                </span>
+                                <span
+                                    class="px-4 py-1.5 bg-slate-100 dark:bg-slate-700/50 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700/50 rounded-xl text-[10px] font-black uppercase tracking-widest">
+                                    {{ __('Valor Numérico: ') }} {{ $class->classes_numeric }}
+                                </span>
                             </div>
-                        </div>
-                        <div>
-                            <span
-                                class="block text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">Identificador
-                                Numérico</span>
-                            <span
-                                class="text-emerald-600 dark:text-emerald-400 mt-2 block font-mono text-xl font-bold tracking-widest">{{ $class->classes_numeric }}</span>
-                        </div>
-                        <div class="sm:col-span-2">
-                            <span
-                                class="block text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">Descripción
-                                /
-                                Notas</span>
-                            <p
-                                class="text-slate-700 dark:text-slate-200 mt-2 block font-medium leading-relaxed bg-slate-50 dark:bg-slate-900/30 p-4 rounded-2xl border border-slate-100 dark:border-slate-700/30">
-                                {{ $class->note ?? 'Sin observaciones adicionales registradas para este nivel académico.' }}
-                            </p>
+
+                            <h2 class="text-2xl font-black text-slate-900 dark:text-white">{{ $class->classes }}</h2>
+
+                            <div
+                                class="bg-slate-50/50 dark:bg-slate-900/50 p-6 rounded-3xl border border-slate-100 dark:border-slate-700/30">
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">
+                                    {{ __('Descripción Académica') }}</p>
+                                <p class="text-slate-600 dark:text-slate-300 leading-relaxed italic">
+                                    {{ $class->note ?? __('No se han registrado notas u observaciones específicas para este grado académico.') }}
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Placeholder for Sections/Students -->
+                <!-- Teacher Card -->
                 <div
-                    class="p-8 rounded-3xl bg-white dark:bg-emerald-600/5 border border-slate-200 dark:border-emerald-500/10 shadow-sm dark:shadow-none backdrop-blur-sm opacity-60">
-                    <h2
-                        class="text-xl font-bold text-slate-900 dark:text-white mb-6 border-b border-slate-100 dark:border-slate-700/50 pb-4 flex items-center gap-3">
-                        <i class="ti ti-layers-subtract text-emerald-600 dark:text-emerald-400"></i>
-                        Secciones y Materias vinculadas
-                    </h2>
-                    <p class="text-slate-500 dark:text-slate-400 italic text-sm text-center py-6">
-                        La vinculación dinámica de secciones y materias asociadas a esta clase estará disponible al
-                        completar la migración de dichos módulos.
+                    class="bg-white dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 backdrop-blur-xl rounded-[40px] p-10 group overflow-hidden relative">
+                    <h3
+                        class="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.3em] mb-10 flex items-center gap-3">
+                        <i class="ti ti-user-star text-emerald-500 text-lg"></i>
+                        {{ __('Docente Responsable del Grado') }}
+                    </h3>
+
+                    @if ($class->teacher_name)
+                        <div class="flex items-center gap-8 relative z-10">
+                            <div class="relative">
+                                @if ($class->teacher_photo)
+                                    <img src="{{ asset('uploads/images/' . $class->teacher_photo) }}"
+                                        class="w-24 h-24 rounded-[32px] object-cover border-4 border-white dark:border-slate-700 shadow-xl shadow-emerald-500/10"
+                                        alt="{{ $class->teacher_name }}">
+                                @else
+                                    <div
+                                        class="w-24 h-24 rounded-[32px] bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-400 text-3xl font-black shadow-inner">
+                                        {{ substr($class->teacher_name, 0, 1) }}
+                                    </div>
+                                @endif
+                                <div
+                                    class="absolute -bottom-2 -right-2 w-10 h-10 bg-emerald-500 text-white rounded-2xl flex items-center justify-center shadow-lg border-4 border-white dark:border-slate-800">
+                                    <i class="ti ti-certificate text-xl"></i>
+                                </div>
+                            </div>
+
+                            <div class="space-y-1">
+                                <h4
+                                    class="text-2xl font-black text-slate-900 dark:text-white group-hover:text-emerald-500 transition-colors duration-300">
+                                    {{ $class->teacher_name }}
+                                </h4>
+                                <p class="text-slate-500 dark:text-slate-400 font-bold text-sm">
+                                    {{ $class->teacher_email }}</p>
+                                <div class="pt-4 flex items-center gap-4">
+                                    <span
+                                        class="text-[10px] font-black bg-emerald-500/10 text-emerald-600 px-3 py-1 rounded-lg uppercase tracking-widest">
+                                        {{ __('Titular de Grado') }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    @else
+                        <div class="flex flex-col items-center py-6 text-slate-400">
+                            <i class="ti ti-user-off text-4xl mb-2"></i>
+                            <p class="font-bold text-sm">{{ __('Sin maestro asignado actualmente') }}</p>
+                        </div>
+                    @endif
+                </div>
+            </div>
+
+            <!-- Sidebar Info -->
+            <div class="lg:col-span-4 space-y-6">
+                <!-- System Info Card -->
+                <div
+                    class="bg-white dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 backdrop-blur-xl rounded-[32px] p-8">
+                    <h3
+                        class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
+                        <i class="ti ti-info-circle text-lg"></i>
+                        {{ __('Información de Sistema') }}
+                    </h3>
+
+                    <div class="space-y-6">
+                        <div class="flex flex-col gap-1">
+                            <span
+                                class="text-[10px] font-black text-slate-400 uppercase tracking-widest">{{ __('Fecha de Registro') }}</span>
+                            <span class="text-sm font-bold text-slate-700 dark:text-slate-200">
+                                {{ \Carbon\Carbon::parse($class->create_date)->translatedFormat('d \d\e F, Y') }}
+                            </span>
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <span
+                                class="text-[10px] font-black text-slate-400 uppercase tracking-widest">{{ __('Creado por') }}</span>
+                            <div class="flex items-center gap-2">
+                                <i class="ti ti-user-check text-emerald-500 text-sm"></i>
+                                <span
+                                    class="text-sm font-bold text-slate-700 dark:text-slate-200">{{ $class->create_username ?? __('Administrator') }}</span>
+                            </div>
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <span
+                                class="text-[10px] font-black text-slate-400 uppercase tracking-widest">{{ __('Último Cambio') }}</span>
+                            <span
+                                class="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/5 px-3 py-2 rounded-xl border border-emerald-500/10">
+                                {{ \Carbon\Carbon::parse($class->modify_date)->diffForHumans() }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Academic Context Card -->
+                <div
+                    class="bg-gradient-to-br from-emerald-600 to-emerald-800 rounded-[32px] p-8 text-white shadow-xl shadow-emerald-500/20 relative overflow-hidden group">
+                    <div
+                        class="absolute -bottom-10 -right-10 text-white/10 group-hover:scale-125 transition-transform duration-700">
+                        <i class="ti ti-award text-[120px]"></i>
+                    </div>
+
+                    <h4 class="text-sm font-black uppercase tracking-widest mb-6 opacity-80">
+                        {{ __('Métricas Académicas') }}</h4>
+                    <div class="grid grid-cols-2 gap-4 relative z-10">
+                        <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/10 text-center">
+                            <p class="text-xs font-bold opacity-70 mb-1 tracking-tighter">{{ __('Estudiantes') }}</p>
+                            <span class="text-2xl font-black">--</span>
+                        </div>
+                        <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/10 text-center">
+                            <p class="text-xs font-bold opacity-70 mb-1 tracking-tighter">{{ __('Materias') }}</p>
+                            <span class="text-2xl font-black">--</span>
+                        </div>
+                    </div>
+                    <p class="mt-6 text-[10px] font-bold opacity-60 leading-relaxed italic uppercase tracking-tighter">
+                        {{ __('Vinculaciones dinámicas disponibles en la próxima actualización de módulos.') }}
                     </p>
                 </div>
             </div>
-
-            <!-- Stats/Actions Sidebar -->
-            <div class="space-y-6">
-                <!-- Activity Info -->
-                <div
-                    class="p-6 rounded-3xl bg-white dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 shadow-sm dark:shadow-none backdrop-blur-sm">
-                    <h3
-                        class="text-sm font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-6 border-b border-slate-100 dark:border-slate-700/30 pb-3">
-                        Registro de Sistema</h3>
-                    <div class="space-y-4">
-                        <div class="flex items-center justify-between text-sm">
-                            <span class="text-slate-500 dark:text-slate-400">Usuario Creador</span>
-                            <span
-                                class="text-slate-700 dark:text-slate-200 font-medium">{{ $class->create_username ?? 'System' }}</span>
-                        </div>
-                        <div class="flex items-center justify-between text-sm">
-                            <span class="text-slate-500 dark:text-slate-400">Tipo Usuario</span>
-                            <span
-                                class="text-slate-700 dark:text-slate-200 font-medium">{{ $class->create_usertype ?? 'Admin' }}</span>
-                        </div>
-                        <div class="pt-4 mt-4 border-t border-slate-100 dark:border-slate-700/30">
-                            <span
-                                class="text-[10px] text-slate-400 dark:text-slate-500 uppercase font-bold block mb-1">Última
-                                Modificación</span>
-                            <span
-                                class="text-xs text-slate-500 dark:text-slate-300 font-mono">{{ \Carbon\Carbon::parse($class->modify_date)->diffForHumans() }}</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Action Card -->
-                <div
-                    class="p-6 rounded-3xl bg-slate-50 dark:bg-gradient-to-br dark:from-emerald-600/10 dark:to-transparent border border-slate-200 dark:border-emerald-500/20 backdrop-blur-md">
-                    <h4 class="text-slate-900 dark:text-white font-bold mb-4">Métricas de Clase</h4>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div
-                            class="bg-white dark:bg-slate-900/40 p-3 rounded-2xl text-center border border-slate-100 dark:border-slate-700/30">
-                            <span class="block text-xl font-bold text-emerald-600 dark:text-emerald-400">--</span>
-                            <span
-                                class="text-[10px] text-slate-400 dark:text-slate-500 uppercase font-bold tracking-tighter">Estudiantes</span>
-                        </div>
-                        <div
-                            class="bg-white dark:bg-slate-900/40 p-3 rounded-2xl text-center border border-slate-100 dark:border-slate-700/30">
-                            <span class="block text-xl font-bold text-emerald-600 dark:text-emerald-400">--</span>
-                            <span
-                                class="text-[10px] text-slate-400 dark:text-slate-500 uppercase font-bold tracking-tighter">Secciones</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
+
     </div>
 </x-app-layout>
