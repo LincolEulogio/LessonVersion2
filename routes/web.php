@@ -159,9 +159,7 @@ Route::middleware('auth:web,systemadmin,teacher')->group(function () {
     Route::patch('issue/{id}/return', [IssueController::class, 'markAsReturned'])->name('issue.return');
     // Transport Module
     Route::resource('transport', TransportController::class);
-    Route::get('tmember', [TransportMemberController::class, 'index'])->name('tmember.index');
-    Route::post('tmember', [TransportMemberController::class, 'store'])->name('tmember.store');
-    Route::delete('tmember/{id}', [TransportMemberController::class, 'destroy'])->name('tmember.destroy');
+    Route::resource('tmember', TransportMemberController::class);
 
     // Hostel Module
     Route::resource('hostel', HostelController::class);
