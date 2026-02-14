@@ -31,14 +31,16 @@
                     </p>
                 </div>
 
-                <a href="{{ route('markpercentage.create') }}"
-                    class="group px-8 py-5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-[2rem] shadow-2xl shadow-emerald-500/30 font-black text-[10px] uppercase tracking-widest transition-all hover:scale-105 active:scale-95 flex items-center gap-3 overflow-hidden relative">
-                    <div
-                        class="absolute inset-0 bg-linear-to-r from-white/0 via-white/10 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000">
-                    </div>
-                    <i class="ti ti-plus text-lg"></i>
-                    {{ __('Nuevo Tipo') }}
-                </a>
+                @if (Auth::user()->hasPermission('porcentaje_promedio_add'))
+                    <a href="{{ route('markpercentage.create') }}"
+                        class="group px-8 py-5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-[2rem] shadow-2xl shadow-emerald-500/30 font-black text-[10px] uppercase tracking-widest transition-all hover:scale-105 active:scale-95 flex items-center gap-3 overflow-hidden relative">
+                        <div
+                            class="absolute inset-0 bg-linear-to-r from-white/0 via-white/10 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000">
+                        </div>
+                        <i class="ti ti-plus text-lg"></i>
+                        {{ __('Nuevo Tipo') }}
+                    </a>
+                @endif
             </div>
         </div>
 
@@ -52,19 +54,23 @@
                             <i class="ti ti-percentage text-3xl"></i>
                         </div>
                         <div class="flex items-center gap-2">
-                            <a href="{{ route('markpercentage.edit', $item->markpercentageID) }}"
-                                class="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-900/50 flex items-center justify-center text-slate-400 hover:bg-emerald-500 hover:text-white transition-all shadow-sm">
-                                <i class="ti ti-edit text-lg"></i>
-                            </a>
-                            <form action="{{ route('markpercentage.destroy', $item->markpercentageID) }}"
-                                method="POST" class="inline delete-form">
-                                @csrf
-                                @method('DELETE')
-                                <button type="button" onclick="confirmDelete(this)"
-                                    class="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-900/50 flex items-center justify-center text-slate-400 hover:bg-rose-500 hover:text-white transition-all shadow-sm">
-                                    <i class="ti ti-trash text-lg"></i>
-                                </button>
-                            </form>
+                            @if (Auth::user()->hasPermission('porcentaje_promedio_edit'))
+                                <a href="{{ route('markpercentage.edit', $item->markpercentageID) }}"
+                                    class="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-900/50 flex items-center justify-center text-slate-400 hover:bg-emerald-500 hover:text-white transition-all shadow-sm">
+                                    <i class="ti ti-edit text-lg"></i>
+                                </a>
+                            @endif
+                            @if (Auth::user()->hasPermission('porcentaje_promedio_delete'))
+                                <form action="{{ route('markpercentage.destroy', $item->markpercentageID) }}"
+                                    method="POST" class="inline delete-form">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="button" onclick="confirmDelete(this)"
+                                        class="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-900/50 flex items-center justify-center text-slate-400 hover:bg-rose-500 hover:text-white transition-all shadow-sm">
+                                        <i class="ti ti-trash text-lg"></i>
+                                    </button>
+                                </form>
+                            @endif
                         </div>
                     </div>
 

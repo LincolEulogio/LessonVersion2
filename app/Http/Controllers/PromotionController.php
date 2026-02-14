@@ -8,6 +8,7 @@ use App\Models\Student;
 use App\Models\Schoolyear;
 use App\Models\Promotionlog;
 use Illuminate\Http\Request;
+use App\Http\Requests\PromoteStudentRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -15,6 +16,10 @@ class PromotionController extends Controller
 {
     public function index(Request $request)
     {
+        if (!Auth::user()->hasPermission('promocion_view')) {
+            abort(403, 'No tienes permiso para ver esta sección.');
+        }
+
         $classes = Classes::all();
         $schoolyears = Schoolyear::all();
         
@@ -31,19 +36,13 @@ class PromotionController extends Controller
         return view('promotion.index', compact('classes', 'schoolyears', 'students', 'classesID', 'schoolyearID'));
     }
 
-    public function promote(Request $request)
+    public function promote(PromoteStudentRequest $request)
     {
-        $request->validate([
-            'classesID' => 'required',
-            'schoolyearID' => 'required',
-            'promotion_classesID' => 'required',
-            'promotion_schoolyearID' => 'required',
-            'student_ids' => 'required|array'
-        ]);
+        $validated = $request->validated();
 
         DB::beginTransaction();
         try {
-            foreach ($request->student_ids as $studentID) {
+            foreach ($validated['student_ids'] as $studentID) {
                 $student = Student::findOrFail($studentID);
                 
                 // Log the promotion
@@ -53,10 +52,10 @@ class PromotionController extends Controller
                     'sectionID' => $student->sectionID,
                     'roll' => $student->roll,
                     'schoolyearID' => $student->schoolyearID,
-                    'promotion_classesID' => $request->promotion_classesID,
+                    'promotion_classesID' => $validated['promotion_classesID'],
                     'promotion_sectionID' => $student->sectionID, // Assuming same section for now
                     'promotion_roll' => $student->roll,
-                    'promotion_schoolyearID' => $request->promotion_schoolyearID,
+                    'promotion_schoolyearID' => $validated['promotion_schoolyearID'],
                     'create_date' => now(),
                     'create_userID' => Auth::id(),
                     'create_usertypeID' => 1 // Admin
@@ -64,8 +63,8 @@ class PromotionController extends Controller
 
                 // Update student record
                 $student->update([
-                    'classesID' => $request->promotion_classesID,
-                    'schoolyearID' => $request->promotion_schoolyearID
+                    'classesID' => $validated['promotion_classesID'],
+                    'schoolyearID' => $validated['promotion_schoolyearID']
                 ]);
             }
             DB::commit();

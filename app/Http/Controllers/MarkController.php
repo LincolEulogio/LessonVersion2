@@ -11,6 +11,7 @@ use App\Models\Section;
 use App\Models\Student;
 use App\Models\Subject;
 use Illuminate\Http\Request;
+use App\Http\Requests\SaveMarkRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -18,6 +19,10 @@ class MarkController extends Controller
 {
     public function index(Request $request)
     {
+        if (!Auth::user()->hasPermission('promedio_view')) {
+            abort(403, 'No tienes permiso para ver esta sección.');
+        }
+
         $classes = Classes::all();
         $classesID = $request->query('classesID');
         
@@ -31,6 +36,10 @@ class MarkController extends Controller
 
     public function add(Request $request)
     {
+        if (!Auth::user()->hasPermission('promedio_view') && !Auth::user()->hasPermission('promedio_add')) {
+            abort(403, 'No tienes permiso para ver esta sección.');
+        }
+
         $classesID = $request->input('classesID');
         $sectionID = $request->input('sectionID');
         $subjectID = $request->input('subjectID');
@@ -78,55 +87,16 @@ class MarkController extends Controller
         return view('mark.add', compact('classes', 'exams', 'sections', 'subjects', 'students', 'mark_percentages', 'classesID', 'sectionID', 'subjectID', 'examID'));
     }
 
-    public function save(Request $request)
+    public function save(SaveMarkRequest $request)
     {
-        $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
-            'examID' => 'required',
-            'classesID' => 'required',
-            'subjectID' => 'required',
-            'inputs' => 'required|array',
-            'inputs.*.mark' => 'required|string',
-            'inputs.*.value' => 'nullable|numeric|min:0|max:20',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => __('Error de validación global.'),
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
+        $validated = $request->validated();
         $mark_percentages = Markpercentage::all() ?: collect();
-        $mark_percentages_keyed = $mark_percentages->keyBy('markpercentageID');
         $year = date('Y');
-        $schoolyearID = 1; // Default
+        $schoolyearID = session('default_schoolyearID') ?? 1;
         
-        $input_errors = [];
-        foreach ($request->inputs as $index => $input) {
-            $parts = explode('-', $input['mark']);
-            $markpercentageID = $parts[0];
-            $studentID = $parts[1];
-            $value = $input['value'];
-
-            if ($value > 20) {
-                $input_errors[$input['mark']] = [
-                    __('El valor no puede superar 20')
-                ];
-            }
-        }
-
-        if (!empty($input_errors)) {
-            return response()->json([
-                'success' => false,
-                'message' => __('Hay errores en las calificaciones ingresadas.'),
-                'errors' => $input_errors
-            ], 422);
-        }
-
         DB::beginTransaction();
         try {
-            foreach ($request->inputs as $input) {
+            foreach ($validated['inputs'] as $input) {
                 $parts = explode('-', $input['mark']);
                 $markpercentageID = $parts[0];
                 $studentID = $parts[1];
@@ -134,16 +104,16 @@ class MarkController extends Controller
 
                 $mark = Mark::updateOrCreate(
                     [
-                        'examID' => $request->examID,
-                        'classesID' => $request->classesID,
-                        'subjectID' => $request->subjectID,
+                        'examID' => $validated['examID'],
+                        'classesID' => $validated['classesID'],
+                        'subjectID' => $validated['subjectID'],
                         'studentID' => $studentID,
                         'schoolyearID' => $schoolyearID,
                         'year' => $year
                     ],
                     [
-                        'sectionID' => $request->sectionID,
-                        'mark' => 0, // Calculated mark can be updated later or if needed
+                        'sectionID' => $validated['sectionID'],
+                        'mark' => 0,
                     ]
                 );
 
@@ -180,7 +150,26 @@ class MarkController extends Controller
 
     public function show($id)
     {
+        if (!Auth::user()->hasPermission('promedio_view')) {
+            abort(403, 'No tienes permiso para ver esta sección.');
+        }
+
         $student = Student::with(['classes', 'section'])->findOrFail($id);
+        
+        // Restriction for Students: they can only see their own marks
+        $user = Auth::user();
+        if ($user->usertypeID == 3 && $user->studentID != $id) {
+            abort(403, 'No tienes permiso para ver las calificaciones de otro estudiante.');
+        }
+
+        // Restriction for Parents: they can only see their child's marks
+        if ($user->usertypeID == 4) {
+            $isChild = Student::where('studentID', $id)->where('parentID', $user->parentID)->exists();
+            if (!$isChild) {
+                abort(403, 'No tienes permiso para ver las calificaciones de este estudiante.');
+            }
+        }
+
         $exams = Exam::all();
         $marks = Mark::where('studentID', $id)
             ->with(['exam', 'subject', 'relations.percentage'])

@@ -35,11 +35,13 @@
                 </div>
 
                 <div class="flex items-center gap-4">
-                    <a href="{{ route('markpercentage.index') }}"
-                        class="px-8 py-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-all shadow-sm flex items-center gap-3">
-                        <i class="ti ti-settings text-emerald-500"></i>
-                        {{ __('Configurar Porcentajes') }}
-                    </a>
+                    @if (Auth::user()->hasPermission('porcentaje_promedio_view'))
+                        <a href="{{ route('markpercentage.index') }}"
+                            class="px-8 py-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-all shadow-sm flex items-center gap-3">
+                            <i class="ti ti-settings text-emerald-500"></i>
+                            {{ __('Configurar Porcentajes') }}
+                        </a>
+                    @endif
                 </div>
             </div>
         </div>

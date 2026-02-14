@@ -192,8 +192,11 @@
                                                     data-percentage="{{ $percentage->markpercentageID }}"
                                                     value="{{ $student->mark_relations->get($percentage->markpercentageID) }}"
                                                     min="0" max="20"
+                                                    @if (!Auth::user()->hasPermission('promedio_add')) disabled @endif
                                                     oninput="if(this.value.length > 2) this.value = this.value.slice(0, 2); if(this.value > 20) this.value = 20;"
-                                                    class="mark-input w-24 text-center bg-slate-100 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl py-3 text-slate-900 dark:text-white font-black italic focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition-all placeholder-slate-300 dark:placeholder-slate-700 no-spinner"
+                                                    class="mark-input w-24 text-center bg-slate-100 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl py-3 text-slate-900 dark:text-white font-black italic focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition-all placeholder-slate-300 dark:placeholder-slate-700 no-spinner @if (!Auth::user()->hasPermission('promedio_add'))
+opacity-70 cursor-not-allowed
+@endif"
                                                     placeholder="-">
                                                 <span
                                                     class="text-[9px] text-rose-500 font-bold hidden error-{{ $percentage->markpercentageID }}-{{ $student->studentID }}">
@@ -234,16 +237,18 @@
             </div>
 
             <!-- Floating Action Button -->
-            <div class="fixed bottom-10 right-10 z-50">
-                <button type="button" onclick="saveMarks()" id="saveBtn"
-                    class="group px-10 py-5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-[2rem] shadow-2xl shadow-emerald-600/30 font-black text-[11px] uppercase tracking-[0.2em] transition-all hover:scale-105 active:scale-95 flex items-center gap-4 overflow-hidden relative">
-                    <div
-                        class="absolute inset-0 bg-linear-to-r from-white/0 via-white/10 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000">
-                    </div>
-                    <i class="ti ti-device-floppy text-xl"></i>
-                    <span>{{ __('Guardar Calificaciones') }}</span>
-                </button>
-            </div>
+            @if (Auth::user()->hasPermission('promedio_add'))
+                <div class="fixed bottom-10 right-10 z-50">
+                    <button type="button" onclick="saveMarks()" id="saveBtn"
+                        class="group px-10 py-5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-[2rem] shadow-2xl shadow-emerald-600/30 font-black text-[11px] uppercase tracking-[0.2em] transition-all hover:scale-105 active:scale-95 flex items-center gap-4 overflow-hidden relative">
+                        <div
+                            class="absolute inset-0 bg-linear-to-r from-white/0 via-white/10 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000">
+                        </div>
+                        <i class="ti ti-device-floppy text-xl"></i>
+                        <span>{{ __('Guardar Calificaciones') }}</span>
+                    </button>
+                </div>
+            @endif
         @elseif(request('classesID'))
             <div
                 class="mt-12 py-32 text-center rounded-[4rem] border-4 border-dashed border-slate-100 dark:border-slate-800/30 bg-slate-50/30 dark:bg-slate-900/10">

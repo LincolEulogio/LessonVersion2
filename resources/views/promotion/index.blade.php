@@ -64,49 +64,53 @@
                 <input type="hidden" name="schoolyearID" value="{{ $schoolyearID }}">
 
                 <!-- Promotion Destination -->
-                <div
-                    class="rounded-[3rem] bg-indigo-600 text-white p-10 mb-10 shadow-xl shadow-indigo-500/20 relative overflow-hidden group">
+                @if (Auth::user()->hasPermission('promocion_add'))
                     <div
-                        class="absolute -right-20 -top-20 w-80 h-80 bg-white/10 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-1000">
+                        class="rounded-[3rem] bg-indigo-600 text-white p-10 mb-10 shadow-xl shadow-indigo-500/20 relative overflow-hidden group">
+                        <div
+                            class="absolute -right-20 -top-20 w-80 h-80 bg-white/10 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-1000">
+                        </div>
+
+                        <div class="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-end">
+                            <div class="space-y-3">
+                                <label
+                                    class="text-[10px] font-black text-indigo-200 uppercase tracking-widest ml-2">Promover
+                                    a
+                                    Año Escolar</label>
+                                <select name="promotion_schoolyearID" required
+                                    class="w-full bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl px-6 py-4 text-white font-bold focus:ring-4 focus:ring-white/20 transition-all outline-none">
+                                    <option value="" class="text-slate-900">Seleccionar año destino...</option>
+                                    @foreach ($schoolyears as $year)
+                                        <option value="{{ $year->schoolyearID }}" class="text-slate-900">
+                                            {{ $year->schoolyear }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="space-y-3">
+                                <label
+                                    class="text-[10px] font-black text-indigo-200 uppercase tracking-widest ml-2">Promover
+                                    a
+                                    Clase</label>
+                                <select name="promotion_classesID" required
+                                    class="w-full bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl px-6 py-4 text-white font-bold focus:ring-4 focus:ring-white/20 transition-all outline-none">
+                                    <option value="" class="text-slate-900">Seleccionar clase destino...</option>
+                                    @foreach ($classes as $class)
+                                        <option value="{{ $class->classesID }}" class="text-slate-900">
+                                            {{ $class->classes }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="flex justify-end">
+                                <button type="submit"
+                                    class="px-10 py-5 bg-white text-indigo-600 font-black rounded-2xl shadow-2xl hover:bg-slate-50 hover:scale-105 active:scale-95 transition-all uppercase tracking-widest text-xs">
+                                    Confirmar Promoción
+                                </button>
+                            </div>
+                        </div>
                     </div>
-
-                    <div class="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-end">
-                        <div class="space-y-3">
-                            <label
-                                class="text-[10px] font-black text-indigo-200 uppercase tracking-widest ml-2">Promover a
-                                Año Escolar</label>
-                            <select name="promotion_schoolyearID" required
-                                class="w-full bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl px-6 py-4 text-white font-bold focus:ring-4 focus:ring-white/20 transition-all outline-none">
-                                <option value="" class="text-slate-900">Seleccionar año destino...</option>
-                                @foreach ($schoolyears as $year)
-                                    <option value="{{ $year->schoolyearID }}" class="text-slate-900">
-                                        {{ $year->schoolyear }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="space-y-3">
-                            <label
-                                class="text-[10px] font-black text-indigo-200 uppercase tracking-widest ml-2">Promover a
-                                Clase</label>
-                            <select name="promotion_classesID" required
-                                class="w-full bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl px-6 py-4 text-white font-bold focus:ring-4 focus:ring-white/20 transition-all outline-none">
-                                <option value="" class="text-slate-900">Seleccionar clase destino...</option>
-                                @foreach ($classes as $class)
-                                    <option value="{{ $class->classesID }}" class="text-slate-900">
-                                        {{ $class->classes }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="flex justify-end">
-                            <button type="submit"
-                                class="px-10 py-5 bg-white text-indigo-600 font-black rounded-2xl shadow-2xl hover:bg-slate-50 hover:scale-105 active:scale-95 transition-all uppercase tracking-widest text-xs">
-                                Confirmar Promoción
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                @endif
 
                 <!-- Students Table -->
                 <div
@@ -118,7 +122,8 @@
                                     <th
                                         class="px-8 py-6 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] w-20">
                                         <input type="checkbox" id="select-all"
-                                            class="w-5 h-5 rounded-lg border-slate-300 dark:border-slate-600 text-indigo-600 focus:ring-indigo-500">
+                                            @if (!Auth::user()->hasPermission('promocion_add')) disabled @endif
+                                            class="w-5 h-5 rounded-lg border-slate-300 dark:border-slate-600 @if (Auth::user()->hasPermission('promocion_add')) text-indigo-600 focus:ring-indigo-500 @else opacity-50 cursor-not-allowed @endif">
                                     </th>
                                     <th
                                         class="px-8 py-6 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em]">
@@ -140,7 +145,8 @@
                                         <td class="px-8 py-6">
                                             <input type="checkbox" name="student_ids[]"
                                                 value="{{ $student->studentID }}"
-                                                class="student-checkbox w-5 h-5 rounded-lg border-slate-300 dark:border-slate-600 text-indigo-600 focus:ring-indigo-500">
+                                                @if (!Auth::user()->hasPermission('promocion_add')) disabled @endif
+                                                class="student-checkbox w-5 h-5 rounded-lg border-slate-300 dark:border-slate-600 @if (Auth::user()->hasPermission('promocion_add')) text-indigo-600 focus:ring-indigo-500 @else opacity-50 cursor-not-allowed @endif">
                                         </td>
                                         <td
                                             class="px-8 py-6 text-slate-800 dark:text-slate-100 font-black uppercase tracking-tight">

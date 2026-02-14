@@ -29,10 +29,12 @@
                 </div>
 
                 <div class="flex items-center gap-4">
-                    <a href="{{ route('mark.add', ['classesID' => $student->classesID, 'sectionID' => $student->sectionID]) }}"
-                        class="px-8 py-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-all shadow-sm">
-                        {{ __('Registrar Notas') }}
-                    </a>
+                    @if (Auth::user()->hasPermission('promedio_add'))
+                        <a href="{{ route('mark.add', ['classesID' => $student->classesID, 'sectionID' => $student->sectionID]) }}"
+                            class="px-8 py-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-all shadow-sm">
+                            {{ __('Registrar Notas') }}
+                        </a>
+                    @endif
                 </div>
             </div>
         </div>
