@@ -22,11 +22,13 @@
             </div>
 
             <div class="flex items-center gap-3">
-                <a href="{{ route('topic.edit', $topic->topicID) }}"
-                    class="group flex items-center gap-3 px-6 py-4 bg-amber-500 hover:bg-amber-400 text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] transition-all hover:scale-[1.02] active:scale-95">
-                    <i class="ti ti-edit text-xl"></i>
-                    {{ __('Editar') }}
-                </a>
+                @if ($user && $user->hasPermission('tema_edit'))
+                    <a href="{{ route('topic.edit', $topic->topicID) }}"
+                        class="group flex items-center gap-3 px-6 py-4 bg-amber-500 hover:bg-amber-400 text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] transition-all hover:scale-[1.02] active:scale-95">
+                        <i class="ti ti-edit text-xl"></i>
+                        {{ __('Editar') }}
+                    </a>
+                @endif
                 <button type="button" onclick="window.location.href='{{ route('topic.index') }}'"
                     class="group flex items-center gap-3 px-6 py-4 bg-slate-600 hover:bg-slate-500 text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] transition-all hover:scale-[1.02] active:scale-95">
                     <i class="ti ti-arrow-left text-xl"></i>

@@ -6,12 +6,18 @@ use App\Models\Topic;
 use App\Models\Classes;
 use App\Models\Subject;
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreTopicRequest;
+use App\Http\Requests\UpdateTopicRequest;
 use Illuminate\Support\Facades\Auth;
 
 class TopicController extends Controller
 {
     public function index(Request $request)
     {
+        if (!Auth::user()->hasPermission('tema_view')) {
+            abort(403, 'No tienes permiso para ver esta sección.');
+        }
+
         $classesID = $request->get('classesID');
         $search = $request->get('search');
         
@@ -37,34 +43,24 @@ class TopicController extends Controller
 
     public function create()
     {
+        if (!Auth::user()->hasPermission('tema_add')) {
+            abort(403, 'No tienes permiso para agregar temas.');
+        }
+
         $classes = Classes::orderBy('classes_numeric')->get();
         $subjects = Subject::orderBy('subject')->get();
         return view('topic.create', compact('classes', 'subjects'));
     }
 
-    public function store(Request $request)
+    public function store(StoreTopicRequest $request)
     {
-        $request->validate([
-            'title' => 'required|string|max:128',
-            'classesID' => 'required|exists:classes,classesID',
-            'subjectID' => 'required|exists:subject,subjectID',
-            'description' => 'required|string|max:500',
-        ], [
-            'title.required' => 'El título del tema es obligatorio.',
-            'title.max' => 'El título no debe exceder los 128 caracteres.',
-            'classesID.required' => 'Debe seleccionar una clase.',
-            'classesID.exists' => 'La clase seleccionada no es válida.',
-            'subjectID.required' => 'Debe seleccionar una materia.',
-            'subjectID.exists' => 'La materia seleccionada no es válida.',
-            'description.required' => 'La descripción del tema es obligatoria.',
-            'description.max' => 'La descripción no debe exceder los 500 caracteres.',
-        ]);
-
+        $data = $request->validated();
+        
         Topic::create([
-            'title' => $request->title,
-            'description' => $request->description,
-            'classesID' => $request->classesID,
-            'subjectID' => $request->subjectID,
+            'title' => $data['title'],
+            'description' => $data['description'],
+            'classesID' => $data['classesID'],
+            'subjectID' => $data['subjectID'],
             'create_userID' => Auth::id(),
             'create_usertype' => Auth::user()->usertype->usertype ?? 'Admin',
         ]);
@@ -74,37 +70,26 @@ class TopicController extends Controller
 
     public function edit($id)
     {
+        if (!Auth::user()->hasPermission('tema_edit')) {
+            abort(403, 'No tienes permiso para editar temas.');
+        }
+
         $topic = Topic::findOrFail($id);
         $classes = Classes::orderBy('classes_numeric')->get();
         $subjects = Subject::where('classesID', $topic->classesID)->orderBy('subject')->get();
         return view('topic.edit', compact('topic', 'classes', 'subjects'));
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateTopicRequest $request, $id)
     {
         $topic = Topic::findOrFail($id);
-        
-        $request->validate([
-            'title' => 'required|string|max:128',
-            'classesID' => 'required|exists:classes,classesID',
-            'subjectID' => 'required|exists:subject,subjectID',
-            'description' => 'required|string|max:500',
-        ], [
-            'title.required' => 'El título del tema es obligatorio.',
-            'title.max' => 'El título no debe exceder los 128 caracteres.',
-            'classesID.required' => 'Debe seleccionar una clase.',
-            'classesID.exists' => 'La clase seleccionada no es válida.',
-            'subjectID.required' => 'Debe seleccionar una materia.',
-            'subjectID.exists' => 'La materia seleccionada no es válida.',
-            'description.required' => 'La descripción del tema es obligatoria.',
-            'description.max' => 'La descripción no debe exceder los 500 caracteres.',
-        ]);
+        $data = $request->validated();
 
         $topic->update([
-            'title' => $request->title,
-            'description' => $request->description,
-            'classesID' => $request->classesID,
-            'subjectID' => $request->subjectID,
+            'title' => $data['title'],
+            'description' => $data['description'],
+            'classesID' => $data['classesID'],
+            'subjectID' => $data['subjectID'],
         ]);
 
         return redirect()->route('topic.index')->with('success', 'Tema actualizado exitosamente.');
@@ -112,12 +97,20 @@ class TopicController extends Controller
 
     public function show($id)
     {
+        if (!Auth::user()->hasPermission('tema_view')) {
+            abort(403, 'No tienes permiso para ver este tema.');
+        }
+
         $topic = Topic::with(['classes', 'subject'])->findOrFail($id);
         return view('topic.show', compact('topic'));
     }
 
     public function destroy($id)
     {
+        if (!Auth::user()->hasPermission('tema_delete')) {
+            abort(403, 'No tienes permiso para eliminar temas.');
+        }
+
         $topic = Topic::findOrFail($id);
         $topic->delete();
         return redirect()->route('topic.index')->with('success', 'Tema eliminado exitosamente.');
