@@ -11,17 +11,7 @@
         </a>
     </div>
 
-    @php
-        $user = null;
-        $activeGuard = null;
-        foreach (['systemadmin', 'teacher', 'student', 'parent', 'web'] as $guard) {
-            if (Auth::guard($guard)->check()) {
-                $user = Auth::guard($guard)->user();
-                $activeGuard = $guard;
-                break;
-            }
-        }
-    @endphp
+
 
     <!-- User Profile Section -->
     <a href="{{ route('profile.edit') }}"

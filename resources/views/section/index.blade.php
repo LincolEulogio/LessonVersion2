@@ -14,11 +14,13 @@
                 </p>
             </div>
 
-            <a href="{{ route('section.create') }}"
-                class="group flex items-center gap-3 px-8 py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-3xl font-black text-xs uppercase tracking-[0.2em] transition-all hover:scale-[1.02] active:scale-95">
-                <i class="ti ti-plus text-xl group-hover:rotate-90 transition-transform duration-300"></i>
-                {{ __('Registrar Nueva Sección') }}
-            </a>
+            @if ($user && $user->hasPermission('seccion_add'))
+                <a href="{{ route('section.create') }}"
+                    class="group flex items-center gap-3 px-8 py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-3xl font-black text-xs uppercase tracking-[0.2em] transition-all hover:scale-[1.02] active:scale-95">
+                    <i class="ti ti-plus text-xl group-hover:rotate-90 transition-transform duration-300"></i>
+                    {{ __('Registrar Nueva Sección') }}
+                </a>
+            @endif
         </div>
 
         <!-- Filter & Stats Dashboard -->
@@ -169,28 +171,34 @@
                                 <td class="px-8 py-7 text-right">
                                     <div
                                         class="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0 transition-all duration-300">
-                                        <a href="{{ route('section.show', $section->sectionID) }}"
-                                            class="w-10 h-10 flex items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-600 hover:text-white dark:hover:bg-emerald-500 transition-all shadow-lg shadow-emerald-500/5 group/btn">
-                                            <i
-                                                class="ti ti-eye text-xl group-hover/btn:scale-110 transition-transform"></i>
-                                        </a>
-                                        <a href="{{ route('section.edit', $section->sectionID) }}"
-                                            class="w-10 h-10 flex items-center justify-center rounded-xl bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 hover:bg-amber-600 hover:text-white dark:hover:bg-amber-500 transition-all shadow-lg shadow-amber-500/5 group/btn">
-                                            <i
-                                                class="ti ti-edit text-xl group-hover/btn:scale-110 transition-transform"></i>
-                                        </a>
-                                        <button type="button"
-                                            onclick="confirmDelete('{{ $section->sectionID }}', '{{ $section->section }}')"
-                                            class="w-10 h-10 flex items-center justify-center rounded-xl bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-600 hover:text-white dark:hover:bg-rose-500 transition-all shadow-lg shadow-rose-500/5 group/btn">
-                                            <i
-                                                class="ti ti-trash text-xl group-hover/btn:scale-110 transition-transform"></i>
-                                        </button>
-                                        <form id="delete-form-{{ $section->sectionID }}"
-                                            action="{{ route('section.destroy', $section->sectionID) }}" method="POST"
-                                            class="hidden">
-                                            @csrf
-                                            @method('DELETE')
-                                        </form>
+                                        @if ($user && $user->hasPermission('seccion_view'))
+                                            <a href="{{ route('section.show', $section->sectionID) }}"
+                                                class="w-10 h-10 flex items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-600 hover:text-white dark:hover:bg-emerald-500 transition-all shadow-lg shadow-emerald-500/5 group/btn">
+                                                <i
+                                                    class="ti ti-eye text-xl group-hover/btn:scale-110 transition-transform"></i>
+                                            </a>
+                                        @endif
+                                        @if ($user && $user->hasPermission('seccion_edit'))
+                                            <a href="{{ route('section.edit', $section->sectionID) }}"
+                                                class="w-10 h-10 flex items-center justify-center rounded-xl bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 hover:bg-amber-600 hover:text-white dark:hover:bg-amber-500 transition-all shadow-lg shadow-amber-500/5 group/btn">
+                                                <i
+                                                    class="ti ti-edit text-xl group-hover/btn:scale-110 transition-transform"></i>
+                                            </a>
+                                        @endif
+                                        @if ($user && $user->hasPermission('seccion_delete'))
+                                            <button type="button"
+                                                onclick="confirmDelete('{{ $section->sectionID }}', '{{ $section->section }}')"
+                                                class="w-10 h-10 flex items-center justify-center rounded-xl bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-600 hover:text-white dark:hover:bg-rose-500 transition-all shadow-lg shadow-rose-500/5 group/btn">
+                                                <i
+                                                    class="ti ti-trash text-xl group-hover/btn:scale-110 transition-transform"></i>
+                                            </button>
+                                            <form id="delete-form-{{ $section->sectionID }}"
+                                                action="{{ route('section.destroy', $section->sectionID) }}"
+                                                method="POST" class="hidden">
+                                                @csrf
+                                                @method('DELETE')
+                                            </form>
+                                        @endif
                                     </div>
                                 </td>
                             </tr>

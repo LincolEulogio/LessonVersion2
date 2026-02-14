@@ -10,11 +10,13 @@
                     profesionales.</p>
             </div>
             <div class="flex items-center gap-4">
-                <a href="{{ route('teacher.create') }}"
-                    class="group flex items-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold transition-all active:scale-95">
-                    <i class="ti ti-user-plus text-lg"></i>
-                    <span>Añadir Docente</span>
-                </a>
+                @if ($user && $user->hasPermission('docente_add'))
+                    <a href="{{ route('teacher.create') }}"
+                        class="group flex items-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold transition-all active:scale-95">
+                        <i class="ti ti-user-plus text-lg"></i>
+                        <span>Añadir Docente</span>
+                    </a>
+                @endif
             </div>
         </div>
 
@@ -125,28 +127,34 @@
                                 <td class="px-6 py-4 text-right pr-6">
                                     <div
                                         class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                        <a href="{{ route('teacher.show', $teacher->teacherID) }}"
-                                            class="p-2 bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white rounded-lg transition-all"
-                                            title="Ver Perfil">
-                                            <i class="ti ti-eye text-lg"></i>
-                                        </a>
-                                        <a href="{{ route('teacher.edit', $teacher->teacherID) }}"
-                                            class="p-2 bg-amber-500/10 text-amber-500 hover:bg-amber-500 hover:text-white rounded-lg transition-all"
-                                            title="Editar">
-                                            <i class="ti ti-edit text-lg"></i>
-                                        </a>
-                                        <button type="button"
-                                            onclick="confirmDelete('{{ $teacher->teacherID }}', '{{ $teacher->name }}')"
-                                            class="p-2 bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white rounded-lg transition-all"
-                                            title="Eliminar">
-                                            <i class="ti ti-trash text-lg"></i>
-                                        </button>
-                                        <form id="delete-form-{{ $teacher->teacherID }}"
-                                            action="{{ route('teacher.destroy', $teacher->teacherID) }}" method="POST"
-                                            class="hidden">
-                                            @csrf
-                                            @method('DELETE')
-                                        </form>
+                                        @if ($user && $user->hasPermission('docente_view'))
+                                            <a href="{{ route('teacher.show', $teacher->teacherID) }}"
+                                                class="p-2 bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white rounded-lg transition-all"
+                                                title="Ver Perfil">
+                                                <i class="ti ti-eye text-lg"></i>
+                                            </a>
+                                        @endif
+                                        @if ($user && $user->hasPermission('docente_edit'))
+                                            <a href="{{ route('teacher.edit', $teacher->teacherID) }}"
+                                                class="p-2 bg-amber-500/10 text-amber-500 hover:bg-amber-500 hover:text-white rounded-lg transition-all"
+                                                title="Editar">
+                                                <i class="ti ti-edit text-lg"></i>
+                                            </a>
+                                        @endif
+                                        @if ($user && $user->hasPermission('docente_delete'))
+                                            <button type="button"
+                                                onclick="confirmDelete('{{ $teacher->teacherID }}', '{{ $teacher->name }}')"
+                                                class="p-2 bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white rounded-lg transition-all"
+                                                title="Eliminar">
+                                                <i class="ti ti-trash text-lg"></i>
+                                            </button>
+                                            <form id="delete-form-{{ $teacher->teacherID }}"
+                                                action="{{ route('teacher.destroy', $teacher->teacherID) }}"
+                                                method="POST" class="hidden">
+                                                @csrf
+                                                @method('DELETE')
+                                            </form>
+                                        @endif
                                     </div>
                                 </td>
                             </tr>

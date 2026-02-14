@@ -105,15 +105,7 @@
                             class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-[#0f172a]"></span>
                     </button>
 
-                    @php
-                        $user = null;
-                        foreach (['systemadmin', 'teacher', 'student', 'parent', 'web'] as $guard) {
-                            if (Auth::guard($guard)->check()) {
-                                $user = Auth::guard($guard)->user();
-                                break;
-                            }
-                        }
-                    @endphp
+
 
                     <!-- User Profile Dropdown -->
                     <div x-data="{ open: false }" class="relative">

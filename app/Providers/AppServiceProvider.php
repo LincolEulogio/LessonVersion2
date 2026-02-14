@@ -22,5 +22,16 @@ class AppServiceProvider extends ServiceProvider
         \Illuminate\Support\Facades\Auth::provider('legacy', function ($app, array $config) {
             return new \App\Providers\LegacyUserProvider($app['hash'], $config['model']);
         });
+
+        \Illuminate\Support\Facades\View::composer('*', function ($view) {
+            $user = null;
+            foreach (['systemadmin', 'teacher', 'student', 'parent', 'web'] as $guard) {
+                if (\Illuminate\Support\Facades\Auth::guard($guard)->check()) {
+                    $user = \Illuminate\Support\Facades\Auth::guard($guard)->user();
+                    break;
+                }
+            }
+            $view->with('user', $user);
+        });
     }
 }

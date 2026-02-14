@@ -19,13 +19,15 @@
                 </p>
             </div>
 
-            <div class="flex flex-wrap items-center gap-3">
-                <a href="{{ route('assignment.create') }}"
-                    class="group relative flex items-center gap-3 bg-emerald-600 hover:bg-emerald-500 text-white px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] transition-all shadow-lg shadow-emerald-500/20 hover:scale-[1.02] active:scale-95">
-                    <i class="ti ti-plus text-xl transition-transform group-hover:rotate-90"></i>
-                    {{ __('Nueva Tarea') }}
-                </a>
-            </div>
+            @if ($user && $user->hasPermission('asignacion_add'))
+                <div class="flex flex-wrap items-center gap-3">
+                    <a href="{{ route('assignment.create') }}"
+                        class="group relative flex items-center gap-3 bg-emerald-600 hover:bg-emerald-500 text-white px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] transition-all shadow-lg shadow-emerald-500/20 hover:scale-[1.02] active:scale-95">
+                        <i class="ti ti-plus text-xl transition-transform group-hover:rotate-90"></i>
+                        {{ __('Nueva Tarea') }}
+                    </a>
+                </div>
+            @endif
         </div>
 
         <!-- Filter & Stats Dashboard -->
@@ -196,35 +198,41 @@
                                 </td>
                                 <td class="px-10 py-6 text-right">
                                     <div class="flex items-center justify-end gap-2">
-                                        @if ($assignment->file)
+                                        @if ($assignment->file && $user && $user->hasPermission('asignacion_view'))
                                             <a href="{{ route('assignment.download', $assignment->assignmentID) }}"
                                                 class="w-10 h-10 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-xl flex items-center justify-center hover:bg-emerald-600 hover:text-white dark:hover:bg-emerald-500 transition-all shadow-sm border border-emerald-100/50 dark:border-emerald-500/20"
                                                 title="{{ __('Descargar Adjunto') }}">
                                                 <i class="ti ti-download text-lg"></i>
                                             </a>
                                         @endif
-                                        <a href="{{ route('assignment.show', $assignment->assignmentID) }}"
-                                            class="w-10 h-10 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-xl flex items-center justify-center hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-500 transition-all shadow-sm border border-indigo-100/50 dark:border-indigo-500/20"
-                                            title="{{ __('Ver Detalles') }}">
-                                            <i class="ti ti-eye text-lg"></i>
-                                        </a>
-                                        <a href="{{ route('assignment.edit', $assignment->assignmentID) }}"
-                                            class="w-10 h-10 bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-xl flex items-center justify-center hover:bg-amber-500 hover:text-white dark:hover:bg-amber-500 transition-all shadow-sm border border-amber-100/50 dark:border-amber-500/20"
-                                            title="{{ __('Editar') }}">
-                                            <i class="ti ti-edit text-lg"></i>
-                                        </a>
-                                        <button
-                                            onclick="confirmDelete('{{ $assignment->assignmentID }}', '{{ $assignment->title }}')"
-                                            class="w-10 h-10 bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 rounded-xl flex items-center justify-center hover:bg-rose-600 hover:text-white dark:hover:bg-rose-500 transition-all shadow-sm border border-rose-100/50 dark:border-rose-500/20"
-                                            title="{{ __('Eliminar') }}">
-                                            <i class="ti ti-trash text-lg"></i>
-                                        </button>
-                                        <form id="delete-form-{{ $assignment->assignmentID }}"
-                                            action="{{ route('assignment.destroy', $assignment->assignmentID) }}"
-                                            method="POST" class="hidden">
-                                            @csrf
-                                            @method('DELETE')
-                                        </form>
+                                        @if ($user && $user->hasPermission('asignacion_view'))
+                                            <a href="{{ route('assignment.show', $assignment->assignmentID) }}"
+                                                class="w-10 h-10 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-xl flex items-center justify-center hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-500 transition-all shadow-sm border border-indigo-100/50 dark:border-indigo-500/20"
+                                                title="{{ __('Ver Detalles') }}">
+                                                <i class="ti ti-eye text-lg"></i>
+                                            </a>
+                                        @endif
+                                        @if ($user && $user->hasPermission('asignacion_edit'))
+                                            <a href="{{ route('assignment.edit', $assignment->assignmentID) }}"
+                                                class="w-10 h-10 bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-xl flex items-center justify-center hover:bg-amber-500 hover:text-white dark:hover:bg-amber-500 transition-all shadow-sm border border-amber-100/50 dark:border-amber-500/20"
+                                                title="{{ __('Editar') }}">
+                                                <i class="ti ti-edit text-lg"></i>
+                                            </a>
+                                        @endif
+                                        @if ($user && $user->hasPermission('asignacion_delete'))
+                                            <button
+                                                onclick="confirmDelete('{{ $assignment->assignmentID }}', '{{ $assignment->title }}')"
+                                                class="w-10 h-10 bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 rounded-xl flex items-center justify-center hover:bg-rose-600 hover:text-white dark:hover:bg-rose-500 transition-all shadow-sm border border-rose-100/50 dark:border-rose-500/20"
+                                                title="{{ __('Eliminar') }}">
+                                                <i class="ti ti-trash text-lg"></i>
+                                            </button>
+                                            <form id="delete-form-{{ $assignment->assignmentID }}"
+                                                action="{{ route('assignment.destroy', $assignment->assignmentID) }}"
+                                                method="POST" class="hidden">
+                                                @csrf
+                                                @method('DELETE')
+                                            </form>
+                                        @endif
                                     </div>
                                 </td>
                             </tr>

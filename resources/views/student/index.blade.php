@@ -10,11 +10,13 @@
                     {{ __('Listado completo de estudiantes registrados en el sistema.') }}</p>
             </div>
             <div class="flex items-center gap-4">
-                <a href="{{ route('student.create') }}"
-                    class="group flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold transition-all active:scale-95">
-                    <i class="ti ti-plus text-lg"></i>
-                    <span>{{ __('Añadir Estudiante') }}</span>
-                </a>
+                @if ($user && $user->hasPermission('estudiante_add'))
+                    <a href="{{ route('student.create') }}"
+                        class="group flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold transition-all active:scale-95">
+                        <i class="ti ti-plus text-lg"></i>
+                        <span>{{ __('Añadir Estudiante') }}</span>
+                    </a>
+                @endif
             </div>
         </div>
 
@@ -137,29 +139,41 @@
                                 <td class="px-6 py-4 text-right pr-6">
                                     <div
                                         class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                        <a href="{{ route('mark.show', $student->studentID) }}"
-                                            class="p-2 bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500 hover:text-white rounded-lg transition-all"
-                                            title="{{ __('Calificaciones') }}">
-                                            <i class="ti ti-chart-bar text-lg"></i>
-                                        </a>
-                                        <a href="{{ route('student.show', $student->studentID) }}" <a
-                                            href="{{ route('student.edit', $student->studentID) }}"
-                                            class="p-2 bg-amber-500/10 text-amber-500 hover:bg-amber-500 hover:text-white rounded-lg transition-all"
-                                            title="{{ __('Editar') }}">
-                                            <i class="ti ti-edit text-lg"></i>
-                                        </a>
-                                        <button type="button"
-                                            onclick="confirmDelete('{{ $student->studentID }}', '{{ $student->name }}')"
-                                            class="p-2 bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white rounded-lg transition-all"
-                                            title="{{ __('Eliminar') }}">
-                                            <i class="ti ti-trash text-lg"></i>
-                                        </button>
-                                        <form id="delete-form-{{ $student->studentID }}"
-                                            action="{{ route('student.destroy', $student->studentID) }}" method="POST"
-                                            style="display: none;">
-                                            @csrf
-                                            @method('DELETE')
-                                        </form>
+                                        @if ($user && $user->hasPermission('promedio_view'))
+                                            <a href="{{ route('mark.show', $student->studentID) }}"
+                                                class="p-2 bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500 hover:text-white rounded-lg transition-all"
+                                                title="{{ __('Calificaciones') }}">
+                                                <i class="ti ti-chart-bar text-lg"></i>
+                                            </a>
+                                        @endif
+                                        @if ($user && $user->hasPermission('estudiante_view'))
+                                            <a href="{{ route('student.show', $student->studentID) }}"
+                                                class="p-2 bg-indigo-500/10 text-indigo-500 hover:bg-indigo-500 hover:text-white rounded-lg transition-all"
+                                                title="{{ __('Ver Detalle') }}">
+                                                <i class="ti ti-eye text-lg"></i>
+                                            </a>
+                                        @endif
+                                        @if ($user && $user->hasPermission('estudiante_edit'))
+                                            <a href="{{ route('student.edit', $student->studentID) }}"
+                                                class="p-2 bg-amber-500/10 text-amber-500 hover:bg-amber-500 hover:text-white rounded-lg transition-all"
+                                                title="{{ __('Editar') }}">
+                                                <i class="ti ti-edit text-lg"></i>
+                                            </a>
+                                        @endif
+                                        @if ($user && $user->hasPermission('estudiante_delete'))
+                                            <button type="button"
+                                                onclick="confirmDelete('{{ $student->studentID }}', '{{ $student->name }}')"
+                                                class="p-2 bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white rounded-lg transition-all"
+                                                title="{{ __('Eliminar') }}">
+                                                <i class="ti ti-trash text-lg"></i>
+                                            </button>
+                                            <form id="delete-form-{{ $student->studentID }}"
+                                                action="{{ route('student.destroy', $student->studentID) }}"
+                                                method="POST" style="display: none;">
+                                                @csrf
+                                                @method('DELETE')
+                                            </form>
+                                        @endif
                                     </div>
                                 </td>
                             </tr>
