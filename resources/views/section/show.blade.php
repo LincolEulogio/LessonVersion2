@@ -35,21 +35,26 @@
             </div>
 
             <div class="flex items-center gap-3">
-                <a href="{{ route('section.edit', $section->sectionID) }}"
-                    class="px-8 py-4 bg-amber-500 hover:bg-amber-400 text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] transition-all hover:scale-[1.02] active:scale-95 flex items-center gap-2">
-                    <i class="ti ti-edit text-lg"></i>
-                    {{ __('Editar') }}
-                </a>
-                <button type="button" onclick="confirmDelete('{{ $section->sectionID }}', '{{ $section->section }}')"
-                    class="px-8 py-4 bg-rose-500 hover:bg-rose-400 text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] transition-all hover:scale-[1.02] active:scale-95 flex items-center gap-2">
-                    <i class="ti ti-trash text-lg"></i>
-                    {{ __('Eliminar') }}
-                </button>
-                <form id="delete-form-{{ $section->sectionID }}"
-                    action="{{ route('section.destroy', $section->sectionID) }}" method="POST" class="hidden">
-                    @csrf
-                    @method('DELETE')
-                </form>
+                @if ($user && $user->hasPermission('seccion_edit'))
+                    <a href="{{ route('section.edit', $section->sectionID) }}"
+                        class="px-8 py-4 bg-amber-500 hover:bg-amber-400 text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] transition-all hover:scale-[1.02] active:scale-95 flex items-center gap-2">
+                        <i class="ti ti-edit text-lg"></i>
+                        {{ __('Editar') }}
+                    </a>
+                @endif
+                @if ($user && $user->hasPermission('seccion_delete'))
+                    <button type="button"
+                        onclick="confirmDelete('{{ $section->sectionID }}', '{{ $section->section }}')"
+                        class="px-8 py-4 bg-rose-500 hover:bg-rose-400 text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] transition-all hover:scale-[1.02] active:scale-95 flex items-center gap-2">
+                        <i class="ti ti-trash text-lg"></i>
+                        {{ __('Eliminar') }}
+                    </button>
+                    <form id="delete-form-{{ $section->sectionID }}"
+                        action="{{ route('section.destroy', $section->sectionID) }}" method="POST" class="hidden">
+                        @csrf
+                        @method('DELETE')
+                    </form>
+                @endif
             </div>
         </div>
 

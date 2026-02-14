@@ -6,12 +6,18 @@ use App\Models\Section;
 use App\Models\Classes;
 use App\Models\Teacher;
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreSectionRequest;
+use App\Http\Requests\UpdateSectionRequest;
 use Illuminate\Support\Facades\Auth;
 
 class SectionController extends Controller
 {
     public function index(Request $request)
     {
+        if (!Auth::user()->hasPermission('seccion_view')) {
+            abort(403, 'No tienes permiso para ver esta sección.');
+        }
+
         $classesID = $request->get('classesID');
         $search = $request->get('search');
         
@@ -40,41 +46,18 @@ class SectionController extends Controller
 
     public function create()
     {
+        if (!Auth::user()->hasPermission('seccion_add')) {
+            abort(403, 'No tienes permiso para agregar secciones.');
+        }
+
         $classes = Classes::orderBy('classes_numeric')->get();
         $teachers = Teacher::where('active', 1)->orderBy('name')->get();
         return view('section.create', compact('classes', 'teachers'));
     }
 
-    public function store(Request $request)
+    public function store(StoreSectionRequest $request)
     {
-        $request->validate([
-            'section' => 'required|string|max:60',
-            'category' => 'required|string|max:128',
-            'capacity' => 'required|numeric|min:1',
-            'classesID' => 'required|exists:classes,classesID',
-            'teacherID' => 'required|exists:teachers,teacherID',
-            'note' => 'required|string|max:500',
-        ], [
-            'section.required' => 'El nombre de la sección es obligatorio.',
-            'category.required' => 'La categoría es obligatoria.',
-            'capacity.required' => 'La capacidad es obligatoria.',
-            'capacity.numeric' => 'La capacidad debe ser un número.',
-            'classesID.required' => 'Debe seleccionar una clase.',
-            'teacherID.required' => 'Debe asignar un mentor.',
-            'note.required' => 'La descripción es obligatoria.',
-            'note.max' => 'La nota no debe exceder los 500 caracteres.',
-        ]);
-
-        // Check uniqueness per class
-        $exists = Section::where('classesID', $request->classesID)
-            ->where('section', $request->section)
-            ->exists();
-            
-        if ($exists) {
-            return back()->withErrors(['section' => 'Esta sección ya existe para la clase seleccionada.'])->withInput();
-        }
-
-        $data = $request->all();
+        $data = $request->validated();
         $data['create_date'] = now();
         $data['modify_date'] = now();
         $data['create_userID'] = Auth::id();
@@ -84,11 +67,15 @@ class SectionController extends Controller
 
         Section::create($data);
 
-        return redirect()->route('section.index', ['classesID' => $request->classesID])->with('success', 'Sección registrada exitosamente.');
+        return redirect()->route('section.index', ['classesID' => $data['classesID']])->with('success', 'Sección registrada exitosamente.');
     }
 
     public function show($id)
     {
+        if (!Auth::user()->hasPermission('seccion_view')) {
+            abort(403, 'No tienes permiso para ver esta sección.');
+        }
+
         $section = Section::with(['class'])
             ->leftJoin('teachers', 'section.teacherID', '=', 'teachers.teacherID')
             ->select('section.*', 'teachers.name as teacher_name', 'teachers.photo as teacher_photo')
@@ -100,54 +87,33 @@ class SectionController extends Controller
 
     public function edit($id)
     {
+        if (!Auth::user()->hasPermission('seccion_edit')) {
+            abort(403, 'No tienes permiso para editar secciones.');
+        }
+
         $section = Section::findOrFail($id);
         $classes = Classes::orderBy('classes_numeric')->get();
         $teachers = Teacher::where('active', 1)->orderBy('name')->get();
         return view('section.edit', compact('section', 'classes', 'teachers'));
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateSectionRequest $request, $id)
     {
         $section = Section::findOrFail($id);
-        
-        $request->validate([
-            'section' => 'required|string|max:60',
-            'category' => 'required|string|max:128',
-            'capacity' => 'required|numeric|min:1',
-            'classesID' => 'required|exists:classes,classesID',
-            'teacherID' => 'required|exists:teachers,teacherID',
-            'note' => 'required|string|max:500',
-        ], [
-            'section.required' => 'El nombre de la sección es obligatorio.',
-            'category.required' => 'La categoría es obligatoria.',
-            'capacity.required' => 'La capacidad es obligatoria.',
-            'capacity.numeric' => 'La capacidad debe ser un número.',
-            'classesID.required' => 'Debe seleccionar una clase.',
-            'teacherID.required' => 'Debe asignar un mentor.',
-            'note.required' => 'La descripción es obligatoria.',
-            'note.max' => 'La nota no debe exceder los 500 caracteres.',
-        ]);
-
-        // Check uniqueness per class excluding current
-        $exists = Section::where('classesID', $request->classesID)
-            ->where('section', $request->section)
-            ->where('sectionID', '!=', $id)
-            ->exists();
-            
-        if ($exists) {
-            return back()->withErrors(['section' => 'Esta sección ya existe para la clase seleccionada.'])->withInput();
-        }
-
-        $data = $request->all();
+        $data = $request->validated();
         $data['modify_date'] = now();
 
         $section->update($data);
 
-        return redirect()->route('section.index', ['classesID' => $request->classesID])->with('success', 'Sección actualizada exitosamente.');
+        return redirect()->route('section.index', ['classesID' => $data['classesID']])->with('success', 'Sección actualizada exitosamente.');
     }
 
     public function destroy($id)
     {
+        if (!Auth::user()->hasPermission('seccion_delete')) {
+            abort(403, 'No tienes permiso para eliminar secciones.');
+        }
+
         $section = Section::findOrFail($id);
         $classesID = $section->classesID;
         $section->delete();
