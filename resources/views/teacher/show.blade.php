@@ -32,11 +32,13 @@
                 </div>
             </div>
             <div class="flex items-center gap-3">
-                <a href="{{ route('teacher.edit', $teacher->teacherID) }}"
-                    class="p-3 bg-amber-500/10 text-amber-500 hover:bg-amber-500 hover:text-white rounded-xl transition-all border border-amber-500/20"
-                    title="Editar Perfil">
-                    <i class="ti ti-edit text-xl"></i>
-                </a>
+                @if ($user && $user->hasPermission('docente_edit'))
+                    <a href="{{ route('teacher.edit', $teacher->teacherID) }}"
+                        class="p-3 bg-amber-500/10 text-amber-500 hover:bg-amber-500 hover:text-white rounded-xl transition-all border border-amber-500/20"
+                        title="Editar Perfil">
+                        <i class="ti ti-edit text-xl"></i>
+                    </a>
+                @endif
                 <a href="{{ route('teacher.index') }}"
                     class="px-4 py-2 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl transition-all border border-slate-200 dark:border-slate-700/50 shadow-sm dark:shadow-none">
                     Volver
