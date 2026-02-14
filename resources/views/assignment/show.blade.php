@@ -22,11 +22,13 @@
             </div>
 
             <div class="flex items-center gap-3">
-                <a href="{{ route('assignment.edit', $assignment->assignmentID) }}"
-                    class="bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-6 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center gap-2 shadow-sm">
-                    <i class="ti ti-edit text-xl"></i>
-                    {{ __('Editar') }}
-                </a>
+                @if ($user && $user->hasPermission('asignacion_edit'))
+                    <a href="{{ route('assignment.edit', $assignment->assignmentID) }}"
+                        class="bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-6 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center gap-2 shadow-sm">
+                        <i class="ti ti-edit text-xl"></i>
+                        {{ __('Editar') }}
+                    </a>
+                @endif
             </div>
         </div>
 
@@ -167,20 +169,22 @@
                 </div>
 
                 <!-- Danger Zone -->
-                <div
-                    class="bg-rose-50/30 dark:bg-rose-500/5 border border-rose-100 dark:border-rose-500/10 rounded-[40px] p-8 space-y-4">
-                    <button onclick="confirmDelete('{{ $assignment->assignmentID }}', '{{ $assignment->title }}')"
-                        class="w-full bg-white dark:bg-slate-900 text-rose-600 dark:text-rose-400 px-6 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all border border-rose-200 dark:border-rose-900/50 hover:bg-rose-600 hover:text-white dark:hover:bg-rose-600 flex items-center justify-center gap-3 group">
-                        <i class="ti ti-trash text-xl group-hover:animate-bounce"></i>
-                        {{ __('Eliminar Tarea') }}
-                    </button>
-                    <form id="delete-form-{{ $assignment->assignmentID }}"
-                        action="{{ route('assignment.destroy', $assignment->assignmentID) }}" method="POST"
-                        class="hidden">
-                        @csrf
-                        @method('DELETE')
-                    </form>
-                </div>
+                @if ($user && $user->hasPermission('asignacion_delete'))
+                    <div
+                        class="bg-rose-50/30 dark:bg-rose-500/5 border border-rose-100 dark:border-rose-500/10 rounded-[40px] p-8 space-y-4">
+                        <button onclick="confirmDelete('{{ $assignment->assignmentID }}', '{{ $assignment->title }}')"
+                            class="w-full bg-white dark:bg-slate-900 text-rose-600 dark:text-rose-400 px-6 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all border border-rose-200 dark:border-rose-900/50 hover:bg-rose-600 hover:text-white dark:hover:bg-rose-600 flex items-center justify-center gap-3 group">
+                            <i class="ti ti-trash text-xl group-hover:animate-bounce"></i>
+                            {{ __('Eliminar Tarea') }}
+                        </button>
+                        <form id="delete-form-{{ $assignment->assignmentID }}"
+                            action="{{ route('assignment.destroy', $assignment->assignmentID) }}" method="POST"
+                            class="hidden">
+                            @csrf
+                            @method('DELETE')
+                        </form>
+                    </div>
+                @endif
             </div>
         </div>
     </div>

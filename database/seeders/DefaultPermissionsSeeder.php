@@ -115,7 +115,7 @@ class DefaultPermissionsSeeder extends Seeder
                 'tema_view',
                 'seccion_view',
                 'plan_de_estudios_view',
-                'asignacion_add', 'asignacion_view',
+                'asignacion_view',
                 'horario_view',
                 'horario_de_examen_view',
                 'promedio_view',

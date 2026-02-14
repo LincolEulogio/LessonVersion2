@@ -22,7 +22,7 @@
             @if ($user && $user->hasPermission('asignacion_add'))
                 <div class="flex flex-wrap items-center gap-3">
                     <a href="{{ route('assignment.create') }}"
-                        class="group relative flex items-center gap-3 bg-emerald-600 hover:bg-emerald-500 text-white px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] transition-all shadow-lg shadow-emerald-500/20 hover:scale-[1.02] active:scale-95">
+                        class="group relative flex items-center gap-3 bg-emerald-600 hover:bg-emerald-500 text-white px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] transition-all shadow-lg shadow-emerald-500/20 hover:scale-[1.02] active:scale-95 leading-none">
                         <i class="ti ti-plus text-xl transition-transform group-hover:rotate-90"></i>
                         {{ __('Nueva Tarea') }}
                     </a>

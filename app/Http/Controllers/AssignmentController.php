@@ -8,6 +8,8 @@ use App\Models\Subject;
 use App\Models\Schoolyear;
 use App\Models\Section;
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreAssignmentRequest;
+use App\Http\Requests\UpdateAssignmentRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
@@ -16,6 +18,10 @@ class AssignmentController extends Controller
 {
     public function index(Request $request)
     {
+        if (!Auth::user()->hasPermission('asignacion_view')) {
+            abort(403, 'No tienes permiso para ver esta sección.');
+        }
+
         $classesID = $request->get('classesID');
         $search = $request->get('search');
         
@@ -44,29 +50,17 @@ class AssignmentController extends Controller
 
     public function create()
     {
+        if (!Auth::user()->hasPermission('asignacion_add')) {
+            abort(403, 'No tienes permiso para agregar asignaciones.');
+        }
+
         $classes = Classes::orderBy('classes_numeric')->get();
         return view('assignment.create', compact('classes'));
     }
 
-    public function store(Request $request)
+    public function store(StoreAssignmentRequest $request)
     {
-        $request->validate([
-            'title' => 'required|string|max:128',
-            'classesID' => 'required|exists:classes,classesID',
-            'subjectID' => 'required|exists:subject,subjectID',
-            'deadlinedate' => 'required|date|after_or_equal:today',
-            'file' => 'nullable|file|mimes:pdf,doc,docx,ppt,pptx,zip,jpg,png|max:10240',
-            'description' => 'required|string|max:1000',
-        ], [
-            'title.required' => 'El título es obligatorio.',
-            'classesID.required' => 'Debe seleccionar una clase.',
-            'subjectID.required' => 'Debe seleccionar una materia.',
-            'deadlinedate.required' => 'La fecha límite es obligatoria.',
-            'deadlinedate.after_or_equal' => 'La fecha límite debe ser hoy o una fecha futura.',
-            'file.mimes' => 'El archivo debe ser tipo: pdf, doc, docx, ppt, pptx, zip, jpg, png.',
-            'file.max' => 'El archivo no debe exceder los 10MB.',
-            'description.required' => 'La descripción es obligatoria.',
-        ]);
+        $data = $request->validated();
 
         $fileName = null;
         $originalName = null;
@@ -80,13 +74,13 @@ class AssignmentController extends Controller
         $schoolyear = Schoolyear::where('schoolyearID', session('default_schoolyearID') ?? 1)->first();
 
         Assignment::create([
-            'title' => $request->title,
-            'description' => $request->description,
-            'deadlinedate' => $request->deadlinedate,
+            'title' => $data['title'],
+            'description' => $data['description'],
+            'deadlinedate' => $data['deadlinedate'],
             'usertypeID' => Auth::user()->usertypeID,
             'userID' => Auth::id(),
-            'classesID' => $request->classesID,
-            'subjectID' => $request->subjectID,
+            'classesID' => $data['classesID'],
+            'subjectID' => $data['subjectID'],
             'schoolyearID' => $schoolyear->schoolyearID ?? 1,
             'originalfile' => $originalName,
             'file' => $fileName,
@@ -94,12 +88,16 @@ class AssignmentController extends Controller
             'create_usertype' => Auth::user()->usertype->usertype ?? 'Admin',
         ]);
 
-        return redirect()->route('assignment.index', ['classesID' => $request->classesID])
+        return redirect()->route('assignment.index', ['classesID' => $data['classesID']])
             ->with('success', 'Asignación creada exitosamente.');
     }
 
     public function show($id)
     {
+        if (!Auth::user()->hasPermission('asignacion_view')) {
+            abort(403, 'No tienes permiso para ver esta asignación.');
+        }
+
         $assignment = Assignment::with(['class', 'subject', 'user'])
             ->findOrFail($id);
             
@@ -108,6 +106,10 @@ class AssignmentController extends Controller
 
     public function edit($id)
     {
+        if (!Auth::user()->hasPermission('asignacion_edit')) {
+            abort(403, 'No tienes permiso para editar asignaciones.');
+        }
+
         $assignment = Assignment::findOrFail($id);
         $classes = Classes::orderBy('classes_numeric')->get();
         $subjects = Subject::where('classesID', $assignment->classesID)->get();
@@ -116,33 +118,17 @@ class AssignmentController extends Controller
         return view('assignment.edit', compact('assignment', 'classes', 'subjects', 'sections'));
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateAssignmentRequest $request, $id)
     {
         $assignment = Assignment::findOrFail($id);
-        
-        $request->validate([
-            'title' => 'required|string|max:128',
-            'classesID' => 'required|exists:classes,classesID',
-            'subjectID' => 'required|exists:subject,subjectID',
-            'deadlinedate' => 'required|date',
-            'file' => 'nullable|file|mimes:pdf,doc,docx,ppt,pptx,zip,jpg,png|max:10240',
-            'description' => 'required|string|max:1000',
-        ], [
-            'title.required' => 'El título es obligatorio.',
-            'classesID.required' => 'Debe seleccionar una clase.',
-            'subjectID.required' => 'Debe seleccionar una materia.',
-            'deadlinedate.required' => 'La fecha límite es obligatoria.',
-            'file.mimes' => 'El archivo debe ser tipo: pdf, doc, docx, ppt, pptx, zip, jpg, png.',
-            'file.max' => 'El archivo no debe exceder los 10MB.',
-            'description.required' => 'La descripción es obligatoria.',
-        ]);
+        $data = $request->validated();
 
-        $data = [
-            'title' => $request->title,
-            'description' => $request->description,
-            'deadlinedate' => $request->deadlinedate,
-            'classesID' => $request->classesID,
-            'subjectID' => $request->subjectID,
+        $updateData = [
+            'title' => $data['title'],
+            'description' => $data['description'],
+            'deadlinedate' => $data['deadlinedate'],
+            'classesID' => $data['classesID'],
+            'subjectID' => $data['subjectID'],
         ];
 
         if ($request->hasFile('file')) {
@@ -155,18 +141,22 @@ class AssignmentController extends Controller
             $fileName = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $originalName);
             $file->move(public_path('uploads/assignment'), $fileName);
             
-            $data['originalfile'] = $originalName;
-            $data['file'] = $fileName;
+            $updateData['originalfile'] = $originalName;
+            $updateData['file'] = $fileName;
         }
 
-        $assignment->update($data);
+        $assignment->update($updateData);
 
-        return redirect()->route('assignment.index', ['classesID' => $request->classesID])
+        return redirect()->route('assignment.index', ['classesID' => $data['classesID']])
             ->with('success', 'Asignación actualizada exitosamente.');
     }
 
     public function destroy($id)
     {
+        if (!Auth::user()->hasPermission('asignacion_delete')) {
+            abort(403, 'No tienes permiso para eliminar asignaciones.');
+        }
+
         $assignment = Assignment::findOrFail($id);
         $classesID = $assignment->classesID;
         
@@ -181,6 +171,10 @@ class AssignmentController extends Controller
 
     public function download($id)
     {
+        if (!Auth::user()->hasPermission('asignacion_view')) {
+            abort(403, 'No tienes permiso para descargar este archivo.');
+        }
+
         $assignment = Assignment::findOrFail($id);
         $filePath = public_path('uploads/assignment/' . $assignment->file);
         
