@@ -9,12 +9,18 @@ use App\Models\Subject;
 use App\Models\Teacher;
 use App\Models\Schoolyear;
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreRoutineRequest;
+use App\Http\Requests\UpdateRoutineRequest;
 use Illuminate\Support\Facades\Auth;
 
 class RoutineController extends Controller
 {
     public function index(Request $request)
     {
+        if (!Auth::user()->hasPermission('horario_view')) {
+            abort(403, 'No tienes permiso para ver esta sección.');
+        }
+
         $classesID = $request->get('classesID');
         $search = $request->get('search');
         
@@ -52,6 +58,10 @@ class RoutineController extends Controller
 
     public function create()
     {
+        if (!Auth::user()->hasPermission('horario_add')) {
+            abort(403, 'No tienes permiso para agregar horarios.');
+        }
+
         $classes = Classes::orderBy('classes_numeric')->get();
         $teachers = Teacher::orderBy('name')->get();
         $days = [
@@ -66,40 +76,21 @@ class RoutineController extends Controller
         return view('routine.create', compact('classes', 'teachers', 'days'));
     }
 
-    public function store(Request $request)
+    public function store(StoreRoutineRequest $request)
     {
-        $request->validate([
-            'classesID' => 'required|exists:classes,classesID',
-            'sectionID' => 'required|exists:section,sectionID',
-            'subjectID' => 'required|exists:subject,subjectID',
-            'teacherID' => 'required|exists:teachers,teacherID',
-            'day' => 'required|string',
-            'start_time' => 'required|string',
-            'end_time' => 'required|string',
-            'room' => 'required|string|max:64',
-        ], [
-            'classesID.required' => 'La clase es obligatoria.',
-            'sectionID.required' => 'La sección es obligatoria.',
-            'subjectID.required' => 'La materia es obligatoria.',
-            'teacherID.required' => 'El docente es obligatorio.',
-            'day.required' => 'El día es obligatorio.',
-            'start_time.required' => 'La hora de inicio es obligatoria.',
-            'end_time.required' => 'La hora de fin es obligatoria.',
-            'room.required' => 'El aula es obligatoria.',
-        ]);
-
+        $data = $request->validated();
         $schoolyear = Schoolyear::where('schoolyearID', session('default_schoolyearID') ?? 1)->first();
 
         Routine::create([
-            'classesID' => $request->classesID,
-            'sectionID' => $request->sectionID,
-            'subjectID' => $request->subjectID,
-            'teacherID' => $request->teacherID,
+            'classesID' => $data['classesID'],
+            'sectionID' => $data['sectionID'],
+            'subjectID' => $data['subjectID'],
+            'teacherID' => $data['teacherID'],
             'schoolyearID' => $schoolyear->schoolyearID ?? 1,
-            'day' => $request->day,
-            'start_time' => $request->start_time,
-            'end_time' => $request->end_time,
-            'room' => $request->room,
+            'day' => $data['day'],
+            'start_time' => $data['start_time'],
+            'end_time' => $data['end_time'],
+            'room' => $data['room'],
             'create_date' => now(),
             'modify_date' => now(),
             'create_userID' => Auth::id(),
@@ -108,12 +99,16 @@ class RoutineController extends Controller
             'create_usertype' => Auth::user()->usertype->usertype ?? 'Admin',
         ]);
 
-        return redirect()->route('routine.index', ['classesID' => $request->classesID])
+        return redirect()->route('routine.index', ['classesID' => $data['classesID']])
             ->with('success', 'Horario creado exitosamente.');
     }
 
     public function show($id)
     {
+        if (!Auth::user()->hasPermission('horario_view')) {
+            abort(403, 'No tienes permiso para ver este horario.');
+        }
+
         $routine = Routine::with(['class', 'section', 'subject', 'teacher', 'creator'])
             ->findOrFail($id);
             
@@ -122,6 +117,10 @@ class RoutineController extends Controller
 
     public function edit($id)
     {
+        if (!Auth::user()->hasPermission('horario_edit')) {
+            abort(403, 'No tienes permiso para editar horarios.');
+        }
+
         $routine = Routine::findOrFail($id);
         $classes = Classes::orderBy('classes_numeric')->get();
         $sections = Section::where('classesID', $routine->classesID)->get();
@@ -139,48 +138,33 @@ class RoutineController extends Controller
         return view('routine.edit', compact('routine', 'classes', 'sections', 'subjects', 'teachers', 'days'));
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateRoutineRequest $request, $id)
     {
         $routine = Routine::findOrFail($id);
-        
-        $request->validate([
-            'classesID' => 'required|exists:classes,classesID',
-            'sectionID' => 'required|exists:section,sectionID',
-            'subjectID' => 'required|exists:subject,subjectID',
-            'teacherID' => 'required|exists:teachers,teacherID',
-            'day' => 'required|string',
-            'start_time' => 'required|string',
-            'end_time' => 'required|string',
-            'room' => 'required|string|max:64',
-        ], [
-            'classesID.required' => 'La clase es obligatoria.',
-            'sectionID.required' => 'La sección es obligatoria.',
-            'subjectID.required' => 'La materia es obligatoria.',
-            'teacherID.required' => 'El docente es obligatorio.',
-            'day.required' => 'El día es obligatorio.',
-            'start_time.required' => 'La hora de inicio es obligatoria.',
-            'end_time.required' => 'La hora de fin es obligatoria.',
-            'room.required' => 'El aula es obligatoria.',
-        ]);
+        $data = $request->validated();
 
         $routine->update([
-            'classesID' => $request->classesID,
-            'sectionID' => $request->sectionID,
-            'subjectID' => $request->subjectID,
-            'teacherID' => $request->teacherID,
-            'day' => $request->day,
-            'start_time' => $request->start_time,
-            'end_time' => $request->end_time,
-            'room' => $request->room,
+            'classesID' => $data['classesID'],
+            'sectionID' => $data['sectionID'],
+            'subjectID' => $data['subjectID'],
+            'teacherID' => $data['teacherID'],
+            'day' => $data['day'],
+            'start_time' => $data['start_time'],
+            'end_time' => $data['end_time'],
+            'room' => $data['room'],
             'modify_date' => now(),
         ]);
 
-        return redirect()->route('routine.index', ['classesID' => $request->classesID])
+        return redirect()->route('routine.index', ['classesID' => $data['classesID']])
             ->with('success', 'Horario actualizado exitosamente.');
     }
 
     public function destroy($id)
     {
+        if (!Auth::user()->hasPermission('horario_delete')) {
+            abort(403, 'No tienes permiso para eliminar horarios.');
+        }
+
         $routine = Routine::findOrFail($id);
         $classesID = $routine->classesID;
         $routine->delete();

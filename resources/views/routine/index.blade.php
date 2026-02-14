@@ -48,13 +48,15 @@
                 </p>
             </div>
 
-            <div class="flex flex-wrap items-center gap-3">
-                <a href="{{ route('routine.create') }}"
-                    class="group relative flex items-center gap-3 bg-emerald-600 hover:bg-emerald-500 text-white px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] transition-all shadow-lg shadow-emerald-500/20 hover:scale-[1.02] active:scale-95">
-                    <i class="ti ti-calendar-plus text-xl transition-transform group-hover:rotate-12"></i>
-                    {{ __('Nuevo Horario') }}
-                </a>
-            </div>
+            @if ($user && $user->hasPermission('horario_add'))
+                <div class="flex flex-wrap items-center gap-3">
+                    <a href="{{ route('routine.create') }}"
+                        class="group relative flex items-center gap-3 bg-emerald-600 hover:bg-emerald-500 text-white px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] transition-all shadow-lg shadow-emerald-500/20 hover:scale-[1.02] active:scale-95">
+                        <i class="ti ti-calendar-plus text-xl transition-transform group-hover:rotate-12"></i>
+                        {{ __('Nuevo Horario') }}
+                    </a>
+                </div>
+            @endif
         </div>
 
         <!-- Filter & Search Section -->
@@ -203,28 +205,34 @@
                                 </td>
                                 <td class="px-10 py-6 text-right">
                                     <div class="flex items-center justify-end gap-2">
-                                        <a href="{{ route('routine.show', $routine->routineID) }}"
-                                            class="w-10 h-10 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-xl flex items-center justify-center hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-500 transition-all shadow-sm border border-indigo-100/50 dark:border-indigo-500/20"
-                                            title="{{ __('Ver Detalles') }}">
-                                            <i class="ti ti-eye text-lg"></i>
-                                        </a>
-                                        <a href="{{ route('routine.edit', $routine->routineID) }}"
-                                            class="w-10 h-10 bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-xl flex items-center justify-center hover:bg-amber-500 hover:text-white dark:hover:bg-amber-500 transition-all shadow-sm border border-amber-100/50 dark:border-amber-500/20"
-                                            title="{{ __('Editar') }}">
-                                            <i class="ti ti-edit text-lg"></i>
-                                        </a>
-                                        <button
-                                            onclick="confirmDelete('{{ $routine->routineID }}', '{{ $routine->subject_name }}')"
-                                            class="w-10 h-10 bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 rounded-xl flex items-center justify-center hover:bg-rose-600 hover:text-white dark:hover:bg-rose-500 transition-all shadow-sm border border-rose-100/50 dark:border-rose-500/20"
-                                            title="{{ __('Eliminar') }}">
-                                            <i class="ti ti-trash text-lg"></i>
-                                        </button>
-                                        <form id="delete-form-{{ $routine->routineID }}"
-                                            action="{{ route('routine.destroy', $routine->routineID) }}"
-                                            method="POST" class="hidden">
-                                            @csrf
-                                            @method('DELETE')
-                                        </form>
+                                        @if ($user && $user->hasPermission('horario_view'))
+                                            <a href="{{ route('routine.show', $routine->routineID) }}"
+                                                class="w-10 h-10 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-xl flex items-center justify-center hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-500 transition-all shadow-sm border border-indigo-100/50 dark:border-indigo-500/20"
+                                                title="{{ __('Ver Detalles') }}">
+                                                <i class="ti ti-eye text-lg"></i>
+                                            </a>
+                                        @endif
+                                        @if ($user && $user->hasPermission('horario_edit'))
+                                            <a href="{{ route('routine.edit', $routine->routineID) }}"
+                                                class="w-10 h-10 bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-xl flex items-center justify-center hover:bg-amber-500 hover:text-white dark:hover:bg-amber-500 transition-all shadow-sm border border-amber-100/50 dark:border-amber-500/20"
+                                                title="{{ __('Editar') }}">
+                                                <i class="ti ti-edit text-lg"></i>
+                                            </a>
+                                        @endif
+                                        @if ($user && $user->hasPermission('horario_delete'))
+                                            <button
+                                                onclick="confirmDelete('{{ $routine->routineID }}', '{{ $routine->subject_name }}')"
+                                                class="w-10 h-10 bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 rounded-xl flex items-center justify-center hover:bg-rose-600 hover:text-white dark:hover:bg-rose-500 transition-all shadow-sm border border-rose-100/50 dark:border-rose-500/20"
+                                                title="{{ __('Eliminar') }}">
+                                                <i class="ti ti-trash text-lg"></i>
+                                            </button>
+                                            <form id="delete-form-{{ $routine->routineID }}"
+                                                action="{{ route('routine.destroy', $routine->routineID) }}"
+                                                method="POST" class="hidden">
+                                                @csrf
+                                                @method('DELETE')
+                                            </form>
+                                        @endif
                                     </div>
                                 </td>
                             </tr>
