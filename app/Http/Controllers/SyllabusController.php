@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Syllabus;
 use App\Models\Classes;
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreSyllabusRequest;
+use App\Http\Requests\UpdateSyllabusRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
@@ -13,6 +15,10 @@ class SyllabusController extends Controller
 {
     public function index(Request $request)
     {
+        if (!Auth::user()->hasPermission('plan_de_estudios_view')) {
+            abort(403, 'No tienes permiso para ver esta sección.');
+        }
+
         $classesID = $request->get('classesID');
         $search = $request->get('search');
         
@@ -40,26 +46,17 @@ class SyllabusController extends Controller
 
     public function create()
     {
+        if (!Auth::user()->hasPermission('plan_de_estudios_add')) {
+            abort(403, 'No tienes permiso para agregar planes de estudio.');
+        }
+
         $classes = Classes::orderBy('classes_numeric')->get();
         return view('syllabus.create', compact('classes'));
     }
 
-    public function store(Request $request)
+    public function store(StoreSyllabusRequest $request)
     {
-        $request->validate([
-            'title' => 'required|string|max:128',
-            'classesID' => 'required|exists:classes,classesID',
-            'file' => 'required|file|mimes:pdf,doc,docx,ppt,pptx,zip,jpg,png|max:10240',
-            'description' => 'required|string|max:500',
-        ], [
-            'title.required' => 'El título es obligatorio.',
-            'classesID.required' => 'Debe seleccionar una clase.',
-            'file.required' => 'El archivo del plan de estudios es obligatorio.',
-            'file.mimes' => 'El archivo debe ser tipo: pdf, doc, docx, ppt, pptx, zip, jpg, png.',
-            'file.max' => 'El archivo no debe exceder los 10MB.',
-            'description.required' => 'La descripción o notas son obligatorias.',
-            'description.max' => 'La descripción no debe exceder los 500 caracteres.',
-        ]);
+        $data = $request->validated();
 
         $fileName = null;
         if ($request->hasFile('file')) {
@@ -69,9 +66,9 @@ class SyllabusController extends Controller
         }
 
         Syllabus::create([
-            'title' => $request->title,
-            'description' => $request->description,
-            'classesID' => $request->classesID,
+            'title' => $data['title'],
+            'description' => $data['description'],
+            'classesID' => $data['classesID'],
             'file' => $fileName,
             'create_date' => now(),
             'modify_date' => now(),
@@ -81,12 +78,16 @@ class SyllabusController extends Controller
             'create_usertype' => Auth::user()->usertype->usertype ?? 'Admin',
         ]);
 
-        return redirect()->route('syllabus.index', ['classesID' => $request->classesID])
+        return redirect()->route('syllabus.index', ['classesID' => $data['classesID']])
             ->with('success', 'Plan de estudios registrado exitosamente.');
     }
 
     public function show($id)
     {
+        if (!Auth::user()->hasPermission('plan_de_estudios_view')) {
+            abort(403, 'No tienes permiso para ver este plan de estudios.');
+        }
+
         $syllabus = Syllabus::with(['class'])
             ->where('syllabus.syllabusID', $id)
             ->firstOrFail();
@@ -96,33 +97,24 @@ class SyllabusController extends Controller
 
     public function edit($id)
     {
+        if (!Auth::user()->hasPermission('plan_de_estudios_edit')) {
+            abort(403, 'No tienes permiso para editar planes de estudio.');
+        }
+
         $syllabus = Syllabus::findOrFail($id);
         $classes = Classes::orderBy('classes_numeric')->get();
         return view('syllabus.edit', compact('syllabus', 'classes'));
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateSyllabusRequest $request, $id)
     {
         $syllabus = Syllabus::findOrFail($id);
-        
-        $request->validate([
-            'title' => 'required|string|max:128',
-            'classesID' => 'required|exists:classes,classesID',
-            'file' => 'nullable|file|mimes:pdf,doc,docx,ppt,pptx,zip,jpg,png|max:10240',
-            'description' => 'required|string|max:500',
-        ], [
-            'title.required' => 'El título es obligatorio.',
-            'classesID.required' => 'Debe seleccionar una clase.',
-            'file.mimes' => 'El archivo debe ser tipo: pdf, doc, docx, ppt, pptx, zip, jpg, png.',
-            'file.max' => 'El archivo no debe exceder los 10MB.',
-            'description.required' => 'La descripción o notas son obligatorias.',
-            'description.max' => 'La descripción no debe exceder los 500 caracteres.',
-        ]);
+        $data = $request->validated();
 
-        $data = [
-            'title' => $request->title,
-            'description' => $request->description,
-            'classesID' => $request->classesID,
+        $updateData = [
+            'title' => $data['title'],
+            'description' => $data['description'],
+            'classesID' => $data['classesID'],
             'modify_date' => now(),
         ];
 
@@ -135,17 +127,21 @@ class SyllabusController extends Controller
             $file = $request->file('file');
             $fileName = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $file->getClientOriginalName());
             $file->move(public_path('uploads/syllabus'), $fileName);
-            $data['file'] = $fileName;
+            $updateData['file'] = $fileName;
         }
 
-        $syllabus->update($data);
+        $syllabus->update($updateData);
 
-        return redirect()->route('syllabus.index', ['classesID' => $request->classesID])
+        return redirect()->route('syllabus.index', ['classesID' => $data['classesID']])
             ->with('success', 'Plan de estudios actualizado exitosamente.');
     }
 
     public function destroy($id)
     {
+        if (!Auth::user()->hasPermission('plan_de_estudios_delete')) {
+            abort(403, 'No tienes permiso para eliminar planes de estudio.');
+        }
+
         $syllabus = Syllabus::findOrFail($id);
         $classesID = $syllabus->classesID;
         
@@ -160,6 +156,10 @@ class SyllabusController extends Controller
 
     public function download($id)
     {
+        if (!Auth::user()->hasPermission('plan_de_estudios_view')) {
+            abort(403, 'No tienes permiso para descargar este archivo.');
+        }
+
         $syllabus = Syllabus::findOrFail($id);
         $filePath = public_path('uploads/syllabus/' . $syllabus->file);
         
