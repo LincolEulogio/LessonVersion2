@@ -20,10 +20,12 @@
             </div>
 
             <div class="flex items-center gap-3">
-                <a href="{{ route('classes.edit', $class->classesID) }}"
-                    class="px-6 py-3 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-200 font-black text-xs uppercase tracking-widest transition-all hover:border-emerald-500 hover:text-emerald-500 flex items-center gap-2">
-                    <i class="ti ti-edit text-lg"></i> {{ __('Editar') }}
-                </a>
+                @if ($user && $user->hasPermission('clases_edit'))
+                    <a href="{{ route('classes.edit', $class->classesID) }}"
+                        class="px-6 py-3 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-200 font-black text-xs uppercase tracking-widest transition-all hover:border-emerald-500 hover:text-emerald-500 flex items-center gap-2">
+                        <i class="ti ti-edit text-lg"></i> {{ __('Editar') }}
+                    </a>
+                @endif
                 <a href="{{ route('classes.index') }}"
                     class="px-6 py-3 rounded-2xl bg-slate-900 text-white font-black text-xs uppercase tracking-widest transition-all hover:bg-slate-800 flex items-center gap-2">
                     <i class="ti ti-arrow-left text-lg"></i> {{ __('Volver') }}

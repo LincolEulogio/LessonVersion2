@@ -5,12 +5,18 @@ namespace App\Http\Controllers;
 use App\Models\Classes;
 use App\Models\Teacher;
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreClassesRequest;
+use App\Http\Requests\UpdateClassesRequest;
 use Illuminate\Support\Facades\Auth;
 
 class ClassesController extends Controller
 {
     public function index(Request $request)
     {
+        if (!Auth::user()->hasPermission('clases_view')) {
+            abort(403, 'No tienes permiso para ver esta sección.');
+        }
+
         $search = $request->input('search');
 
         $query = Classes::query()
@@ -32,30 +38,17 @@ class ClassesController extends Controller
 
     public function create()
     {
+        if (!Auth::user()->hasPermission('clases_add')) {
+            abort(403, 'No tienes permiso para agregar clases.');
+        }
+
         $teachers = Teacher::where('active', 1)->orderBy('name')->get();
         return view('classes.create', compact('teachers'));
     }
 
-    public function store(Request $request)
+    public function store(StoreClassesRequest $request)
     {
-        $request->validate([
-            'classes' => 'required|string|max:60|unique:classes,classes',
-            'classes_numeric' => 'required|numeric|unique:classes,classes_numeric',
-            'teacherID' => 'required|exists:teachers,teacherID',
-            'note' => 'required|string|max:500',
-        ], [
-            'classes.required' => 'El nombre de la clase es obligatorio.',
-            'classes.unique' => 'Este nombre de clase ya está registrado.',
-            'classes_numeric.required' => 'El valor numérico es obligatorio.',
-            'classes_numeric.numeric' => 'El valor numérico debe ser un número.',
-            'classes_numeric.unique' => 'Este valor numérico ya está en uso.',
-            'teacherID.required' => 'Debe asignar un maestro responsable.',
-            'teacherID.exists' => 'El maestro seleccionado no es válido.',
-            'note.required' => 'La descripción o nota de la clase es obligatoria.',
-            'note.max' => 'La nota no debe exceder los 500 caracteres.',
-        ]);
-
-        $data = $request->all();
+        $data = $request->validated();
         $data['studentmaxID'] = 999;
         $data['create_date'] = now();
         $data['modify_date'] = now();
@@ -70,6 +63,10 @@ class ClassesController extends Controller
 
     public function show($id)
     {
+        if (!Auth::user()->hasPermission('clases_view')) {
+            abort(403, 'No tienes permiso para ver esta clase.');
+        }
+
         $class = Classes::leftJoin('teachers', 'classes.teacherID', '=', 'teachers.teacherID')
             ->select('classes.*', 'teachers.name as teacher_name', 'teachers.photo as teacher_photo', 'teachers.email as teacher_email')
             ->where('classes.classesID', $id)
@@ -80,33 +77,19 @@ class ClassesController extends Controller
 
     public function edit($id)
     {
+        if (!Auth::user()->hasPermission('clases_edit')) {
+            abort(403, 'No tienes permiso para editar clases.');
+        }
+
         $class = Classes::findOrFail($id);
         $teachers = Teacher::where('active', 1)->orderBy('name')->get();
         return view('classes.edit', compact('class', 'teachers'));
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateClassesRequest $request, $id)
     {
         $class = Classes::findOrFail($id);
-
-        $request->validate([
-            'classes' => 'required|string|max:60|unique:classes,classes,' . $id . ',classesID',
-            'classes_numeric' => 'required|numeric|unique:classes,classes_numeric,' . $id . ',classesID',
-            'teacherID' => 'required|exists:teachers,teacherID',
-            'note' => 'required|string|max:500',
-        ], [
-            'classes.required' => 'El nombre de la clase es obligatorio.',
-            'classes.unique' => 'Este nombre de clase ya está registrado.',
-            'classes_numeric.required' => 'El valor numérico es obligatorio.',
-            'classes_numeric.numeric' => 'El valor numérico debe ser un número.',
-            'classes_numeric.unique' => 'Este valor numérico ya está en uso.',
-            'teacherID.required' => 'Debe asignar un maestro responsable.',
-            'teacherID.exists' => 'El maestro seleccionado no es válido.',
-            'note.required' => 'La descripción o nota de la clase es obligatoria.',
-            'note.max' => 'La nota no debe exceder los 500 caracteres.',
-        ]);
-
-        $data = $request->all();
+        $data = $request->validated();
         $data['modify_date'] = now();
 
         $class->update($data);
@@ -116,6 +99,10 @@ class ClassesController extends Controller
 
     public function destroy($id)
     {
+        if (!Auth::user()->hasPermission('clases_delete')) {
+            abort(403, 'No tienes permiso para eliminar clases.');
+        }
+
         $class = Classes::findOrFail($id);
         $class->delete();
 
