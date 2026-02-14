@@ -32,13 +32,15 @@
                     </p>
                 </div>
 
-                <div class="flex items-center gap-4">
-                    <a href="{{ route('exam.create') }}"
-                        class="px-8 py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-[2rem] shadow-xl shadow-emerald-500/20 transition-all flex items-center gap-3 font-black text-[11px] uppercase tracking-widest group">
-                        <i class="ti ti-plus text-lg group-hover:rotate-90 transition-transform duration-300"></i>
-                        {{ __('Nuevo Examen') }}
-                    </a>
-                </div>
+                @if (Auth::user()->hasPermission('examen_add'))
+                    <div class="flex items-center gap-4">
+                        <a href="{{ route('exam.create') }}"
+                            class="px-8 py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-[2rem] shadow-xl shadow-emerald-500/20 transition-all flex items-center gap-3 font-black text-[11px] uppercase tracking-widest group">
+                            <i class="ti ti-plus text-lg group-hover:rotate-90 transition-transform duration-300"></i>
+                            {{ __('Nuevo Examen') }}
+                        </a>
+                    </div>
+                @endif
             </div>
         </div>
 
@@ -102,22 +104,26 @@
                                 title="{{ __('Ver Detalles') }}">
                                 <i class="ti ti-eye text-lg"></i>
                             </a>
-                            <a href="{{ route('exam.edit', $exam->examID) }}"
-                                class="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-900/50 text-slate-400 hover:bg-emerald-500 hover:text-white flex items-center justify-center transition-all duration-300 shadow-sm"
-                                title="{{ __('Editar Examen') }}">
-                                <i class="ti ti-pencil text-lg"></i>
-                            </a>
-                            <button type="button"
-                                onclick="confirmDelete('{{ $exam->examID }}', '{{ $exam->exam }}')"
-                                class="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-900/50 text-slate-400 hover:bg-rose-500 hover:text-white flex items-center justify-center transition-all duration-300 shadow-sm"
-                                title="{{ __('Eliminar Examen') }}">
-                                <i class="ti ti-trash text-lg"></i>
-                            </button>
-                            <form id="delete-form-{{ $exam->examID }}"
-                                action="{{ route('exam.destroy', $exam->examID) }}" method="POST" class="hidden">
-                                @csrf
-                                @method('DELETE')
-                            </form>
+                            @if (Auth::user()->hasPermission('examen_edit'))
+                                <a href="{{ route('exam.edit', $exam->examID) }}"
+                                    class="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-900/50 text-slate-400 hover:bg-emerald-500 hover:text-white flex items-center justify-center transition-all duration-300 shadow-sm"
+                                    title="{{ __('Editar Examen') }}">
+                                    <i class="ti ti-pencil text-lg"></i>
+                                </a>
+                            @endif
+                            @if (Auth::user()->hasPermission('examen_delete'))
+                                <button type="button"
+                                    onclick="confirmDelete('{{ $exam->examID }}', '{{ $exam->exam }}')"
+                                    class="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-900/50 text-slate-400 hover:bg-rose-500 hover:text-white flex items-center justify-center transition-all duration-300 shadow-sm"
+                                    title="{{ __('Eliminar Examen') }}">
+                                    <i class="ti ti-trash text-lg"></i>
+                                </button>
+                                <form id="delete-form-{{ $exam->examID }}"
+                                    action="{{ route('exam.destroy', $exam->examID) }}" method="POST" class="hidden">
+                                    @csrf
+                                    @method('DELETE')
+                                </form>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -131,11 +137,13 @@
                         {{ __('No hay exámenes') }}</h3>
                     <p class="text-slate-500 dark:text-slate-400 text-sm font-medium mb-8 max-w-xs mx-auto">
                         {{ __('Aún no se han programado exámenes. Comienza creando uno nuevo.') }}</p>
-                    <a href="{{ route('exam.create') }}"
-                        class="inline-flex items-center gap-3 px-8 py-4 bg-slate-900 dark:bg-emerald-600 text-white rounded-[2rem] text-[11px] font-black uppercase tracking-widest transition-all hover:scale-105">
-                        <i class="ti ti-plus text-lg"></i>
-                        {{ __('Crear Primer Examen') }}
-                    </a>
+                    @if (Auth::user()->hasPermission('examen_add'))
+                        <a href="{{ route('exam.create') }}"
+                            class="inline-flex items-center gap-3 px-8 py-4 bg-slate-900 dark:bg-emerald-600 text-white rounded-[2rem] text-[11px] font-black uppercase tracking-widest transition-all hover:scale-105">
+                            <i class="ti ti-plus text-lg"></i>
+                            {{ __('Crear Primer Examen') }}
+                        </a>
+                    @endif
                 </div>
             @endforelse
         </div>

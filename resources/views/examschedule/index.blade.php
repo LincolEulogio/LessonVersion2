@@ -32,13 +32,15 @@
                     </p>
                 </div>
 
-                <div class="flex items-center gap-4">
-                    <a href="{{ route('examschedule.create') }}"
-                        class="px-8 py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-[2rem] shadow-xl shadow-emerald-500/20 transition-all flex items-center gap-3 font-black text-[11px] uppercase tracking-widest group">
-                        <i class="ti ti-plus text-lg group-hover:rotate-90 transition-transform duration-300"></i>
-                        {{ __('Programar Examen') }}
-                    </a>
-                </div>
+                @if (Auth::user()->hasPermission('horario_de_examen_add'))
+                    <div class="flex items-center gap-4">
+                        <a href="{{ route('examschedule.create') }}"
+                            class="px-8 py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-[2rem] shadow-xl shadow-emerald-500/20 transition-all flex items-center gap-3 font-black text-[11px] uppercase tracking-widest group">
+                            <i class="ti ti-plus text-lg group-hover:rotate-90 transition-transform duration-300"></i>
+                            {{ __('Programar Examen') }}
+                        </a>
+                    </div>
+                @endif
             </div>
         </div>
 
@@ -161,25 +163,29 @@
                                     </td>
                                     <td class="px-8 py-6 text-right">
                                         <div
-                                            class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            class="flex justify-end gap-2 @if (!Auth::user()->hasPermission('horario_de_examen_edit') && !Auth::user()->hasPermission('horario_de_examen_delete')) opacity-100 @else opacity-0 group-hover:opacity-100 @endif transition-opacity">
                                             <a href="{{ route('examschedule.show', $schedule->examscheduleID) }}"
                                                 class="w-10 h-10 rounded-xl bg-white dark:bg-slate-900 shadow-sm border border-slate-100 dark:border-slate-700 flex items-center justify-center text-slate-400 hover:text-emerald-500 transition-all">
                                                 <i class="ti ti-eye text-lg"></i>
                                             </a>
-                                            <a href="{{ route('examschedule.edit', $schedule->examscheduleID) }}"
-                                                class="w-10 h-10 rounded-xl bg-white dark:bg-slate-900 shadow-sm border border-slate-100 dark:border-slate-700 flex items-center justify-center text-slate-400 hover:text-emerald-500 transition-all">
-                                                <i class="ti ti-pencil text-lg"></i>
-                                            </a>
-                                            <button type="button"
-                                                onclick="confirmDelete('{{ $schedule->examscheduleID }}', '{{ $schedule->exam->exam }}')"
-                                                class="w-10 h-10 rounded-xl bg-white dark:bg-slate-900 shadow-sm border border-slate-100 dark:border-slate-700 flex items-center justify-center text-slate-400 hover:text-rose-500 transition-all">
-                                                <i class="ti ti-trash text-lg"></i>
-                                            </button>
-                                            <form id="delete-form-{{ $schedule->examscheduleID }}"
-                                                action="{{ route('examschedule.destroy', $schedule->examscheduleID) }}"
-                                                method="POST" class="hidden">
-                                                @csrf @method('DELETE')
-                                            </form>
+                                            @if (Auth::user()->hasPermission('horario_de_examen_edit'))
+                                                <a href="{{ route('examschedule.edit', $schedule->examscheduleID) }}"
+                                                    class="w-10 h-10 rounded-xl bg-white dark:bg-slate-900 shadow-sm border border-slate-100 dark:border-slate-700 flex items-center justify-center text-slate-400 hover:text-emerald-500 transition-all">
+                                                    <i class="ti ti-pencil text-lg"></i>
+                                                </a>
+                                            @endif
+                                            @if (Auth::user()->hasPermission('horario_de_examen_delete'))
+                                                <button type="button"
+                                                    onclick="confirmDelete('{{ $schedule->examscheduleID }}', '{{ $schedule->exam->exam }}')"
+                                                    class="w-10 h-10 rounded-xl bg-white dark:bg-slate-900 shadow-sm border border-slate-100 dark:border-slate-700 flex items-center justify-center text-slate-400 hover:text-rose-500 transition-all">
+                                                    <i class="ti ti-trash text-lg"></i>
+                                                </button>
+                                                <form id="delete-form-{{ $schedule->examscheduleID }}"
+                                                    action="{{ route('examschedule.destroy', $schedule->examscheduleID) }}"
+                                                    method="POST" class="hidden">
+                                                    @csrf @method('DELETE')
+                                                </form>
+                                            @endif
                                         </div>
                                     </td>
                                 </tr>

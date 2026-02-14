@@ -35,13 +35,15 @@
                 </div>
             </div>
 
-            <div class="flex shrink-0">
-                <a href="{{ route('grade.create') }}"
-                    class="group relative inline-flex items-center gap-3 bg-amber-600 hover:bg-amber-500 text-white px-8 py-4 rounded-full font-black uppercase text-[11px] tracking-widest shadow-xl shadow-amber-500/20 hover:scale-105 active:scale-95 transition-all duration-300">
-                    <i class="ti ti-plus text-lg group-hover:rotate-90 transition-transform duration-500"></i>
-                    <span>{{ __('Nuevo Grado') }}</span>
-                </a>
-            </div>
+            @if (Auth::user()->hasPermission('grado_add'))
+                <div class="flex shrink-0">
+                    <a href="{{ route('grade.create') }}"
+                        class="group relative inline-flex items-center gap-3 bg-amber-600 hover:bg-amber-500 text-white px-8 py-4 rounded-full font-black uppercase text-[11px] tracking-widest shadow-xl shadow-amber-500/20 hover:scale-105 active:scale-95 transition-all duration-300">
+                        <i class="ti ti-plus text-lg group-hover:rotate-90 transition-transform duration-500"></i>
+                        <span>{{ __('Nuevo Grado') }}</span>
+                    </a>
+                </div>
+            @endif
         </div>
 
         <!-- Grade Cards Grid -->
@@ -62,19 +64,23 @@
                                 class="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-amber-500 transition-colors border border-slate-100 dark:border-slate-700">
                                 <i class="ti ti-eye text-lg"></i>
                             </a>
-                            <a href="{{ route('grade.edit', $grade->gradeID) }}"
-                                class="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-amber-500 transition-colors border border-slate-100 dark:border-slate-700">
-                                <i class="ti ti-edit text-lg"></i>
-                            </a>
-                            <form action="{{ route('grade.destroy', $grade->gradeID) }}" method="POST"
-                                class="delete-form">
-                                @csrf
-                                @method('DELETE')
-                                <button type="button" onclick="confirmDelete(this)"
-                                    class="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-rose-500 transition-colors border border-slate-100 dark:border-slate-700">
-                                    <i class="ti ti-trash text-lg"></i>
-                                </button>
-                            </form>
+                            @if (Auth::user()->hasPermission('grado_edit'))
+                                <a href="{{ route('grade.edit', $grade->gradeID) }}"
+                                    class="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-amber-500 transition-colors border border-slate-100 dark:border-slate-700">
+                                    <i class="ti ti-edit text-lg"></i>
+                                </a>
+                            @endif
+                            @if (Auth::user()->hasPermission('grado_delete'))
+                                <form action="{{ route('grade.destroy', $grade->gradeID) }}" method="POST"
+                                    class="delete-form">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="button" onclick="confirmDelete(this)"
+                                        class="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-rose-500 transition-colors border border-slate-100 dark:border-slate-700">
+                                        <i class="ti ti-trash text-lg"></i>
+                                    </button>
+                                </form>
+                            @endif
                         </div>
                     </div>
 
@@ -139,6 +145,13 @@
                 </h3>
                 <p class="text-sm font-bold text-slate-400 mt-2">
                     {{ __('Comienza añadiendo una nueva escala de calificación.') }}</p>
+                @if (Auth::user()->hasPermission('grado_add'))
+                    <a href="{{ route('grade.create') }}"
+                        class="group relative inline-flex items-center gap-3 bg-amber-600 hover:bg-amber-500 text-white px-8 py-4 rounded-full font-black uppercase text-[11px] tracking-widest shadow-xl shadow-amber-500/20 hover:scale-105 active:scale-95 transition-all duration-300 mt-4">
+                        <i class="ti ti-plus text-lg"></i>
+                        <span>{{ __('Crear Primer Grado') }}</span>
+                    </a>
+                @endif
             </div>
         @endif
     </div>

@@ -171,16 +171,18 @@
                         </div>
 
                         <div class="grid grid-cols-2 gap-4">
-                            <button onclick="saveExamAttendance({{ $student->studentID }}, 'P', this)"
-                                class="status-btn p-5 rounded-3xl flex flex-col items-center gap-2 transition-all group/btn {{ $current_status == 'P' ? 'bg-emerald-500 text-white shadow-xl shadow-emerald-500/30' : 'bg-slate-50 dark:bg-slate-900/50 text-slate-400 hover:bg-emerald-50 hover:text-emerald-500' }}"
+                            <button
+                                @if (Auth::user()->hasPermission('asistencia_examen_add')) onclick="saveExamAttendance({{ $student->studentID }}, 'P', this)" @else disabled @endif
+                                class="status-btn p-5 rounded-3xl flex flex-col items-center gap-2 transition-all group/btn {{ $current_status == 'P' ? 'bg-emerald-500 text-white shadow-xl shadow-emerald-500/30' : 'bg-slate-50 dark:bg-slate-900/50 text-slate-400 hover:bg-emerald-50 hover:text-emerald-500' }} @if (!Auth::user()->hasPermission('asistencia_examen_add')) opacity-50 cursor-not-allowed @endif"
                                 data-status="P">
                                 <i class="ti ti-check text-2xl group-hover/btn:scale-110 transition-transform"></i>
                                 <span
                                     class="text-[9px] font-black uppercase tracking-widest leading-none">{{ __('Vino') }}</span>
                             </button>
 
-                            <button onclick="saveExamAttendance({{ $student->studentID }}, 'A', this)"
-                                class="status-btn p-5 rounded-3xl flex flex-col items-center gap-2 transition-all group/btn {{ $current_status == 'A' ? 'bg-rose-500 text-white shadow-xl shadow-rose-500/30' : 'bg-slate-50 dark:bg-slate-900/50 text-slate-400 hover:bg-rose-50 hover:text-rose-500' }}"
+                            <button
+                                @if (Auth::user()->hasPermission('asistencia_examen_add')) onclick="saveExamAttendance({{ $student->studentID }}, 'A', this)" @else disabled @endif
+                                class="status-btn p-5 rounded-3xl flex flex-col items-center gap-2 transition-all group/btn {{ $current_status == 'A' ? 'bg-rose-500 text-white shadow-xl shadow-rose-500/30' : 'bg-slate-50 dark:bg-slate-900/50 text-slate-400 hover:bg-rose-50 hover:text-rose-500' }} @if (!Auth::user()->hasPermission('asistencia_examen_add')) opacity-50 cursor-not-allowed @endif"
                                 data-status="A">
                                 <i class="ti ti-x text-2xl group-hover/btn:scale-110 transition-transform"></i>
                                 <span
@@ -192,21 +194,23 @@
             </div>
 
             <!-- Finalize Actions -->
-            <div class="mt-16 flex flex-col items-center gap-6">
-                <div
-                    class="h-px w-full max-w-md bg-linear-to-r from-transparent via-slate-200 dark:via-slate-700 to-transparent">
-                </div>
-                <button onclick="finalizeAttendance()"
-                    class="group relative px-12 py-5 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-[2rem] shadow-2xl shadow-emerald-500/30 transition-all hover:scale-[1.05] active:scale-[0.98] uppercase tracking-[0.2em] text-xs flex items-center gap-4 overflow-hidden">
+            @if (Auth::user()->hasPermission('asistencia_examen_add'))
+                <div class="mt-16 flex flex-col items-center gap-6">
                     <div
-                        class="absolute inset-0 bg-linear-to-r from-white/0 via-white/10 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000">
+                        class="h-px w-full max-w-md bg-linear-to-r from-transparent via-slate-200 dark:via-slate-700 to-transparent">
                     </div>
-                    <i class="ti ti-checklist text-xl"></i>
-                    <span>{{ __('Guardar Lista Completa') }}</span>
-                </button>
-                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                    {{ __('Asegúrate de haber llamado a todos los estudiantes antes de finalizar') }}</p>
-            </div>
+                    <button onclick="finalizeAttendance()"
+                        class="group relative px-12 py-5 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-[2rem] shadow-2xl shadow-emerald-500/30 transition-all hover:scale-[1.05] active:scale-[0.98] uppercase tracking-[0.2em] text-xs flex items-center gap-4 overflow-hidden">
+                        <div
+                            class="absolute inset-0 bg-linear-to-r from-white/0 via-white/10 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000">
+                        </div>
+                        <i class="ti ti-checklist text-xl"></i>
+                        <span>{{ __('Guardar Lista Completa') }}</span>
+                    </button>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                        {{ __('Asegúrate de haber llamado a todos los estudiantes antes de finalizar') }}</p>
+                </div>
+            @endif
         @else
             <div
                 class="py-24 text-center rounded-[4rem] border-4 border-dashed border-slate-100 dark:border-slate-800/30 bg-slate-50/10 backdrop-blur-sm">
