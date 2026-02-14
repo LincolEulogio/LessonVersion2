@@ -29,11 +29,13 @@
                 </div>
             </div>
             <div class="flex items-center gap-3">
-                <a href="{{ route('student.edit', $student->studentID) }}"
-                    class="px-5 py-2.5 bg-amber-500/10 text-amber-600 dark:text-amber-500 hover:bg-amber-500 hover:text-white rounded-2xl transition-all border border-amber-500/20 shadow-sm active:scale-95 flex items-center gap-2 font-bold text-sm">
-                    Editar
-                    <i class="ti ti-edit text-2xl"></i>
-                </a>
+                @if($user && $user->hasPermission('estudiante_edit'))
+                    <a href="{{ route('student.edit', $student->studentID) }}"
+                        class="px-5 py-2.5 bg-amber-500/10 text-amber-600 dark:text-amber-500 hover:bg-amber-500 hover:text-white rounded-2xl transition-all border border-amber-500/20 shadow-sm active:scale-95 flex items-center gap-2 font-bold text-sm">
+                        Editar
+                        <i class="ti ti-edit text-2xl"></i>
+                    </a>
+                @endif
                 <a href="{{ route('student.index') }}"
                     class="px-5 py-2.5 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-2xl transition-all border border-slate-200 dark:border-slate-700/50 shadow-sm font-bold text-sm active:scale-95">
                     {{ __('Volver') }}
