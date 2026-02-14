@@ -10,6 +10,8 @@ use App\Models\Student;
 use App\Models\Subject;
 use App\Models\Setting;
 use Illuminate\Http\Request;
+use App\Http\Requests\GetAttendanceRequest;
+use App\Http\Requests\SaveAttendanceRequest;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
@@ -20,6 +22,15 @@ class AttendanceController extends Controller
      */
     public function index(Request $request)
     {
+        if (!Auth::user()->hasPermission('asistencia_de_estudiante_view') && !Auth::user()->hasPermission('asistencia_de_estudiante_add')) {
+            abort(403, 'No tienes permiso para ver esta sección.');
+        }
+
+        $user = Auth::user();
+        if ($user->usertypeID == 3) { // Estudiante
+            return redirect()->route('attendance.show', $user->studentID);
+        }
+
         $classesID = $request->get('classesID');
         $classes = Classes::orderBy('classes_numeric')->get();
         
@@ -36,31 +47,15 @@ class AttendanceController extends Controller
     /**
      * Show the form for marking attendance.
      */
-    public function add(Request $request)
+    public function add(GetAttendanceRequest $request)
     {
+        $data = $request->validated();
         $attendance_type = Setting::where('fieldname', 'attendance')->first()->value ?? 'daily';
         
-        $rules = [
-            'classesID' => 'required|integer',
-            'sectionID' => 'required|integer',
-            'date' => 'required|string',
-        ];
-
-        if ($attendance_type == 'subject') {
-            $rules['subjectID'] = 'required|integer';
-        }
-
-        $request->validate($rules, [
-            'classesID.required' => 'La clase es obligatoria.',
-            'sectionID.required' => 'La sección es obligatoria.',
-            'subjectID.required' => 'La materia es obligatoria.',
-            'date.required' => 'La fecha es obligatoria.',
-        ]);
-
-        $classesID = $request->get('classesID');
-        $sectionID = $request->get('sectionID');
-        $dateInput = $request->get('date');
-        $subjectID = $request->get('subjectID');
+        $classesID = $data['classesID'];
+        $sectionID = $data['sectionID'];
+        $dateInput = $data['date'];
+        $subjectID = $data['subjectID'] ?? null;
 
         $class = Classes::findOrFail($classesID);
         $section = Section::findOrFail($sectionID);
@@ -70,13 +65,8 @@ class AttendanceController extends Controller
             $subjects = Subject::where('classesID', $classesID)->orderBy('subject')->get();
         }
 
-        try {
-            $carbonDate = \Illuminate\Support\Carbon::parse($dateInput);
-        } catch (\Exception $e) {
-            $carbonDate = \Illuminate\Support\Carbon::now();
-        }
-        
-        $dateInput = $carbonDate->format('d-m-Y');
+        $carbonDate = Carbon::parse($dateInput);
+        $dateDisplay = $carbonDate->format('d-m-Y');
 
         $dayNum = $carbonDate->day;
         $monthyear = $carbonDate->format('m-Y');
@@ -108,7 +98,7 @@ class AttendanceController extends Controller
         }
 
         return view('attendance.add', compact(
-            'class', 'section', 'dateInput', 'dayNum', 'monthyear', 'aday', 
+            'class', 'section', 'dateInput', 'dateDisplay', 'dayNum', 'monthyear', 'aday', 
             'students', 'attendances', 'attendance_type', 'subjects', 'subjectID'
         ));
     }
@@ -116,18 +106,12 @@ class AttendanceController extends Controller
     /**
      * Save attendance status for a student.
      */
-    public function save(Request $request)
+    public function save(SaveAttendanceRequest $request)
     {
-        $request->validate([
-            'studentID' => 'required|integer',
-            'classesID' => 'required|integer',
-            'sectionID' => 'required|integer',
-            'date' => 'required|string',
-            'status' => 'required|in:P,A,L,N', // Present, Absent, Late, None
-        ]);
+        $data = $request->validated();
 
         try {
-            $carbonDate = Carbon::createFromFormat('d-m-Y', $request->date);
+            $carbonDate = Carbon::createFromFormat('d-m-Y', $data['date']);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Fecha inválida'], 400);
         }
@@ -139,16 +123,14 @@ class AttendanceController extends Controller
         
         $attendance_type = Setting::where('fieldname', 'attendance')->first()->value ?? 'daily';
         
-        $status = $request->status == 'N' ? null : $request->status;
+        $status = $data['status'] == 'N' ? null : $data['status'];
 
         if ($attendance_type == 'subject') {
-            $request->validate(['subjectID' => 'required|integer']);
-            
             $attendance = SubjectAttendance::firstOrCreate([
-                'studentID' => $request->studentID,
-                'classesID' => $request->classesID,
-                'sectionID' => $request->sectionID,
-                'subjectID' => $request->subjectID,
+                'studentID' => $data['studentID'],
+                'classesID' => $data['classesID'],
+                'sectionID' => $data['sectionID'],
+                'subjectID' => $data['subjectID'],
                 'monthyear' => $monthyear,
                 'schoolyearID' => $schoolyearID,
             ], [
@@ -159,9 +141,9 @@ class AttendanceController extends Controller
             ]);
         } else {
             $attendance = Attendance::firstOrCreate([
-                'studentID' => $request->studentID,
-                'classesID' => $request->classesID,
-                'sectionID' => $request->sectionID,
+                'studentID' => $data['studentID'],
+                'classesID' => $data['classesID'],
+                'sectionID' => $data['sectionID'],
                 'monthyear' => $monthyear,
                 'schoolyearID' => $schoolyearID,
             ], [
@@ -187,6 +169,26 @@ class AttendanceController extends Controller
      */
     public function show($id, Request $request)
     {
+        if (!Auth::user()->hasPermission('asistencia_de_estudiante_view')) {
+            abort(403, 'No tienes permiso para ver esta sección.');
+        }
+
+        $user = Auth::user();
+        
+        // Restriction for Students: they can only see their own attendance
+        if ($user->usertypeID == 3 && $user->studentID != $id) {
+            abort(403, 'No tienes permiso para ver la asistencia de otro estudiante.');
+        }
+
+        // Restriction for Parents: they can only see their child's attendance
+        if ($user->usertypeID == 4) {
+            // Parents model has parentsID, but Student model uses parentID FK
+            $isChild = Student::where('studentID', $id)->where('parentID', $user->parentsID)->exists();
+            if (!$isChild) {
+                abort(403, 'No tienes permiso para ver la asistencia de este estudiante.');
+            }
+        }
+
         $student = Student::with(['classes', 'section'])->findOrFail($id);
         $monthyearInput = $request->get('monthyear', date('m-Y'));
         $schoolyearID = session('default_schoolyearID') ?? 1;

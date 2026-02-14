@@ -9,12 +9,17 @@ use App\Models\Subject;
 use App\Models\Student;
 use App\Models\Eattendance;
 use Illuminate\Http\Request;
+use App\Http\Requests\SaveExamAttendanceRequest;
 use Illuminate\Support\Facades\Auth;
 
 class ExamAttendanceController extends Controller
 {
     public function index(Request $request)
     {
+        if (!Auth::user()->hasPermission('asistencia_examen_view')) {
+            abort(403, 'No tienes permiso para ver esta sección.');
+        }
+
         $exams = Exam::all();
         $classes = Classes::all();
         
@@ -52,30 +57,23 @@ class ExamAttendanceController extends Controller
         ));
     }
 
-    public function save(Request $request)
+    public function save(SaveExamAttendanceRequest $request)
     {
-        $request->validate([
-            'examID' => 'required',
-            'classesID' => 'required',
-            'sectionID' => 'required',
-            'subjectID' => 'required',
-            'studentID' => 'required',
-            'status' => 'required|in:P,A',
-        ]);
+        $data = $request->validated();
 
-        $student = Student::findOrFail($request->studentID);
+        $student = Student::findOrFail($data['studentID']);
         $schoolyearID = $student->schoolyearID ?? 1;
 
         $attendance = Eattendance::updateOrCreate([
-            'examID' => $request->examID,
-            'classesID' => $request->classesID,
-            'sectionID' => $request->sectionID,
-            'subjectID' => $request->subjectID,
-            'studentID' => $request->studentID,
+            'examID' => $data['examID'],
+            'classesID' => $data['classesID'],
+            'sectionID' => $data['sectionID'],
+            'subjectID' => $data['subjectID'],
+            'studentID' => $data['studentID'],
             'schoolyearID' => $schoolyearID,
         ], [
             's_name' => $student->name,
-            'eattendance' => $request->status,
+            'eattendance' => $data['status'],
             'date' => date('Y-m-d'),
             'year' => date('Y'),
         ]);
@@ -83,7 +81,7 @@ class ExamAttendanceController extends Controller
         if ($request->ajax()) {
             return response()->json([
                 'success' => true,
-                'status' => $request->status,
+                'status' => $data['status'],
                 'message' => __('Asistencia registrada correctamente')
             ]);
         }

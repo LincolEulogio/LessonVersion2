@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Teacher;
 use App\Models\Tattendance;
 use Illuminate\Http\Request;
+use App\Http\Requests\GetTeacherAttendanceRequest;
+use App\Http\Requests\SaveTeacherAttendanceRequest;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
@@ -15,6 +17,15 @@ class TeacherAttendanceController extends Controller
      */
     public function index(Request $request)
     {
+        if (!Auth::user()->hasPermission('asistencia_docente_view') && !Auth::user()->hasPermission('asistencia_docente_add')) {
+            abort(403, 'No tienes permiso para ver esta sección.');
+        }
+
+        $user = Auth::user();
+        if ($user->usertypeID == 2) { // Docente
+            return redirect()->route('tattendance.show', $user->teacherID);
+        }
+
         $teachers = Teacher::where('active', 1)->orderBy('name')->get();
         return view('teacher_attendance.index', compact('teachers'));
     }
@@ -22,23 +33,14 @@ class TeacherAttendanceController extends Controller
     /**
      * Show form for marking teacher attendance on a specific date.
      */
-    public function add(Request $request)
+    public function add(GetTeacherAttendanceRequest $request)
     {
-        $request->validate([
-            'date' => 'required|string',
-        ], [
-            'date.required' => 'La fecha es obligatoria.',
-        ]);
-
-        $dateInput = $request->get('date');
+        $data = $request->validated();
+        $dateInput = $data['date'];
         
-        try {
-            $carbonDate = \Illuminate\Support\Carbon::parse($dateInput);
-        } catch (\Exception $e) {
-            $carbonDate = \Illuminate\Support\Carbon::now();
-        }
+        $carbonDate = Carbon::parse($dateInput);
+        $dateDisplay = $carbonDate->format('d-m-Y');
 
-        $dateInput = $carbonDate->format('d-m-Y');
         $dayNum = $carbonDate->day;
         $monthyear = $carbonDate->format('m-Y');
         $aday = "a" . $dayNum;
@@ -51,28 +53,18 @@ class TeacherAttendanceController extends Controller
             ->get()
             ->keyBy('teacherID');
 
-        return view('teacher_attendance.add', compact('dateInput', 'dayNum', 'monthyear', 'aday', 'teachers', 'attendances'));
+        return view('teacher_attendance.add', compact('dateInput', 'dateDisplay', 'dayNum', 'monthyear', 'aday', 'teachers', 'attendances'));
     }
 
     /**
      * Save/Update attendance status for a single teacher.
      */
-    public function save(Request $request)
+    public function save(SaveTeacherAttendanceRequest $request)
     {
-        $request->validate([
-            'teacherID' => 'required|exists:teachers,teacherID',
-            'date' => 'required|string',
-            'status' => 'required|in:P,A,L,N', // P: Presente, A: Ausente, L: Tarde, N: Ninguno/Limpiar
-        ], [
-            'teacherID.required' => 'El ID del docente es obligatorio.',
-            'teacherID.exists' => 'El docente seleccionado no existe.',
-            'date.required' => 'La fecha es obligatoria.',
-            'status.required' => 'El estado de asistencia es obligatorio.',
-            'status.in' => 'El estado seleccionado no es válido.',
-        ]);
+        $data = $request->validated();
 
         try {
-            $carbonDate = Carbon::createFromFormat('d-m-Y', $request->date);
+            $carbonDate = Carbon::createFromFormat('d-m-Y', $data['date']);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -85,11 +77,10 @@ class TeacherAttendanceController extends Controller
         $aday = "a" . $dayNum;
         $schoolyearID = session('default_schoolyearID') ?? 1;
         
-        // Si el estado es 'N', limpiamos el registro (ponemos null)
-        $statusValue = ($request->status === 'N') ? null : $request->status;
+        $statusValue = ($data['status'] === 'N') ? null : $data['status'];
 
         $attendance = Tattendance::firstOrCreate([
-            'teacherID' => $request->teacherID,
+            'teacherID' => $data['teacherID'],
             'monthyear' => $monthyear,
             'schoolyearID' => $schoolyearID,
         ], [
@@ -121,10 +112,18 @@ class TeacherAttendanceController extends Controller
      */
     public function show($id, Request $request)
     {
+        if (!Auth::user()->hasPermission('asistencia_docente_view')) {
+            abort(403, 'No tienes permiso para ver esta sección.');
+        }
+
+        $user = Auth::user();
+        if ($user->usertypeID == 2 && $user->teacherID != $id) {
+            abort(403, 'No tienes permiso para ver la asistencia de otro docente.');
+        }
+
         $teacher = Teacher::findOrFail($id);
         $monthyearInput = $request->get('monthyear', date('m-Y'));
         
-        // Validar formato monthyear si es provisto
         if ($request->has('monthyear')) {
             try {
                 Carbon::createFromFormat('m-Y', $monthyearInput);

@@ -81,24 +81,11 @@ Route::middleware('auth:web,systemadmin,teacher')->group(function () {
     Route::get('syllabus/download/{id}', [SyllabusController::class, 'download'])->name('syllabus.download');
     Route::get('assignment/download/{id}', [AssignmentController::class, 'download'])->name('assignment.download');
 
-    // Attendance Module
-    Route::get('attendance', [AttendanceController::class, 'index'])->name('attendance.index');
-    Route::get('attendance/add', [AttendanceController::class, 'add'])->name('attendance.add');
-    Route::post('attendance/save', [AttendanceController::class, 'save'])->name('attendance.save');
-    Route::get('attendance/{id}', [AttendanceController::class, 'show'])->name('attendance.show');
-
-    // Teacher Attendance Module
-    Route::get('tattendance', [TeacherAttendanceController::class, 'index'])->name('tattendance.index');
-    Route::get('tattendance/add', [TeacherAttendanceController::class, 'add'])->name('tattendance.add');
-    Route::post('tattendance/save', [TeacherAttendanceController::class, 'save'])->name('tattendance.save');
-    Route::get('tattendance/{id}', [TeacherAttendanceController::class, 'show'])->name('tattendance.show');
-
     // Exam Module
     Route::resource('exam', ExamController::class);
     Route::resource('grade', GradeController::class);
     Route::resource('examschedule', ExamScheduleController::class);
-    Route::get('exam_attendance', [ExamAttendanceController::class, 'index'])->name('exam_attendance.index');
-    Route::post('exam_attendance/save', [ExamAttendanceController::class, 'save'])->name('exam_attendance.save');
+
 
     // Mark Module
     Route::get('mark', [MarkController::class, 'index'])->name('mark.index');
@@ -213,6 +200,22 @@ Route::middleware('auth:web,systemadmin,teacher,student,parent')->group(function
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Attendance Module
+    Route::get('attendance', [AttendanceController::class, 'index'])->name('attendance.index');
+    Route::get('attendance/add', [AttendanceController::class, 'add'])->name('attendance.add');
+    Route::post('attendance/save', [AttendanceController::class, 'save'])->name('attendance.save');
+    Route::get('attendance/{id}', [AttendanceController::class, 'show'])->name('attendance.show');
+
+    // Teacher Attendance Module
+    Route::get('tattendance', [TeacherAttendanceController::class, 'index'])->name('tattendance.index');
+    Route::get('tattendance/add', [TeacherAttendanceController::class, 'add'])->name('tattendance.add');
+    Route::post('tattendance/save', [TeacherAttendanceController::class, 'save'])->name('tattendance.save');
+    Route::get('tattendance/{id}', [TeacherAttendanceController::class, 'show'])->name('tattendance.show');
+
+    // Exam Attendance
+    Route::get('exam_attendance', [ExamAttendanceController::class, 'index'])->name('exam_attendance.index');
+    Route::post('exam_attendance/save', [ExamAttendanceController::class, 'save'])->name('exam_attendance.save');
 });
 
 require __DIR__.'/auth.php';
